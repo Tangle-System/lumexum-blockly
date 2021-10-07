@@ -1,0 +1,304 @@
+<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+  <category name="Frame">
+    <block type="frame_command">
+      <field name="DRAW_MODE">SET</field>
+      <field name="FROM">0</field>
+      <field name="TO">1000</field>
+    </block>
+    <block type="frame_command">
+      <field name="DRAW_MODE">ADD</field>
+      <field name="FROM">0</field>
+      <field name="TO">1000</field>
+    </block>
+    <block type="frame_command">
+      <field name="DRAW_MODE">SUB</field>
+      <field name="FROM">0</field>
+      <field name="TO">1000</field>
+    </block>
+    <block type="frame_command">
+      <field name="DRAW_MODE">MUL</field>
+      <field name="FROM">0</field>
+      <field name="TO">1000</field>
+    </block>
+  </category>
+  <category name="Animation">
+    <block type="animation_single"></block>
+    <block type="animation_scene"></block>
+  </category>
+  <category name="Effect">
+    <block type="effect_none"></block>
+    <block type="effect_fill">
+      <field name="DURATION">1000</field>
+      <value name="COLOUR">
+        <block type="color_chooser">
+          <field name="COLOUR">#ffcc00</field>
+        </block>
+      </value>
+    </block>
+    <block type="effect_rainbow">
+      <field name="DURATION">1000</field>
+    </block>
+    <block type="effect_fade">
+      <field name="DURATION">1000</field>
+      <value name="COLOUR1">
+        <block type="color_chooser">
+          <field name="COLOUR">#000000</field>
+        </block>
+      </value>
+      <value name="COLOUR2">
+        <block type="color_chooser">
+          <field name="COLOUR">#ffffff</field>
+        </block>
+      </value>
+    </block>
+    <block type="effect_plasma_shot">
+      <field name="DURATION">1000</field>
+      <field name="COUNT">10</field>
+      <value name="COLOUR">
+        <block type="color_chooser">
+          <field name="COLOUR">#ff0000</field>
+        </block>
+      </value>
+    </block>
+    <block type="effect_loading_bar">
+      <field name="DURATION">1000</field>
+      <value name="COLOUR1">
+        <block type="color_chooser">
+          <field name="COLOUR">#33ff33</field>
+        </block>
+      </value>
+      <value name="COLOUR2">
+        <block type="color_chooser">
+          <field name="COLOUR">#000000</field>
+        </block>
+      </value>
+    </block>
+    <block type="effect_roll">
+      <field name="DURATION">1000</field>
+      <value name="COLOUR1">
+        <block type="color_chooser">
+          <field name="COLOUR">#009900</field>
+        </block>
+      </value>
+      <value name="COLOUR2">
+        <block type="color_chooser">
+          <field name="COLOUR">#6600cc</field>
+        </block>
+      </value>
+    </block>
+    <block type="effect_palette_roll">
+      <field name="DURATION">1000</field>
+      <value name="PALETTE">
+        <block type="palette_8">
+          <value name="COLOUR_0">
+            <block type="color_code">
+              <field name="COLOURCODE">#550055</field>
+            </block>
+          </value>
+          <value name="COLOUR_1">
+            <block type="color_code">
+              <field name="COLOURCODE">#550055</field>
+            </block>
+          </value>
+          <value name="COLOUR_2">
+            <block type="color_code">
+              <field name="COLOURCODE">#550055</field>
+            </block>
+          </value>
+          <value name="COLOUR_3">
+            <block type="color_code">
+              <field name="COLOURCODE">#550055</field>
+            </block>
+          </value>
+          <value name="COLOUR_4">
+            <block type="color_code">
+              <field name="COLOURCODE">#000099</field>
+            </block>
+          </value>
+          <value name="COLOUR_5">
+            <block type="color_code">
+              <field name="COLOURCODE">#000099</field>
+            </block>
+          </value>
+          <value name="COLOUR_6">
+            <block type="color_code">
+              <field name="COLOURCODE">#000099</field>
+            </block>
+          </value>
+          <value name="COLOUR_7">
+            <block type="color_code">
+              <field name="COLOURCODE">#000099</field>
+            </block>
+          </value>
+        </block>
+      </value>
+    </block>
+    <block type="effect_array2"></block>
+  </category>
+  <category name="Colour">
+    <block type="color_chooser">
+      <field name="COLOUR">#ff0000</field>
+    </block>
+    <block type="color_chooser">
+      <field name="COLOUR">#009900</field>
+    </block>
+    <block type="color_chooser">
+      <field name="COLOUR">#000099</field>
+    </block>
+    <block type="color_code">
+      <field name="COLOURCODE">#000000</field>
+    </block>
+    <block type="color_rgb">
+      <field name="R">0</field>
+      <field name="G">0</field>
+      <field name="B">0</field>
+    </block>
+    <block type="palette_8">
+      <value name="COLOUR_0">
+        <block type="color_chooser">
+          <field name="COLOUR">#ff0000</field>
+        </block>
+      </value>
+      <value name="COLOUR_1">
+        <block type="color_chooser">
+          <field name="COLOUR">#ff0000</field>
+        </block>
+      </value>
+      <value name="COLOUR_2">
+        <block type="color_chooser">
+          <field name="COLOUR">#009900</field>
+        </block>
+      </value>
+      <value name="COLOUR_3">
+        <block type="color_chooser">
+          <field name="COLOUR">#009900</field>
+        </block>
+      </value>
+      <value name="COLOUR_4">
+        <block type="color_chooser">
+          <field name="COLOUR">#000099</field>
+        </block>
+      </value>
+      <value name="COLOUR_5">
+        <block type="color_chooser">
+          <field name="COLOUR">#000099</field>
+        </block>
+      </value>
+      <value name="COLOUR_6">
+        <block type="color_chooser">
+          <field name="COLOUR">#ffcc00</field>
+        </block>
+      </value>
+      <value name="COLOUR_7">
+        <block type="color_chooser">
+          <field name="COLOUR">#ffcc00</field>
+        </block>
+      </value>
+    </block>
+    <block type="palette_8">
+      <value name="COLOUR_0">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_1">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_2">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_3">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_4">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_5">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_6">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_7">
+        <shadow type="color_code">
+          <field name="COLOURCODE">#000000</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="palette_8">
+      <value name="COLOUR_0">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_1">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_2">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_3">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_4">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_5">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_6">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+      <value name="COLOUR_7">
+        <shadow type="color_rgb">
+          <field name="R">0</field>
+          <field name="G">0</field>
+          <field name="B">0</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+  <category name="Tools">
+    <block type="manipulation_tool" disabled="true">
+      <field name="TEXT1">description</field>
+    </block>
+  </category>
+</xml>
