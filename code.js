@@ -1152,15 +1152,25 @@ Code.init = function () {
     //     console.warn("Something went wrong.", err);
     //   });
 
-    window.ota_config
-      .arrayBuffer()
-      .then(function (config) {
-        console.log(config);
-        return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+    try {
+      if (!window.ota_config) throw 'No config file selected';
+
+      JSON.parse(window.ota_config);
+      // TODO - validate also json fields and it's datatypes 
+      window.ota_config
+        .arrayBuffer()
+        .then(function (config) {
+          console.log(config);
+          return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
+        })
+        .catch(function (err) {
+          console.warn("Something went wrong.", err);
+        });
+    } catch (err) {
+      alert(err);
+    }
+
+
   };
 
 
@@ -1363,7 +1373,7 @@ document.getElementById("music").addEventListener("change", function () {
 
 document.getElementById("metronome").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
-  window.blockly_metronome  = this.files[0];
+  window.blockly_metronome = this.files[0];
   Code.metronome.setAttribute("src", url);
 });
 
