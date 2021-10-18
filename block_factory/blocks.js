@@ -1,10 +1,3 @@
-"use strict";
-
-goog.require("Blockly");
-goog.require("Blockly.Blocks");
-
-////////////////////////////////////////////////////////
-
 Blockly.Blocks["animation_dummy_next"] = {
   init: function () {
     this.appendDummyInput().appendField("následující");
@@ -12,7 +5,6 @@ Blockly.Blocks["animation_dummy_next"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -23,7 +15,6 @@ Blockly.Blocks["animation_dummy_add"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -51,7 +42,6 @@ Blockly.Blocks["drawing"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -62,7 +52,6 @@ Blockly.Blocks["drawing_dummy"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -74,7 +63,6 @@ Blockly.Blocks["animation_definition"] = {
     this.setColour(300);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -86,7 +74,6 @@ Blockly.Blocks["animation_call"] = {
     this.setColour(300);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -98,8 +85,6 @@ Blockly.Blocks["animation_fill"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -117,7 +102,6 @@ Blockly.Blocks["animation_rainbow"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -136,8 +120,6 @@ Blockly.Blocks["animation_fade"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -157,8 +139,6 @@ Blockly.Blocks["animation_plasma_shot"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -177,8 +157,6 @@ Blockly.Blocks["animation_loading_bar"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -189,7 +167,6 @@ Blockly.Blocks["animation_none"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -208,8 +185,6 @@ Blockly.Blocks["animation_color_roll"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -236,7 +211,6 @@ Blockly.Blocks["animation_palette_roll"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -265,7 +239,6 @@ Blockly.Blocks["window"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -294,7 +267,6 @@ Blockly.Blocks["window_2"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -305,7 +277,6 @@ Blockly.Blocks["modifier_brightness"] = {
     this.setColour(180);
     this.setTooltip("VARIABLE '$var1', COLOR '#ffaacc', TUPLE '[0xff,0xff,0xff,0x7f]', SCALE '90%'");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -331,7 +302,6 @@ Blockly.Blocks["modifier_timeline"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -353,7 +323,6 @@ Blockly.Blocks["modifier_color_switch"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -364,7 +333,6 @@ Blockly.Blocks["modifier_timechange"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -375,7 +343,6 @@ Blockly.Blocks["modifier_timeloop"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -386,7 +353,6 @@ Blockly.Blocks["modifier_timescale"] = {
     this.setColour(180);
     this.setTooltip("SCALE '80%', VARIABLE '$var1'");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -406,7 +372,6 @@ Blockly.Blocks["modifier_fade"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -417,18 +382,6 @@ Blockly.Blocks["modifier_dummy_add"] = {
     this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_settime"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("SET TIME").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -441,7 +394,6 @@ Blockly.Blocks["frame"] = {
     this.setColour(160);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -453,7 +405,6 @@ Blockly.Blocks["event_source"] = {
     this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -464,7 +415,6 @@ Blockly.Blocks["event_replace_param"] = {
     this.setColour(120);
     this.setTooltip("Set SCALE by '100%', TOUPLE '[0x01,0x02,0x03,0x04]' , COLOR '#ffaacc,' LABEL '$label'");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -475,7 +425,6 @@ Blockly.Blocks["event_dummy_add"] = {
     this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -486,21 +435,8 @@ Blockly.Blocks["event_emit_code"] = {
     this.setColour(120);
     this.setTooltip("Emit locally as another event");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
-
-// Blockly.Blocks["event_emit_timeline"] = {
-//   init: function () {
-//     this.appendValueInput("EVENT").setCheck("event").appendField("v čase").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-//     this.setPreviousStatement(true, "construct");
-//     this.setNextStatement(true, "construct");
-//     this.setColour(120);
-//     this.setTooltip("");
-//     this.setHelpUrl("");
-//     this.setValidators();
-//   },
-// };
 
 Blockly.Blocks["handler_manual"] = {
   init: function () {
@@ -517,7 +453,6 @@ Blockly.Blocks["handler_manual"] = {
     this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -537,7 +472,6 @@ Blockly.Blocks["clip"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -549,7 +483,6 @@ Blockly.Blocks["clip_marks_definition"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -561,7 +494,6 @@ Blockly.Blocks["clip_mark_timestamp"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -572,7 +504,6 @@ Blockly.Blocks["clip_marks"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -585,7 +516,6 @@ Blockly.Blocks["clip_mark"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -596,7 +526,6 @@ Blockly.Blocks["clip_marks_inline"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -607,7 +536,6 @@ Blockly.Blocks["clip_dummy_mark"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -617,7 +545,6 @@ Blockly.Blocks["tangle_definition"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -648,7 +575,6 @@ Blockly.Blocks["tangle_port"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -669,7 +595,6 @@ Blockly.Blocks["tangle_pixels"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -680,7 +605,6 @@ Blockly.Blocks["tangle_dummy_pixels_extend"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -690,14 +614,14 @@ Blockly.Blocks["group_port"] = {
       .appendField("PORT")
       .appendField(
         new Blockly.FieldDropdown([
-          ["Port A", "$PORTA"],
-          ["Port B", "$PORTB"],
-          ["Port C", "$PORTC"],
-          ["Port D", "$PORTD"],
-          ["Port E", "$PORTE"],
-          ["Port F", "$PORFD"],
-          ["Port G", "$PORTG"],
-          [" Port H", "$PORTH"],
+          ["Port A", "&PORTA"],
+          ["Port B", "&PORTB"],
+          ["Port C", "&PORTC"],
+          ["Port D", "&PORTD"],
+          ["Port E", "&PORTE"],
+          ["Port F", "&PORTF"],
+          ["Port G", "&PORTG"],
+          [" Port H", "&PORTH"],
         ]),
         "PORT"
       )
@@ -708,7 +632,6 @@ Blockly.Blocks["group_port"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -719,7 +642,6 @@ Blockly.Blocks["group_definition"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -731,7 +653,6 @@ Blockly.Blocks["group_tangle"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -742,7 +663,6 @@ Blockly.Blocks["group_dummy_tangle"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -755,7 +675,6 @@ Blockly.Blocks["siftcanvas_tangles"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -766,7 +685,6 @@ Blockly.Blocks["siftcanvas_tangle"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -777,7 +695,6 @@ Blockly.Blocks["siftcanvas_dummy_tangle_add"] = {
     this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -790,7 +707,6 @@ Blockly.Blocks["siftcanvas_groups"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -801,7 +717,6 @@ Blockly.Blocks["siftcanvas_group"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -812,7 +727,6 @@ Blockly.Blocks["siftcanvas_dummy_group_add"] = {
     this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -823,7 +737,6 @@ Blockly.Blocks["siftcanvas_device"] = {
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -836,7 +749,6 @@ Blockly.Blocks["siftcanvas_devices"] = {
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -847,7 +759,6 @@ Blockly.Blocks["siftcanvas_dummy_device_add"] = {
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -873,7 +784,6 @@ Blockly.Blocks["siftcanvas_port"] = {
     this.setColour(60);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -886,7 +796,6 @@ Blockly.Blocks["siftcanvas_ports"] = {
     this.setColour(60);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -897,7 +806,6 @@ Blockly.Blocks["siftcanvas_dummy_port_add"] = {
     this.setColour(60);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -907,7 +815,6 @@ Blockly.Blocks["code_inline"] = {
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -919,7 +826,6 @@ Blockly.Blocks["commentary_block"] = {
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -930,7 +836,6 @@ Blockly.Blocks["commentary_line"] = {
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -941,51 +846,49 @@ Blockly.Blocks["commentary_spacer"] = {
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
 Blockly.Blocks["device_4ports"] = {
   init: function () {
     this.appendDummyInput().setAlign(Blockly.ALIGN_CENTRE).appendField("TANGLE ZAŘÍZENÍ");
-    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL");
+    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("device1"), "DEVICE_LABEL");
     this.appendDummyInput().appendField("Device address/id").appendField(new Blockly.FieldNumber(0, 0, 255), "DEVICE_IDENTIFIER");
-    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldTextInput("100%"), "DEVICE_BRIGHTNESS");
-    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_A_LENGTH");
-    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_B_LENGTH");
-    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_C_LENGTH");
-    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_D_LENGTH");
+    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldNumber(255, 0, 255), "DEVICE_BRIGHTNESS");
+    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_A_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_B_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_C_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_D_LENGTH").appendField("px");
     this.appendDummyInput().appendField("  SENSORS:");
     this.appendStatementInput("SENSORS").setCheck("sensor");
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
 Blockly.Blocks["device_8ports"] = {
   init: function () {
     this.appendDummyInput().setAlign(Blockly.ALIGN_CENTRE).appendField("TANGLE ZAŘÍZENÍ");
-    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL");
+    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("device1"), "DEVICE_LABEL");
     this.appendDummyInput().appendField("Device address/id").appendField(new Blockly.FieldNumber(0, 0, 255), "DEVICE_IDENTIFIER");
-    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldTextInput("100%"), "DEVICE_BRIGHTNESS");
-    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_A_LENGTH");
-    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_B_LENGTH");
-    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_C_LENGTH");
-    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_D_LENGTH");
-    this.appendDummyInput().appendField("PORTE").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_E").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_E_LENGTH");
-    this.appendDummyInput().appendField("PORTF").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_F").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_F_LENGTH");
-    this.appendDummyInput().appendField("PORTG").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_G").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_G_LENGTH");
-    this.appendDummyInput().appendField("PORTH").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_H").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_H_LENGTH");
+    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldNumber(255, 0, 255), "DEVICE_BRIGHTNESS");
+    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_A_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_B_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_C_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_D_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTE").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_E").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_E_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTF").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_F").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_F_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTG").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_G").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_G_LENGTH").appendField("px");
+    this.appendDummyInput().appendField("PORTH").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_H").appendField("size").appendField(new Blockly.FieldNumber(0, 0, 10000), "PORT_H_LENGTH").appendField("px");
     this.appendDummyInput().appendField("  SENSORS:");
     this.appendStatementInput("SENSORS").setCheck("sensor");
     this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
+
 Blockly.Blocks["variable_create"] = {
   init: function () {
     this.appendValueInput("SOURCE").setCheck("value").appendField("WRITE 📦").appendField(new Blockly.FieldTextInput("$var1"), "LABEL");
@@ -994,7 +897,6 @@ Blockly.Blocks["variable_create"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1005,7 +907,6 @@ Blockly.Blocks["value_dummy"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1042,7 +943,6 @@ Blockly.Blocks["value_map"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1053,7 +953,6 @@ Blockly.Blocks["value_read_variable"] = {
     this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1064,7 +963,6 @@ Blockly.Blocks["value_constant"] = {
     this.setColour(270);
     this.setTooltip("Set SCALE by '100%', TOUPLE '[0x01,0x02,0x03,0x04]' , COLOR '#ffaacc,' LABEL '$label'");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1084,7 +982,6 @@ Blockly.Blocks["sensor_artnet"] = {
     this.setColour(105);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1109,7 +1006,6 @@ Blockly.Blocks["sensor_touch"] = {
     this.setColour(105);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1134,7 +1030,6 @@ Blockly.Blocks["sensor_gyro"] = {
     this.setColour(105);
     this.setTooltip("event parameter gets a list of X,Y,Z axies");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1158,7 +1053,6 @@ Blockly.Blocks["sensor_acc"] = {
     this.setColour(105);
     this.setTooltip("Event parameter gets a list of X,Y,Z values");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1183,7 +1077,6 @@ Blockly.Blocks["sensor_gesture"] = {
     this.setColour(105);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1208,7 +1101,6 @@ Blockly.Blocks["sensor_button"] = {
     this.setColour(105);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1220,7 +1112,6 @@ Blockly.Blocks["sensor_dummy"] = {
     this.setColour(105);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1231,7 +1122,6 @@ Blockly.Blocks["generator_sin"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1242,7 +1132,6 @@ Blockly.Blocks["generator_last_event_parameter"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1253,7 +1142,6 @@ Blockly.Blocks["generator_perlin_noise"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1264,7 +1152,6 @@ Blockly.Blocks["generator_saw"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1275,7 +1162,6 @@ Blockly.Blocks["generator_triangle"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1286,7 +1172,6 @@ Blockly.Blocks["generator_square"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -1297,6 +1182,5 @@ Blockly.Blocks["generator_smoothout"] = {
     this.setColour(255);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };

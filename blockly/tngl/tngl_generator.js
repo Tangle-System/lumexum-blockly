@@ -434,6 +434,13 @@ Blockly.Tngl["modifier_dummy_add"] = function (block) {
   return [code, Blockly.Tngl.ORDER_NONE];
 };
 
+Blockly.Tngl['modifier_settime'] = function(block) {
+  var text_timestamp = block.getFieldValue('TIMESTAMP');
+  var value_modifier = Blockly.Tngl.valueToCode(block, 'MODIFIER', Blockly.Tngl.ORDER_NONE);
+  var code = ".modifyTimeSet(" + formatTimestamp(text_timestamp) + ")" + value_modifier;
+  return [code, Blockly.Tngl.ORDER_NONE];
+};
+
 Blockly.Tngl["frame"] = function (block) {
   var text_start = block.getFieldValue("START");
   var text_duration = block.getFieldValue("DURATION");

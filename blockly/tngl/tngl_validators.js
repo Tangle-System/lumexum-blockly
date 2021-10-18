@@ -334,6 +334,10 @@ Blockly.Blocks["modifier_fade"].setValidators = function () {
 
 Blockly.Blocks["modifier_dummy_add"].setValidators = function () {};
 
+Blockly.Blocks["modifier_settime"].setValidators = function () {
+  this.getField("TIMESTAMP").setValidator(validator_TLE);
+};
+
 Blockly.Blocks["frame"].setValidators = function () {
   this.getField("START").setValidator(validator_TLE);
   this.getField("DURATION").setValidator(validator_TLE);

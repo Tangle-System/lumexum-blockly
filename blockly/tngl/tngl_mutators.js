@@ -7,7 +7,6 @@ goog.provide("Blockly.Constants.Tngl");
 goog.require("Blockly");
 goog.require("Blockly.Blocks");
 
-
 /////////////////////////////////////////////////////////////////////
 
 // Blockly.Blocks["device"].setMutators = function () {

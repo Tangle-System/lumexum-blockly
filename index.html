@@ -38,12 +38,12 @@
 <body>
 
 
-  <p id="notSupported" class="hidden" style="color:red;">
+  <!-- <p id="notSupported" class="hidden" style="color:red;">
     Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
     running Chrome 78 or later and have enabled the
     <code>#enable-experimental-web-platform-features</code> flag in
     <code>chrome://flags</code>
-  </p>
+  </p> -->
 
 
   <table width="100%" height="100%">
@@ -165,29 +165,29 @@
 
       <div>
 
-        <button id="simplifyButton">
-          Simplify
+        <button id="rebootButton">
+          Device Reboot
         </button>
 
+        <button id="simplifyButton">
+          Remove Shadow Blocks
+        </button>
+
+        <div>
         <span>
-
-          <button id="otaUpdateFirmware">
-            OTA
-          </button>
-
           <input type="file" id="otaFirmware">
-
+          <button id="otaUpdateFirmware">
+            Write OTA
+          </button>
         </span>
 
         <span>
-
-          <button id="otaUpdateConfig">
-            Config
-          </button>
-
           <input type="file" id="otaConfig">
-
+          <button id="otaUpdateConfig">
+            Write Config
+          </button>
         </span>
+      </div>
 
 
 
@@ -198,26 +198,28 @@
       <div>
         🕹️ LABEL
         <input style="width: 10%;" type="text" id="control_label" value="evt1">
-      </div>
+      
      Event Type <select id="control_type" style="width: 30%;">
         <option value="percentage_control">Percentage</option>
         <option value="color_control">Color</option>
         <option value="timestamp_control">Timestamp (čas)</option>
       </select>
 
+    </div>
+
       <div id="percentage_control">
-        🕹️ PERCENTAGE VALUE <input style="width: 10%;" type="text" id="control_percentage_value" value="0">
-        -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0" step="10">
+        🕹️ PERCENTAGE <input style="width: 10%;" type="text" id="control_percentage_value" value="0">
+        -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0" step="5">
         100%
       </div>
 
       <div id="color_control" style="display: none;">
-        🕹️ COLOR VALUE <input style="width: 10%;" type="text" id="control_color_value" value="#ff0000">
-         <input style="border:0" type="color" id="control_color_picker" value="0" step="10">
+        🕹️ COLOR <input style="width: 10%;" type="text" id="control_color_value" value="#ff0000">
+         <input style="border:0" type="color" id="control_color_picker" value="#ff0000">
       </div>
 
       <div id="timestamp_control" style="display: none;">
-        🕹️ TIMESTAMP VALUE <input style="width: 10%;" type="text" id="control_timestamp_value" value="1s">
+        🕹️ TIMESTAMP <input style="width: 10%;" type="number" id="control_timestamp_value" min="0" max="2147483647" value="1000"> ms
       </div>
 
       <div>
@@ -724,6 +726,12 @@
           <shadow type="modifier_dummy_add"></shadow>
         </value>
       </block>
+      <block type="modifier_settime">
+        <field name="TIMESTAMP">5s</field>
+        <value name="MODIFIER">
+          <shadow type="modifier_dummy_add"></shadow>
+        </value>
+      </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Posun času</field>
       </block>
@@ -828,7 +836,7 @@
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Math</field>
       </block>
-      <block type="value_math" disabled="true">
+      <block type="value_math">
         <field name="OPTION">ADD</field>
         <value name="PARAMETER_A">
           <shadow type="value_dummy"></shadow>

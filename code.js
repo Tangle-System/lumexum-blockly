@@ -8,25 +8,26 @@
  * @fileoverview JavaScript for Blockly's Code demo.
  * @author fraser@google.com (Neil Fraser)
  */
+
 "use strict";
 
 if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-// if (!navigator.bluetooth) {
-//   alert(
-//     "Oops, bluetooth doesn't work. Try to open this page as a secure https://"
-//   );
-// }
+if (!navigator.bluetooth) {
+  alert(
+    "Oops, bluetooth doesn't work here."
+  );
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-  // butConnect.addEventListener("click", clickConnect);
+// document.addEventListener("DOMContentLoaded", () => {
+//   // butConnect.addEventListener("click", clickConnect);
 
-  // CODELAB: Add feature detection here.
-  const notSupported = document.getElementById("notSupported");
-  notSupported.classList.toggle("hidden", "serial" in navigator);
-});
+//   // CODELAB: Add feature detection here.
+//   const notSupported = document.getElementById("notSupported");
+//   notSupported.classList.toggle("hidden", "serial" in navigator);
+// });
 
 /**
  * Create a namespace for the application.
@@ -86,6 +87,15 @@ Code.device.setTimeline = function () {
   }
   if (Code.device.bluetoothDevice.isConnected()) {
     Code.device.bluetoothDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+  }
+};
+
+Code.device.reboot = function () {
+  if (Code.device.serialDevice.isConnected()) {
+    Code.device.serialDevice.reboot();
+  }
+  if (Code.device.bluetoothDevice.isConnected()) {
+    Code.device.bluetoothDevice.reboot();
   }
 };
 
@@ -1107,6 +1117,10 @@ Code.init = function () {
     //Code.renderContent();
   };
 
+  Code.otaReboot = function () {
+    Code.device.reboot();
+  };
+
   document.getElementById("otaFirmware").addEventListener("change", function () {
     window.ota_firmware = this.files[0];
   });
@@ -1178,6 +1192,7 @@ Code.init = function () {
   Code.tabClick(Code.selected);
 
   Code.bindClick("simplifyButton", Code.simplify);
+  Code.bindClick("rebootButton", Code.otaReboot);
   Code.bindClick("otaUpdateFirmware", Code.otaUpdateFirmware);
   Code.bindClick("otaUpdateConfig", Code.otaUpdateConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
@@ -1350,15 +1365,24 @@ window.addEventListener("load", Code.init);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Number.prototype.pad = function (size) {
+  var s = String(this);
+  while (s.length < (size || 2)) {
+    s = "0" + s;
+  }
+  return s;
+};
+
 setInterval(function () {
+  
   let now = Code.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
   let sec = Math.floor(now / 1000);
   now %= 1000;
-  let msec = Math.floor(now / 100);
+  let msec = Math.floor(now / 10);
 
-  document.getElementById("revTime").innerHTML = "" + min + ":" + sec + ":" + msec;
+  document.getElementById("revTime").innerHTML = "" + min + ":" + sec.pad(2) + ":" + msec.pad(2);
 }, 100);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
