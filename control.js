@@ -9,6 +9,9 @@ window.onload = function () {
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
   const control_percentage_value = document.querySelector("#control_percentage_value");
+  const control_timestamp_value  = document.querySelector("#control_timestamp_value");
+  const control_color_value  = document.querySelector("#control_color_value");
+  const control_color_picker  = document.querySelector("#control_color_picker");
 
   // CONTROL TYPE HANDLER
   let currentControlType = "percentage_control";
@@ -21,12 +24,16 @@ window.onload = function () {
     currentControlType = controlType
   }
 
-  document.querySelector('#control_color_picker').oninput = e => {
-    document.querySelector('#control_color_value').value = document.querySelector('#control_color_picker').value;
+  control_label.onchange = e => {
+    this.value = this.value.replace(/\W/g, "").substring(0, 5);
+  };
+
+  control_color_picker.oninput = e => {
+    control_color_value.value = control_color_picker.value;
   }
 
-  document.querySelector('#control_color_value').oninput = e => {
-    document.querySelector('#control_color_picker').value = getHexColor(document.querySelector('#control_color_value').value);
+  control_color_value.oninput = e => {
+    control_color_picker.value = getHexColor(control_color_value.value);
   }
 
   const timeline_toggle = document.querySelector("#timeline_toggle");
@@ -60,40 +67,39 @@ window.onload = function () {
     handleControlSend(value);
   }
 
-  function handleControlSend(value) {
-    let control_value = "";
+  function handleControlSend(value=null) {
+    let log_value = "";
     if (currentControlType === "percentage_control") {
-
       if (value === null) {
-        control_value = control_percentage_range.value + '%';
+        log_value = control_percentage_value.value + '%';
         Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value);
       } else {
-        control_value = value + "%";
+        log_value = value + "%";
         Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value);
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
-      control_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
+      log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
       Code.device.bluetoothDevice.emitColorEvent(control_label.value, hexColor, control_destination.value);
       // } else {
       // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);
       // }
     } else if (currentControlType === "timestamp_control") {
-      control_value = control_timestamp_value.value;
+      log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
-      Code.device.bluetoothDevice.emitTimestampEvent(control_label.value, Number(document.querySelector('#control_timestamp_value').value), control_destination.value);
+      Code.device.bluetoothDevice.emitTimestampEvent(control_label.value, control_timestamp_value.value, control_destination.value);
     }
 
     const logmessageDOM = document.createElement("li");
     // TODO edit this message accordingly to each control type
-    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} $${control_label.value}: ${control_value} -> ${control_destination.value} EVTYPE: ${currentControlType}`;
+    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${control_destination.value}`;
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
   }
 
   control_percentage_range.oninput = handlePercentageValueChange;
-  document.querySelector('#control_color_picker').onchange = handleColorValueChange;
+  control_color_picker.onchange = handleColorValueChange;
 
   control_send.onclick = (e) => handleControlSend();
 

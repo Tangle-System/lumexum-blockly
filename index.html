@@ -196,19 +196,17 @@
       <br>
 
       <div>
-        🕹️ LABEL
-        <input style="width: 10%;" type="text" id="control_label" value="evt1">
-      
-     Event Type <select id="control_type" style="width: 30%;">
-        <option value="percentage_control">Percentage</option>
-        <option value="color_control">Color</option>
-        <option value="timestamp_control">Timestamp (čas)</option>
-      </select>
-
-    </div>
+        🕹️ LABEL <input style="width: 10%;" type="text" id="control_label" value="evt1">
+        Event Type 
+        <select id="control_type" style="width: 30%;">
+            <option value="percentage_control">Percentage</option>
+            <option value="color_control">Color</option>
+            <option value="timestamp_control">Timestamp</option>
+        </select>
+      </div>
 
       <div id="percentage_control">
-        🕹️ PERCENTAGE <input style="width: 10%;" type="text" id="control_percentage_value" value="0">
+        🕹️ PERCENTAGE <input style="width: 10%;" type="number" id="control_percentage_value" min="0" max="100" value="0"> %
         -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0" step="5"> 100%
       </div>
 
@@ -233,7 +231,7 @@
     </div>
 
     <ul
-      style="list-style: none;max-height: 50vh;overflow: auto; display: flex; flex-direction: column-reverse;max-width: 270px;margin:auto;margin-top: 40px;"
+      style="list-style: none;max-height: 50vh;overflow: auto; display: flex; flex-direction: column-reverse;max-width: 500px;margin:auto;margin-top: 40px;"
       id="event_logs">
     </ul>
 
