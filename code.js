@@ -112,16 +112,42 @@ Code.device.writeTngl = function (tngl_bytes) {
   }
 };
 
-Code.device.emitPercentageEvent = function (event_label, event_value, event_destination) {
+Code.device.emitPercentageEvent = function (event_label, event_percentage_value, event_destination) {
   if (event_destination === null) {
     event_destination = 0xff;
   }
 
   if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitPercentageEvent(event_label.replace(/&/g, ""), event_value, Code.timeline.millis(), event_destination);
+    Code.device.serialDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
   }
   if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitPercentageEvent(event_label.replace(/&/g, ""), event_value, Code.timeline.millis(), event_destination);
+    Code.device.bluetoothDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
+  }
+};
+
+Code.device.emitColorEvent = function (event_label, event_color_value, event_destination) {
+  if (event_destination === null) {
+    event_destination = 0xff;
+  }
+
+  if (Code.device.serialDevice.isConnected()) {
+    Code.device.serialDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
+  }
+  if (Code.device.bluetoothDevice.isConnected()) {
+    Code.device.bluetoothDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
+  }
+};
+
+Code.device.emitTimestampEvent = function (event_label, event_timestamp_value, event_destination) {
+  if (event_destination === null) {
+    event_destination = 0xff;
+  }
+
+  if (Code.device.serialDevice.isConnected()) {
+    Code.device.serialDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
+  }
+  if (Code.device.bluetoothDevice.isConnected()) {
+    Code.device.bluetoothDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
   }
 };
 
@@ -1167,24 +1193,29 @@ Code.init = function () {
     //   });
 
     try {
-      if (!window.ota_config) throw 'No config file selected';
+      if (!window.ota_config) throw "No config file selected";
 
-      JSON.parse(window.ota_config);
-      // TODO - validate also json fields and it's datatypes 
       window.ota_config
-        .arrayBuffer()
-        .then(function (config) {
-          console.log(config);
-          return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
+        .text()
+        .then((data) => {
+          JSON.parse(data);
+          // TODO - validate also json fields and it's datatypes
+
+          console.log(data);
         })
+        .then(() => {
+          window.ota_config.arrayBuffer().then(function (config) {
+            console.log(config);
+            return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
+          });
+        })
+
         .catch(function (err) {
           console.warn("Something went wrong.", err);
         });
     } catch (err) {
       alert(err);
     }
-
-
   };
 
 

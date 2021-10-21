@@ -25,7 +25,8 @@ window.onload = function () {
   }
 
   control_label.onchange = e => {
-    this.value = this.value.replace(/\W/g, "").substring(0, 5);
+    control_label.value = control_label.value.replace(/\W/g, "");
+    control_label.value = control_label.value.substring(0, 5);
   };
 
   control_color_picker.oninput = e => {
@@ -81,14 +82,14 @@ window.onload = function () {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
       log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
-      Code.device.bluetoothDevice.emitColorEvent(control_label.value, hexColor, control_destination.value);
+      Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
       // } else {
       // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);
       // }
     } else if (currentControlType === "timestamp_control") {
       log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
-      Code.device.bluetoothDevice.emitTimestampEvent(control_label.value, control_timestamp_value.value, control_destination.value);
+      Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, control_destination.value);
     }
 
     const logmessageDOM = document.createElement("li");

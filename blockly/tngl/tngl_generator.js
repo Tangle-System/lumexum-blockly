@@ -92,7 +92,7 @@ Blockly.Tngl["animation_dummy_next"] = function (block) {
 };
 
 Blockly.Tngl["animation_dummy_add"] = function (block) {
-  var code = "animNone()";
+  var code = "animNone(0t)";
   return [code, Blockly.Tngl.ORDER_NONE];
 };
 
