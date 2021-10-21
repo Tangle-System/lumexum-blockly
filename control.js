@@ -120,7 +120,7 @@ window.onload = function () {
       zip.file("metronome.mp3", window.blockly_metronome);
     }
 
-    zip.generateAsync({ type: "blob" }).then(function (content) {
+    zip.generateAsync({ type: "blob",compression: "DEFLATE" }).then(function (content) {
       saveAs(content, document.querySelector("#filename").value.replace(/\.tgbl$/, "") + ".tgbl");
     });
   };
