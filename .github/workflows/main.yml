@@ -1,0 +1,28 @@
+on: push
+name: Nasazovačka
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2
+
+    - name: get correct branch
+      run: |
+        branch=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+        echo "branch=${branch}" >> $GITHUB_ENV
+
+    - name: Branch name is
+      run: echo ${{ env.branch }}
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        server: 257585.w85.wedos.net
+        username: w257585_lukas
+        password: ${{ secrets.password }}
+        local-dir: ./
+        server-dir: /subdom/blockly/${{ env.branch }}/
+        
+        
