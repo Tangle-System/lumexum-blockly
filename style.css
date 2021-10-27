@@ -151,13 +151,6 @@ pre.content {
   font-family: monospace;
   overflow: scroll;
 }
-#content_control {
-  resize: none;
-  outline: none;
-  border: 1px solid #ccc;
-  font-family: monospace;
-  overflow: scroll;
-}
 #languageMenu {
   vertical-align: top;
   margin-left: 15px;
@@ -221,10 +214,3 @@ audio { width: 100%; }
   display: none;
 }
 
-#timeline_container.openned{
-  height: 200px !important;
-  z-index: 10;
-}
-.openned #timeline_toggle {
-  transform: rotate(180deg);
-}

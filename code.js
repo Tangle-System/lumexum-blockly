@@ -8,26 +8,25 @@
  * @fileoverview JavaScript for Blockly's Code demo.
  * @author fraser@google.com (Neil Fraser)
  */
-
 "use strict";
 
 if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-if (!navigator.bluetooth) {
-  alert(
-    "Oops, bluetooth doesn't work here."
-  );
-}
+// if (!navigator.bluetooth) {
+//   alert(
+//     "Oops, bluetooth doesn't work. Try to open this page as a secure https://"
+//   );
+// }
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   // butConnect.addEventListener("click", clickConnect);
+document.addEventListener("DOMContentLoaded", () => {
+  // butConnect.addEventListener("click", clickConnect);
 
-//   // CODELAB: Add feature detection here.
-//   const notSupported = document.getElementById("notSupported");
-//   notSupported.classList.toggle("hidden", "serial" in navigator);
-// });
+  // CODELAB: Add feature detection here.
+  const notSupported = document.getElementById("notSupported");
+  notSupported.classList.toggle("hidden", "serial" in navigator);
+});
 
 /**
  * Create a namespace for the application.
@@ -42,13 +41,13 @@ Code.device = {};
 
 Code.device.bluetoothDevice = new TangleBluetoothDevice();
 
-Code.device.bluetoothDevice.addEventListener("connected", (event) => {
+Code.device.bluetoothDevice.addEventListener("connected", (event)=>{
   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
   icon.classList.remove("connect");
   icon.classList.add("disconnect");
 });
 
-Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
+Code.device.bluetoothDevice.addEventListener("disconnected", (event)=>{
   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
@@ -56,14 +55,14 @@ Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
 
 Code.device.serialDevice = new TangleSerialDevice();
 
-Code.device.serialDevice.addEventListener("connected", (event) => {
+Code.device.serialDevice.addEventListener("connected", (event)=>{
   const icon = document.getElementById("connectSerialButton").childNodes[1];
   icon.classList.remove("connect");
   icon.classList.add("disconnect");
 
 });
 
-Code.device.serialDevice.addEventListener("disconnected", (event) => {
+Code.device.serialDevice.addEventListener("disconnected", (event)=>{
   const icon = document.getElementById("connectSerialButton").childNodes[1];
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
@@ -81,21 +80,12 @@ Code.device.serialDevice.addEventListener("receive", (event) => {
   }
 });
 
-Code.device.setTimeline = function () {
+Code.device.setTime = function () {
   if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+    Code.device.serialDevice.setTime(Code.timeline.millis(), Code.timeline.paused());
   }
   if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-};
-
-Code.device.reboot = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.reboot();
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.reboot();
+    Code.device.bluetoothDevice.setTime(Code.timeline.millis(), Code.timeline.paused());
   }
 };
 
@@ -105,58 +95,28 @@ Code.device.writeTngl = function (tngl_bytes) {
   }
 
   if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.uploadTngl(tngl_bytes, 0x00, Code.timeline.millis(), Code.timeline.paused());
+    Code.device.serialDevice.uploadTngl(tngl_bytes, Code.timeline.millis(), Code.timeline.paused());
   }
   if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.uploadTngl(tngl_bytes, 0x00, Code.timeline.millis(), Code.timeline.paused());
+    Code.device.bluetoothDevice.uploadTngl(tngl_bytes, Code.timeline.millis(), Code.timeline.paused());
   }
 };
 
-Code.device.emitPercentageEvent = function (event_label, event_percentage_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
-
+Code.device.writeTrigger = function (trigger, param) {
   if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
+    Code.device.serialDevice.writeTrigger(trigger, param, Code.timeline.millis());
   }
   if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
+    Code.device.bluetoothDevice.writeTrigger(trigger, param, Code.timeline.millis());
   }
 };
 
-Code.device.emitColorEvent = function (event_label, event_color_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
-
+Code.device.syncTime = function () {
   if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
+    Code.device.serialDevice.syncTime(Code.timeline.millis(), Code.timeline.paused());
   }
   if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
-  }
-};
-
-Code.device.emitTimestampEvent = function (event_label, event_timestamp_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
-
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
-  }
-};
-
-Code.device.syncTimeline = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.syncTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.syncTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+    Code.device.bluetoothDevice.syncTime(Code.timeline.millis(), Code.timeline.paused());
   }
 };
 
@@ -277,23 +237,6 @@ Code.debug.setVisible = function (enable) {
   }
 };
 
-Code.control = {
-  div: document.querySelector('#content_control')
-};
-
-Code.control.setVisible = function (enable) {
-  if (enable) {
-    //console.log("enabling");
-    Code.control.div.style.display = "block";
-  } else {
-    //console.log("disabling");
-    Code.control.div.style.display = "none";
-  }
-};
-
-
-
-
 Code.music = document.getElementById("timeline");
 Code.metronome = new Audio();
 
@@ -301,12 +244,12 @@ Code.timeline = new TimeTrack();
 
 Code.bank = 0;
 
-// function sleep(ms) {
-//   return new Promise((resolve) => setTimeout(resolve, ms));
-// }
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 // setInterval(async function () {
-//   Code.device.syncTimeline();
+//   Code.device.syncTime();
 // }, 10000);
 
 // Code.device = new TangleSerialDevice();
@@ -314,7 +257,7 @@ Code.bank = 0;
 Code.music.addEventListener("timeupdate", () => {
   Code.timeline.setMillis(Code.music.currentTime * 1000);
 
-  Code.device.syncTimeline();
+  Code.device.syncTime();
 });
 
 Code.music.addEventListener("play", () => {
@@ -326,7 +269,7 @@ Code.music.addEventListener("play", () => {
     Code.metronome.play();
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 });
 
 Code.music.addEventListener("pause", () => {
@@ -337,7 +280,7 @@ Code.music.addEventListener("pause", () => {
     Code.metronome.pause();
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 });
 
 Code.play = async function () {
@@ -351,7 +294,7 @@ Code.play = async function () {
     Code.metronome.play();
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 };
 
 Code.cycle = async function () {
@@ -372,7 +315,7 @@ Code.cycle = async function () {
     }
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 };
 
 Code.pause = async function () {
@@ -387,7 +330,7 @@ Code.pause = async function () {
     Code.metronome.pause();
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 };
 
 Code.stop = async function () {
@@ -405,7 +348,7 @@ Code.stop = async function () {
     Code.metronome.load();
   }
 
-  Code.device.setTimeline();
+  Code.device.setTime();
 };
 
 Code.upload = async function () {
@@ -511,14 +454,14 @@ Code.bindClick = function (el, func) {
   //el.addEventListener('touchend', func, true);
 };
 
-// /**
-//  * Load the Prettify CSS and JavaScript.
-//  */
-// Code.importPrettify = function () {
-//   var script = document.createElement("script");
-//   script.setAttribute("src", "https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
-//   document.head.appendChild(script);
-// };
+/**
+ * Load the Prettify CSS and JavaScript.
+ */
+Code.importPrettify = function () {
+  var script = document.createElement("script");
+  script.setAttribute("src", "https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js");
+  document.head.appendChild(script);
+};
 
 /**
  * Compute the absolute coordinates and dimensions of an HTML element.
@@ -555,7 +498,7 @@ Code.LANG = Code.getLang();
  * @private
  */
 //Code.TABS_ = ['blocks', 'javascript', 'php', 'python', 'dart', 'lua', 'xml'];
-Code.TABS_ = ["blocks", "tngl", "xml", "debug", "control"];
+Code.TABS_ = ["blocks", "tngl", "xml", "debug"];
 
 /**
  * List of tab names with casing, for display in the UI.
@@ -566,8 +509,6 @@ Code.TABS_DISPLAY_ = [
   "Blocks",
   "Tngl",
   "XML",
-  "Debug",
-  "Control",
 ];
 
 Code.selected = "blocks";
@@ -604,10 +545,6 @@ Code.tabClick = function (clickedName) {
   if (document.getElementById("tab_debug").classList.contains("tabon")) {
     Code.debug.setVisible(false);
   }
-
-  // if (document.getElementById("tab_control").classList.contains("tabon")) {
-  //   Code.control.setVisible(false);
-  // }
 
   // Deselect all tabs and hide all panes.
   for (var i = 0; i < Code.TABS_.length; i++) {
@@ -675,8 +612,6 @@ Code.renderContent = function () {
     // var xmlDom = Blockly.Xml.workspaceToDom(Code.workspace);
     // var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
     debugTextarea.focus();
-  } else if (content.id == "content_control") {
-    Code.control.setVisible(true);
   }
 };
 
@@ -785,447 +720,37 @@ Code.init = function () {
   // and the infinite loop detection function.
   // Blockly.JavaScript.addReservedWords('code,timeouts,checkTimeout');
 
-  //   var init_blocks_xml =
-
-  //   '<xml xmlns="https://developers.google.com/blockly/xml">' +
-  // '  <block type="device_4ports" id="jNE)v$X2vIU,2t#xwd~e" x="247" y="-265">' +
-  // '    <field name="DEVICE_LABEL">device1</field>' +
-  // '    <field name="DEVICE_IDENTIFIER">0</field>' +
-  // '    <field name="DEVICE_BRIGHTNESS">64</field>' +
-  // '    <field name="TANGLE_A">TRUE</field>' +
-  // '    <field name="PORT_A_LENGTH">10</field>' +
-  // '    <field name="TANGLE_B">FALSE</field>' +
-  // '    <field name="PORT_B_LENGTH">0</field>' +
-  // '    <field name="TANGLE_C">FALSE</field>' +
-  // '    <field name="PORT_C_LENGTH">0</field>' +
-  // '    <field name="TANGLE_D">FALSE</field>' +
-  // '    <field name="PORT_D_LENGTH">0</field>' +
-  // '  </block>' +
-  // '  <block type="commentary_line" id="7Yc$b|yJm!]qKjy4QVty" x="248" y="-30">' +
-  // '    <field name="COMMENT">Blockly vysila eventy pri keypressu klaves</field>' +
-  // '    <next>' +
-  // '      <block type="commentary_line" id="Qd6=-$JrucXV=ky,#C~,">' +
-  // '        <field name="COMMENT">Q,W,E,R,A,S,D,F,Y,X,C,V,Z</field>' +
-  // '        <next>' +
-  // '          <block type="commentary_line" id="9?J]zFy})q9UL=NgZUgF">' +
-  // '            <field name="COMMENT">(bud s capslockem, nebo shiftem)</field>' +
-  // '            <next>' +
-  // '              <block type="commentary_line" id="zL2lE|kv!ff_`]7II-m5">' +
-  // '                <field name="COMMENT">event code je ascii hodnota klavesy</field>' +
-  // '                <next>' +
-  // '                  <block type="commentary_line" id="1,vDRDAH__1NnFnL*.(i">' +
-  // '                    <field name="COMMENT">parametr je vzdy 0</field>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="commentary_line" id="BJt-6xbm80bYyX51b~5x" x="246" y="142">' +
-  // '    <field name="COMMENT">RED pri stisku Q (code = 81)</field>' +
-  // '    <next>' +
-  // '      <block type="event_source" id="jZeQE-1`}{-K=j9Ij)gC">' +
-  // '        <field name="EVENT_LABEL">81</field>' +
-  // '        <value name="EVENT">' +
-  // '          <shadow type="event_dummy_add" id="#Z*80=6oS]j{Ry7;~5aI"></shadow>' +
-  // '          <block type="event_replace_param" id="w=yT8wWwC*^Rq{V1eI-W">' +
-  // '            <field name="EVENT_PARAMETER">255</field>' +
-  // '            <value name="EVENT">' +
-  // '              <shadow type="event_dummy_add" id="iO95R,BPBMp6hI4:j4nY"></shadow>' +
-  // '              <block type="event_emit_code" id="`+Nw?=/u15{E/^4bp5],">' +
-  // '                <field name="EVENT_LABEL">0</field>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <next>' +
-  // '          <block type="commentary_line" id="LFwi!IV4Ia#Q{?ta8-Jh">' +
-  // '            <field name="COMMENT">GREEN pri stisku W (code = 87)</field>' +
-  // '            <next>' +
-  // '              <block type="event_source" id="xyup-+N.N4*i0mSNVSpg">' +
-  // '                <field name="EVENT_LABEL">87</field>' +
-  // '                <value name="EVENT">' +
-  // '                  <shadow type="event_dummy_add"></shadow>' +
-  // '                  <block type="event_replace_param" id="v)!MW)DjK9.To`k-)g9E">' +
-  // '                    <field name="EVENT_PARAMETER">255</field>' +
-  // '                    <value name="EVENT">' +
-  // '                      <shadow type="event_dummy_add"></shadow>' +
-  // '                      <block type="event_emit_code" id="r|r;j*g:cC;e7x+liQk~">' +
-  // '                        <field name="EVENT_LABEL">1</field>' +
-  // '                      </block>' +
-  // '                    </value>' +
-  // '                  </block>' +
-  // '                </value>' +
-  // '                <next>' +
-  // '                  <block type="commentary_line" id="-lfN]L!5AG%bOl!VJ}oS">' +
-  // '                    <field name="COMMENT">BLUE pri stisku E (code = 69)</field>' +
-  // '                    <next>' +
-  // '                      <block type="event_source" id="n@ccTF]#u7(81K=z#f^F">' +
-  // '                        <field name="EVENT_LABEL">69</field>' +
-  // '                        <value name="EVENT">' +
-  // '                          <shadow type="event_dummy_add"></shadow>' +
-  // '                          <block type="event_replace_param" id="i,qbjOyCT|Vvz3E8h]{c">' +
-  // '                            <field name="EVENT_PARAMETER">255</field>' +
-  // '                            <value name="EVENT">' +
-  // '                              <shadow type="event_dummy_add"></shadow>' +
-  // '                              <block type="event_emit_code" id="oe#W16|Tw)mX%S2CUR1,">' +
-  // '                                <field name="EVENT_LABEL">2</field>' +
-  // '                              </block>' +
-  // '                            </value>' +
-  // '                          </block>' +
-  // '                        </value>' +
-  // '                        <next>' +
-  // '                          <block type="commentary_line" id="KR!?,Fla3Typ?J2c_yS`">' +
-  // '                            <field name="COMMENT">RESET pri stisku R (code = 82)</field>' +
-  // '                            <next>' +
-  // '                              <block type="event_source" id="ro@|IDAG`HE8-gY0vf*a">' +
-  // '                                <field name="EVENT_LABEL">82</field>' +
-  // '                                <value name="EVENT">' +
-  // '                                  <shadow type="event_dummy_add"></shadow>' +
-  // '                                  <block type="event_replace_param" id="9noQ8K~X:*}ho-V?q/{4">' +
-  // '                                    <field name="EVENT_PARAMETER">0</field>' +
-  // '                                    <value name="EVENT">' +
-  // '                                      <shadow type="event_dummy_add"></shadow>' +
-  // '                                      <block type="event_emit_code" id="]m%#Rv91n~t[_)ac~cIC">' +
-  // '                                        <field name="EVENT_LABEL">0</field>' +
-  // '                                      </block>' +
-  // '                                    </value>' +
-  // '                                  </block>' +
-  // '                                </value>' +
-  // '                                <next>' +
-  // '                                  <block type="event_source" id="H?u*](fU;1I%u!tQu5=R">' +
-  // '                                    <field name="EVENT_LABEL">82</field>' +
-  // '                                    <value name="EVENT">' +
-  // '                                      <shadow type="event_dummy_add"></shadow>' +
-  // '                                      <block type="event_replace_param" id="ozak+5s?*QAj-r!~1EA2">' +
-  // '                                        <field name="EVENT_PARAMETER">0</field>' +
-  // '                                        <value name="EVENT">' +
-  // '                                          <shadow type="event_dummy_add"></shadow>' +
-  // '                                          <block type="event_emit_code" id="S_ANT,jFGvR6;NeU/=eq">' +
-  // '                                            <field name="EVENT_LABEL">1</field>' +
-  // '                                          </block>' +
-  // '                                        </value>' +
-  // '                                      </block>' +
-  // '                                    </value>' +
-  // '                                    <next>' +
-  // '                                      <block type="event_source" id="W0Vozr`2]MN~N*4W;a=o">' +
-  // '                                        <field name="EVENT_LABEL">82</field>' +
-  // '                                        <value name="EVENT">' +
-  // '                                          <shadow type="event_dummy_add"></shadow>' +
-  // '                                          <block type="event_replace_param" id="qKGCs@q.},*Xw1jVVu.6">' +
-  // '                                            <field name="EVENT_PARAMETER">0</field>' +
-  // '                                            <value name="EVENT">' +
-  // '                                              <shadow type="event_dummy_add"></shadow>' +
-  // '                                              <block type="event_emit_code" id="Phef,pK7OQ^(JVn;MNmK">' +
-  // '                                                <field name="EVENT_LABEL">2</field>' +
-  // '                                              </block>' +
-  // '                                            </value>' +
-  // '                                          </block>' +
-  // '                                        </value>' +
-  // '                                      </block>' +
-  // '                                    </next>' +
-  // '                                  </block>' +
-  // '                                </next>' +
-  // '                              </block>' +
-  // '                            </next>' +
-  // '                          </block>' +
-  // '                        </next>' +
-  // '                      </block>' +
-  // '                    </next>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="channel_write" id="Jys|bVHSgsT9}G*O2uio" x="245" y="453">' +
-  // '    <field name="CHANNEL">0</field>' +
-  // '    <value name="SOURCE">' +
-  // '      <shadow type="channel_dummy_add" id="[:4PObqXXG+upXC9|T6x"></shadow>' +
-  // '      <block type="channel_event_parameter_smoother" id=";:[i!eRet,$){2Y=k*L/">' +
-  // '        <field name="EVENT_LABEL">0</field>' +
-  // '        <field name="DURATION">1</field>' +
-  // '      </block>' +
-  // '    </value>' +
-  // '    <next>' +
-  // '      <block type="channel_write" id="BFjS:eDN=PCgTt@t%]gD">' +
-  // '        <field name="CHANNEL">1</field>' +
-  // '        <value name="SOURCE">' +
-  // '          <shadow type="channel_dummy_add" id="s*Rd7Ror%s[duj9vmX-,"></shadow>' +
-  // '          <block type="channel_event_parameter_smoother" id="`dEtVU0)$#`9qT.JL{dE">' +
-  // '            <field name="EVENT_LABEL">1</field>' +
-  // '            <field name="DURATION">1</field>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <next>' +
-  // '          <block type="channel_write" id="Xf;0L(xGLt-,c9z,/eeS">' +
-  // '            <field name="CHANNEL">2</field>' +
-  // '            <value name="SOURCE">' +
-  // '              <shadow type="channel_dummy_add" id="}0xZaw:jRO_/kD_EY!hO"></shadow>' +
-  // '              <block type="channel_event_parameter_smoother" id="3gy|Ibm3Ns+2XNPV$3y?">' +
-  // '                <field name="EVENT_LABEL">2</field>' +
-  // '                <field name="DURATION">1</field>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="window" id="SA*EF*X}wuJJgQiJlHOU" x="248" y="592">' +
-  // '    <field name="START">0</field>' +
-  // '    <field name="DURATION">2147483.647</field>' +
-  // '    <field name="DRAW_MODE">ADD</field>' +
-  // '    <value name="MODIFIER">' +
-  // '      <shadow type="modifier_dummy_add" id="{/yVaM]NW3]g:_^-/Jf+"></shadow>' +
-  // '      <block type="modifier_brightness" id=")0+qWl:j{w;K;`c1@cHO">' +
-  // '        <field name="CHANNEL">0</field>' +
-  // '        <value name="MODIFIER">' +
-  // '          <shadow type="modifier_dummy_add" id="6$o]~5UMMm87R?vr2!eU"></shadow>' +
-  // '        </value>' +
-  // '      </block>' +
-  // '    </value>' +
-  // '    <statement name="BODY">' +
-  // '      <shadow type="drawing_dummy" id="grCh*GtLmL|}rk(@:9hA"></shadow>' +
-  // '      <block type="drawing" id=".=9h,zhB2{T^(St7o^ny">' +
-  // '        <field name="START">0</field>' +
-  // '        <field name="DURATION">2147483.647</field>' +
-  // '        <field name="DRAW_MODE">ADD</field>' +
-  // '        <value name="ANIMATION">' +
-  // '          <shadow type="animation_dummy_add" id="!6OHDqZ~Ws%0s!-l9@Bh"></shadow>' +
-  // '          <block type="animation_color_roll" id=".P-oOu*AyU){miQwYNF8">' +
-  // '            <field name="COLOR1">#00ff00</field>' +
-  // '            <field name="COLOR2">#003600</field>' +
-  // '            <field name="DURATION">1</field>' +
-  // '            <value name="NEXT">' +
-  // '              <shadow type="animation_dummy_next" id="c$(2%:8w-Tv[^by7YpT}"></shadow>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '      </block>' +
-  // '    </statement>' +
-  // '    <next>' +
-  // '      <block type="window" id="A7q^xH]VPO2A%S.jc/V_">' +
-  // '        <field name="START">0</field>' +
-  // '        <field name="DURATION">2147483.647</field>' +
-  // '        <field name="DRAW_MODE">ADD</field>' +
-  // '        <value name="MODIFIER">' +
-  // '          <shadow type="modifier_dummy_add"></shadow>' +
-  // '          <block type="modifier_brightness" id="[a:g8n_tn|*?=l$Vj/.,">' +
-  // '            <field name="CHANNEL">1</field>' +
-  // '            <value name="MODIFIER">' +
-  // '              <shadow type="modifier_dummy_add" id="JWQ$0fIcwaG=o?Btv/i3"></shadow>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <statement name="BODY">' +
-  // '          <shadow type="drawing_dummy" id="{5rCPz/DcDMVRH2@:v2h"></shadow>' +
-  // '          <block type="drawing" id="*4iNWZ^LgKkb@O*@dSM6">' +
-  // '            <field name="START">0</field>' +
-  // '            <field name="DURATION">2147483.647</field>' +
-  // '            <field name="DRAW_MODE">ADD</field>' +
-  // '            <value name="ANIMATION">' +
-  // '              <shadow type="animation_dummy_add" id="):a*ieq=+@kt_xMajF~,"></shadow>' +
-  // '              <block type="animation_color_roll" id=".-NpXJyi6#pf2V*^?U2R">' +
-  // '                <field name="COLOR1">#ff0000</field>' +
-  // '                <field name="COLOR2">#360000</field>' +
-  // '                <field name="DURATION">1</field>' +
-  // '                <value name="NEXT">' +
-  // '                  <shadow type="animation_dummy_next" id="0WxJeGy=Cdz.M%lGDCl{"></shadow>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </statement>' +
-  // '        <next>' +
-  // '          <block type="window" id="BJ0KUmQOlb*f=`gmYVPx">' +
-  // '            <field name="START">0</field>' +
-  // '            <field name="DURATION">2147483.647</field>' +
-  // '            <field name="DRAW_MODE">ADD</field>' +
-  // '            <value name="MODIFIER">' +
-  // '              <shadow type="modifier_dummy_add"></shadow>' +
-  // '              <block type="modifier_brightness" id="+Q2$~g9N|zj()NOymB#:">' +
-  // '                <field name="CHANNEL">2</field>' +
-  // '                <value name="MODIFIER">' +
-  // '                  <shadow type="modifier_dummy_add" id="s!B!:(ON;Vx#aey3GQW."></shadow>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '            <statement name="BODY">' +
-  // '              <shadow type="drawing_dummy" id="#guRG0/wqNAZ/W~3O~0f"></shadow>' +
-  // '              <block type="drawing" id="w$;8P#W7D97Ge+qw;y):">' +
-  // '                <field name="START">0</field>' +
-  // '                <field name="DURATION">2147483.647</field>' +
-  // '                <field name="DRAW_MODE">ADD</field>' +
-  // '                <value name="ANIMATION">' +
-  // '                  <shadow type="animation_dummy_add" id="(=VW;(V;$}]Qn!Zoo1(k"></shadow>' +
-  // '                  <block type="animation_color_roll" id="qiVSY0la?!lUiZkY9tdK">' +
-  // '                    <field name="COLOR1">#0000ff</field>' +
-  // '                    <field name="COLOR2">#000036</field>' +
-  // '                    <field name="DURATION">1</field>' +
-  // '                    <value name="NEXT">' +
-  // '                      <shadow type="animation_dummy_next" id="Vu0)RRHW#vv2DCP]DEz$"></shadow>' +
-  // '                    </value>' +
-  // '                  </block>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </statement>' +
-  // '            <next>' +
-  // '              <block type="commentary_line" id="Oqtga|FY@O@DVw6SWdWn">' +
-  // '                <field name="COMMENT">Strobo efekt pri resetu</field>' +
-  // '                <next>' +
-  // '                  <block type="handler_manual" id="QjK#9DxxRYIBTt%IO5m,">' +
-  // '                    <field name="START">0</field>' +
-  // '                    <field name="DURATION">2147483.647</field>' +
-  // '                    <field name="EVENT_LABEL">82</field>' +
-  // '                    <field name="EVENT_PARAMETER">0</field>' +
-  // '                    <statement name="BODY">' +
-  // '                      <shadow type="drawing_dummy" id="#ZL9_(-9O(e:444KF?b]"></shadow>' +
-  // '                      <block type="drawing" id="kgy5o-74{iw(5TOt)f~[">' +
-  // '                        <field name="START">0</field>' +
-  // '                        <field name="DURATION">1</field>' +
-  // '                        <field name="DRAW_MODE">SUB</field>' +
-  // '                        <value name="ANIMATION">' +
-  // '                          <shadow type="animation_dummy_add" id="oPr;{~z+HsGC:1vrb6*a"></shadow>' +
-  // '                          <block type="animation_fill" id="OhJg.391)zCg7SV$$E$?">' +
-  // '                            <field name="COLOR">#ffffff</field>' +
-  // '                            <field name="DURATION">0.05</field>' +
-  // '                            <value name="NEXT">' +
-  // '                              <shadow type="animation_dummy_next" id="f)Ed+xO;AAZdOeo8J#/N"></shadow>' +
-  // '                              <block type="animation_fill" id="S%y,N*7lH~.QM-QOdnHD">' +
-  // '                                <field name="COLOR">#000000</field>' +
-  // '                                <field name="DURATION">0.05</field>' +
-  // '                                <value name="NEXT">' +
-  // '                                  <shadow type="animation_dummy_next" id="$/K}7,-kq%h}%Hv9Xz4N"></shadow>' +
-  // '                                </value>' +
-  // '                              </block>' +
-  // '                            </value>' +
-  // '                          </block>' +
-  // '                        </value>' +
-  // '                      </block>' +
-  // '                    </statement>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '</xml>';
-
-  // Code.loadBlocks(init_blocks_xml);
-
   //   if ("BlocklyStorage" in window) {
   //     // Hook a save function onto unload.
   //     BlocklyStorage.backupOnUnload(Code.workspace);
   //   }
 
-  Code.simplify = function () {
-    let blocks_xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
+  Code.otaUpdate = function () {
 
-    //console.log(blocks_xml);
-    blocks_xml = blocks_xml.replace(/<shadow [^\n]*><\/shadow>/g, "");
-    //console.log(blocks_xml);
+    let fw_url = prompt("Insert FW url:", "firmware.enc");
+    
+    if (fw_url == null || fw_url == "") {
+      console.warn("Invalid FW url")
+      return;
+    } 
 
-    //Code.discard();
-    Code.workspace.clear();
-    var xml = Blockly.Xml.textToDom(blocks_xml);
-    Blockly.Xml.domToWorkspace(xml, Code.workspace);
-
-    //Code.renderContent();
-  };
-
-  Code.otaReboot = function () {
-    Code.device.reboot();
-  };
-
-  document.getElementById("otaFirmware").addEventListener("change", function () {
-    window.ota_firmware = this.files[0];
-  });
-
-  Code.otaUpdateFirmware = function () {
-    // fetch("firmware.bin")
-    //   .then(function (response) {
-    //     return response.arrayBuffer();
-    //   })
-    //   .then(function (firmware) {
-    //     console.log(firmware);
-    //     return Code.device.bluetoothDevice.update(new Uint8Array(firmware));
-    //   })
-    //   .catch(function (err) {
-    //     console.warn("Something went wrong.", err);
-    //   });
-
-    window.ota_firmware
-      .arrayBuffer()
+    fetch(fw_url)
+      .then(function (response) {
+        return response.arrayBuffer();
+      })
       .then(function (firmware) {
         console.log(firmware);
-        return Code.device.bluetoothDevice.updateFirmware(new Uint8Array(firmware));
+        return Code.device.bluetoothDevice.update(new Uint8Array(firmware));
       })
       .catch(function (err) {
         console.warn("Something went wrong.", err);
       });
   };
 
-  document.getElementById("otaConfig").addEventListener("change", function () {
-    window.ota_config = this.files[0];
-  });
-
-  Code.otaUpdateConfig = function () {
-    // fetch("config.json")
-    //   .then(function (response) {
-    //     return response.arrayBuffer();
-    //   })
-    //   .then(function (config) {
-    //     console.log(config);
-    //     return Code.device.bluetoothDevice.update(new Uint8Array(config));
-    //   })
-    //   .catch(function (err) {
-    //     console.warn("Something went wrong.", err);
-    //   });
-
-    try {
-      if (!window.ota_config) throw "No config file selected";
-
-      window.ota_config
-        .text()
-        .then((data) => {
-          JSON.parse(data);
-          // TODO - validate also json fields and it's datatypes
-
-          console.log(data);
-        })
-        .then(() => {
-          window.ota_config.arrayBuffer().then(function (config) {
-            console.log(config);
-            return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
-          });
-        })
-
-        .catch(function (err) {
-          console.warn("Something went wrong.", err);
-        });
-    } catch (err) {
-      alert(err);
-    }
-  };
-
-
+  Code.bindClick("otaUpdate", Code.otaUpdate);
 
   Code.tabClick(Code.selected);
 
-  Code.bindClick("simplifyButton", Code.simplify);
-  Code.bindClick("rebootButton", Code.otaReboot);
-  Code.bindClick("otaUpdateFirmware", Code.otaUpdateFirmware);
-  Code.bindClick("otaUpdateConfig", Code.otaUpdateConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
   Code.bindClick("connectBluetoothButton", Code.connectBluetooth);
   Code.bindClick("uploadButton", Code.upload);
@@ -1275,8 +800,8 @@ Code.init = function () {
   onresize();
   Blockly.svgResize(Code.workspace);
 
-  // // Lazy-load the syntax-highlighting.
-  // window.setTimeout(Code.importPrettify, 1);
+  // Lazy-load the syntax-highlighting.
+  window.setTimeout(Code.importPrettify, 1);
 
   Code.workspace.addChangeListener(Code.onEvent);
 
@@ -1369,10 +894,24 @@ Code.discard = function () {
 
 Code.connectBluetooth = function () {
   Code.device.bluetoothDevice.connect();
+    // .then(() => {
+    // setInterval(async function () {
+    //   Code.device.syncClock();
+    //   await sleep(100);
+    //   Code.device.syncTime();
+    // }, 1000);
+    // });
 };
 
 Code.connectSerial = function () {
   Code.device.serialDevice.connect();
+    // .then(() => {
+    // setInterval(async function () {
+    //   Code.device.syncClock();
+    //   await sleep(100);
+    //   Code.device.syncTime();
+    // }, 1000);
+    // });
 };
 
 Code.onKeyPress = function (e) {
@@ -1381,7 +920,7 @@ Code.onKeyPress = function (e) {
 
   if (keys.includes(e.key) /*&& e.shiftKey*/) {
     console.log("Keypress trigger");
-    Code.device.emitEvent(e.key.charCodeAt(0), e.altKey ? 255 : 0);
+    Code.device.writeTrigger(Code.parser.TRIGGERS.KEYPRESS, e.key.charCodeAt(0));
   }
 };
 
@@ -1396,24 +935,15 @@ window.addEventListener("load", Code.init);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Number.prototype.pad = function (size) {
-  var s = String(this);
-  while (s.length < (size || 2)) {
-    s = "0" + s;
-  }
-  return s;
-};
-
 setInterval(function () {
-  
   let now = Code.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
   let sec = Math.floor(now / 1000);
   now %= 1000;
-  let msec = Math.floor(now / 10);
+  let msec = Math.floor(now / 100);
 
-  document.getElementById("revTime").innerHTML = "" + min + ":" + sec.pad(2) + ":" + msec.pad(2);
+  document.getElementById("revTime").innerHTML = "" + min + ":" + sec + ":" + msec;
 }, 100);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1422,13 +952,11 @@ setInterval(function () {
 
 document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
-  window.blockly_music = this.files[0];
   Code.music.setAttribute("src", url);
 });
 
 document.getElementById("metronome").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
-  window.blockly_metronome = this.files[0];
   Code.metronome.setAttribute("src", url);
 });
 

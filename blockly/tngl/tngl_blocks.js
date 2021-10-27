@@ -2,104 +2,29 @@
 
 goog.require("Blockly");
 goog.require("Blockly.Blocks");
+goog.require("Blockly.FieldDropdown");
+goog.require("Blockly.FieldImage");
+goog.require("Blockly.FieldMultilineInput");
+goog.require("Blockly.FieldTextInput");
+goog.require("Blockly.FieldVariable");
+goog.require("Blockly.Mutator");
 
-////////////////////////////////////////////////////////
-
-Blockly.Blocks["animation_dummy_next"] = {
-  init: function () {
-    this.appendDummyInput().appendField("následující");
-    this.setOutput(true, "animation");
-    this.setColour(240);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["animation_dummy_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte animaci");
-    this.setOutput(true, "animation");
-    this.setColour(240);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["drawing"] = {
-  init: function () {
-    this.appendValueInput("ANIMATION")
-      .setCheck("animation")
-      .appendField("v čase")
-      .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["PŘIDEJ", "ADD"],
-          ["PŘEPIŠ", "SET"],
-          ["ODEBER", "SUB"],
-          ["ŠKÁLUJ", "SCALE"],
-          ["VYFILTRUJ", "FIL"],
-        ]),
-        "DRAW_MODE"
-      );
-    this.setInputsInline(false);
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(240);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["drawing_dummy"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte vykreslení");
-    this.setPreviousStatement(true, "construct");
-    this.setColour(240);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["animation_definition"] = {
-  init: function () {
-    this.appendDummyInput().appendField("ANIMATION").appendField(new Blockly.FieldTextInput("$ani1"), "ANIMATION_LABEL").appendField(" ⌛").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setInputsInline(false);
-    this.setColour(300);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["animation_call"] = {
-  init: function () {
-    this.appendValueInput("NEXT").setCheck("animation").appendField("ANIMATION").appendField(new Blockly.FieldTextInput("$ani1"), "ANIMATION_LABEL").appendField(" ⌛").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
-    this.setInputsInline(false);
-    this.setOutput(true, "animation");
-    this.setColour(300);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
+//
 
 Blockly.Blocks["animation_fill"] = {
   init: function () {
-    this.appendValueInput("NEXT").setCheck("animation").appendField("SOLIDNÍ BARVA ").appendField(new Blockly.FieldColour("#ffffff"), "COLOR").appendField("  ⌛").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+    this.appendValueInput("NEXT")
+      .setCheck("animation")
+      .appendField("SOLIDNÍ BARVA ")
+      .appendField(new Blockly.FieldColour("#ffffff"), "COLOR")
+      .appendField("  ⌛")
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -108,16 +33,16 @@ Blockly.Blocks["animation_rainbow"] = {
     this.appendValueInput("NEXT")
       .setCheck("animation")
       .appendField("DUHOVÝ CYKLUS  ")
-      .appendField(new Blockly.FieldTextInput("100%"), "ZOOM")
-      .appendField("spektra")
+      .appendField(new Blockly.FieldNumber(100, 0.1, 100, 0.1), "ZOOM")
+      .appendField("% spektra")
       .appendField("⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -130,14 +55,13 @@ Blockly.Blocks["animation_fade"] = {
       .appendField("➤")
       .appendField(new Blockly.FieldColour("#ffffff"), "COLOR2")
       .appendField("  ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -148,17 +72,16 @@ Blockly.Blocks["animation_plasma_shot"] = {
       .appendField("VÝSTŘEL  ")
       .appendField(new Blockly.FieldColour("#ffffff"), "COLOR")
       .appendField("  délka")
-      .appendField(new Blockly.FieldTextInput("25%"), "PERCENTAGE")
-      .appendField("pásku")
+      .appendField(new Blockly.FieldNumber(10, 0, 100, 0.1), "PERCENTAGE")
+      .appendField("% pásku")
       .appendField(" ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -171,25 +94,23 @@ Blockly.Blocks["animation_loading_bar"] = {
       .appendField("do")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR2")
       .appendField("  ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
 Blockly.Blocks["animation_none"] = {
   init: function () {
-    this.appendValueInput("NEXT").setCheck("animation").appendField("PRÁZDNÁ  ANIMACE").appendField("⌛").appendField(new Blockly.FieldTextInput("5s"), "DURATION").appendField("s");
+    this.appendValueInput("NEXT").setCheck("animation").appendField("PRÁZDNÁ  ANIMACE").appendField("⌛").appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION").appendField("s");
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
@@ -202,14 +123,13 @@ Blockly.Blocks["animation_color_roll"] = {
       .appendField("&")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR2")
       .appendField("  ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
-    this.setMutators();
   },
 };
 
@@ -227,710 +147,153 @@ Blockly.Blocks["animation_palette_roll"] = {
       .appendField(new Blockly.FieldColour("#000000"), "COLOR7")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR8")
       .appendField(" ")
-      .appendField(new Blockly.FieldTextInput("100%"), "ZOOM")
-      .appendField("spektra")
+      .appendField(new Blockly.FieldNumber(100, 0.1, 100, 0.1), "ZOOM")
+      .appendField("% spektra")
       .appendField("⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
     this.setInputsInline(false);
     this.setOutput(true, "animation");
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["window"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER")
-      .setCheck("modifier")
-      .appendField("v čase")
-      .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["PŘIDEJ", "ADD"],
-          ["PŘEPIŠ", "SET"],
-          ["ODEBER", "SUB"],
-          ["ŠKÁLUJ", "SCALE"],
-          ["VYFILTRUJ", "FIL"],
-        ]),
-        "DRAW_MODE"
-      );
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setInputsInline(false);
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["window_2"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER")
-      .setCheck("modifier")
-      .appendField("v čase")
-      .appendField(new Blockly.FieldTextInput("5s"), "FROM")
-      .appendField("➡️")
-      .appendField(new Blockly.FieldTextInput("5s"), "TO")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["PŘIDEJ", "ADD"],
-          ["PŘEPIŠ", "SET"],
-          ["ODEBER", "SUB"],
-          ["ŠKÁLUJ", "SCALE"],
-          ["VYFILTRUJ", "FIL"],
-        ]),
-        "DRAW_MODE"
-      );
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setInputsInline(false);
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_brightness"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("BRIGHTNESS").appendField(new Blockly.FieldTextInput("$var1"), "VARIABLE_LABEL");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("VARIABLE '$var1', COLOR '#ffaacc', TUPLE '[0xff,0xff,0xff,0x7f]', SCALE '90%'");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_timeline"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER")
-      .setCheck("modifier")
-      .appendField("attach TIMELINE to")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["Timeline 1", "0x01"],
-          ["Timeline 2", "0x02"],
-          ["Timeline 3", "0x03"],
-          ["Timeline 4", "0x04"],
-          ["Timeline 5", "0x05"],
-          ["Timeline 6", "0x06"],
-          ["Timeline 7", "0x07"],
-          [" Timeline 8", "0x08"],
-        ]),
-        "TIME_SOURCE"
-      );
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_color_switch"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER")
-      .setCheck("modifier")
-      .appendField("SWITCH ")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["R & G", "MODIFIER_SWITCH_RG"],
-          ["G & B", "MODIFIER_SWITCH_GB"],
-          ["B & R", "MODIFIER_SWITCH_BR"],
-          ["NONE", "MODIFIER_SWITCH_NONE"],
-        ]),
-        "OPTION"
-      );
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_timechange"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("změna časové jednotky ").appendField(new Blockly.FieldTextInput("1s"), "FROM_TIME_UNIT").appendField("➤").appendField(new Blockly.FieldTextInput("1"), "TO_TIME_UNIT");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_timeloop"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("TIME LOOP").appendField(new Blockly.FieldTextInput("5s"), "LOOP");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_timescale"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("SCALE TIME").appendField(new Blockly.FieldTextInput("$var1"), "VARIABLE_LABEL");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("SCALE '80%', VARIABLE '$var1'");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_fade"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER")
-      .setCheck("modifier")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["FADE IN", "FADE_IN"],
-          [" FADE OUT", "FADE_OUT"],
-        ]),
-        "FADE_TYPE"
-      )
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_dummy_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("modifikátor");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["modifier_settime"] = {
-  init: function () {
-    this.appendValueInput("MODIFIER").setCheck("modifier").appendField("SET TIME").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-    this.setOutput(true, "modifier");
-    this.setColour(180);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["frame"] = {
-  init: function () {
-    this.appendDummyInput().appendField("v čase").appendField(new Blockly.FieldTextInput("0s"), "START").appendField(" ⌛").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(160);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["event_source"] = {
-  init: function () {
-    this.appendValueInput("EVENT").setCheck("event").appendField("ON  🕹️").appendField(new Blockly.FieldTextInput("$evn1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(120);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["event_replace_param"] = {
-  init: function () {
-    this.appendValueInput("EVENT").setCheck("event").appendField("🢂  SET VALUE ").appendField(new Blockly.FieldTextInput("100%"), "EVENT_PARAMETER");
-    this.setOutput(true, "event");
-    this.setColour(120);
-    this.setTooltip("Set SCALE by '100%', TOUPLE '[0x01,0x02,0x03,0x04]' , COLOR '#ffaacc,' LABEL '$label'");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["event_dummy_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("🢂  event");
-    this.setOutput(true, "event");
-    this.setColour(120);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["event_emit_code"] = {
-  init: function () {
-    this.appendValueInput("EVENT").setCheck("event").appendField("🢂  EMIT as 🕹️").appendField(new Blockly.FieldTextInput("$evn1"), "EVENT_LABEL");
-    this.setOutput(true, "event");
-    this.setColour(120);
-    this.setTooltip("Emit locally as another event");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-// Blockly.Blocks["event_emit_timeline"] = {
-//   init: function () {
-//     this.appendValueInput("EVENT").setCheck("event").appendField("v čase").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-//     this.setPreviousStatement(true, "construct");
-//     this.setNextStatement(true, "construct");
-//     this.setColour(120);
-//     this.setTooltip("");
-//     this.setHelpUrl("");
-//     this.setValidators();
-//   },
-// };
-
-Blockly.Blocks["handler_manual"] = {
+Blockly.Blocks["handler_ontouch"] = {
   init: function () {
     this.appendDummyInput()
       .appendField("v čase")
-      .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
-      .appendField(" ON  🕹️")
-      .appendField(new Blockly.FieldTextInput("$evn1"), "EVENT_LABEL");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(120);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip"] = {
-  init: function () {
-    this.appendValueInput("MARKS")
-      .setCheck("marks")
-      .appendField("v čase")
-      .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
-      .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(3600, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
       .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
-      .appendField("v časech");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_marks_definition"] = {
-  init: function () {
-    this.appendDummyInput().appendField("ČASOVÉ ZNAČKY").appendField(new Blockly.FieldTextInput("$mrk1"), "MARKS_LABEL");
-    this.appendStatementInput("MARKS").setCheck("mark");
-    this.setInputsInline(false);
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_mark_timestamp"] = {
-  init: function () {
-    this.appendValueInput("NEXT_MARK").setCheck("mark").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-    this.setInputsInline(false);
-    this.setOutput(true, "mark");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_marks"] = {
-  init: function () {
-    this.appendDummyInput().appendField("MARKS").appendField(new Blockly.FieldTextInput("$mrk1"), "MARKS");
-    this.setOutput(true, "marks");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_mark"] = {
-  init: function () {
-    this.appendValueInput("MARK").setCheck("mark").appendField("v čase").appendField(new Blockly.FieldTextInput("5s"), "TIMESTAMP");
-    this.setInputsInline(false);
-    this.setPreviousStatement(true, "mark");
-    this.setNextStatement(true, "mark");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_marks_inline"] = {
-  init: function () {
-    this.appendDummyInput().appendField("MARKS").appendField(new Blockly.FieldTextInput("0s, 1s, 2s"), "MARKS");
-    this.setOutput(true, "mark");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["clip_dummy_mark"] = {
-  init: function () {
-    this.appendDummyInput().appendField("další");
-    this.setOutput(true, "mark");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["tangle_definition"] = {
-  init: function () {
-    this.appendValueInput("PIXELS").setCheck("pixels").appendField("definice TANGLE").appendField(new Blockly.FieldTextInput("$tng1"), "TANGLE_LABEL");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["tangle_port"] = {
-  init: function () {
-    this.appendValueInput("PIXELS")
-      .setCheck("pixels")
-      .appendField("PORT PIXELS")
-      .appendField("port")
+      .appendField("PŘI DOTYKU")
       .appendField(
         new Blockly.FieldDropdown([
-          ["Port A", "'A'"],
-          ["Port B", "'B'"],
-          ["Port C", "'C'"],
-          ["Port D", "'D'"],
-          ["Port E", "'E'"],
-          ["Port F", "'F'"],
-          ["Port G", "'G'"],
-          [" Port H", "'H'"],
+          ["Touch A", "'A'"],
+          ["Touch B", "'B'"],
+          ["Touch C", "'C'"],
+          [" Touch D", "'D'"],
         ]),
-        "PORT"
+        "TOUCH_PORT"
       )
-      .appendField(" zařízení")
-      .appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL")
-      .appendField(" obrátit směr")
-      .appendField(new Blockly.FieldCheckbox("FALSE"), "REVERSE");
-    this.setOutput(true, "pixels");
-    this.setColour(30);
+      .appendField(" na zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["tangle_pixels"] = {
-  init: function () {
-    this.appendValueInput("PIXELS")
-      .setCheck("pixels")
-      .appendField("TANGLE PIXELS")
-      .appendField("tangle")
-      .appendField(new Blockly.FieldTextInput("$tan1"), "DEVICE_LABEL")
-      .appendField(" |  from")
-      .appendField(new Blockly.FieldTextInput("5px"), "RANGE_FROM")
-      .appendField("count")
-      .appendField(new Blockly.FieldTextInput("60px"), "RANGE_COUNT")
-      .appendField("step")
-      .appendField(new Blockly.FieldTextInput("1px"), "RANGE_STEP");
-    this.setOutput(true, "pixels");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["tangle_dummy_pixels_extend"] = {
-  init: function () {
-    this.appendDummyInput().appendField("rozšiřující pixely");
-    this.setOutput(true, "pixels");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["group_port"] = {
+Blockly.Blocks["handler_onimpact"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("PORT")
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(3600, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
+      .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
+      .appendField("PŘI OTŘESU")
+      .appendField(new Blockly.FieldDropdown([["Adaptivním", "0x01"]]), "INTENSITY")
+      .appendField(" na zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(120);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["handler_onkeypress"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(3600, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
+      .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
+      .appendField("PŘI STISKU")
       .appendField(
         new Blockly.FieldDropdown([
-          ["Port A", "$PORTA"],
-          ["Port B", "$PORTB"],
-          ["Port C", "$PORTC"],
-          ["Port D", "$PORTD"],
-          ["Port E", "$PORTE"],
-          ["Port F", "$PORFD"],
-          ["Port G", "$PORTG"],
-          [" Port H", "$PORTH"],
+          ["shift + Q", "'Q'"],
+          ["shift + W", "'W'"],
+          ["shift + E", "'E'"],
+          ["shift + R", "'R'"],
+          ["shift + A", "'A'"],
+          ["shift + S", "'S'"],
+          ["shift + D", "'D'"],
+          ["shift + F", "'F'"],
+          ["shift + Z", "'Z'"],
+          ["shift + X", "'X'"],
+          ["shift + C", "'C'"],
+          ["shift + V", "'V'"],
+          [" shift + Y", "'Y'"],
         ]),
-        "PORT"
+        "KEY"
       )
-      .appendField("  |   posun")
-      .appendField(new Blockly.FieldTextInput("0s"), "SHIFT");
-    this.setPreviousStatement(true, "group_item");
-    this.setNextStatement(true, "group_item");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["group_definition"] = {
-  init: function () {
-    this.appendDummyInput().appendField("definice SKUPINY").appendField(new Blockly.FieldTextInput("$grp1"), "GROUP_LABEL");
-    this.appendStatementInput("BODY").setCheck("group_item");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["group_tangle"] = {
-  init: function () {
-    this.appendDummyInput().appendField("TANGLE").appendField(new Blockly.FieldTextInput("$tan1"), "TANGLE_LABEL").appendField("  |   posun").appendField(new Blockly.FieldTextInput("0s"), "SHIFT");
-    this.setPreviousStatement(true, "group_item");
-    this.setNextStatement(true, "group_item");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["group_dummy_tangle"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte canvas");
-    this.setPreviousStatement(true, "group_item");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_tangles"] = {
-  init: function () {
-    this.appendValueInput("TANGLES").setCheck("tangle").appendField("POKRAČUJ na tanglech");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_tangle"] = {
-  init: function () {
-    this.appendValueInput("NEXT").setCheck("tangle").appendField("TANGLE").appendField(new Blockly.FieldTextInput("$tan1"), "TANGLE_LABEL");
-    this.setOutput(true, "tangle");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_dummy_tangle_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte tangle");
-    this.setOutput(true, "tangle");
-    this.setColour(30);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_groups"] = {
-  init: function () {
-    this.appendValueInput("GROUPS").setCheck("group").appendField("POKRAČUJ ve skupinách");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_group"] = {
-  init: function () {
-    this.appendValueInput("NEXT").setCheck("group").appendField("SKUPINA").appendField(new Blockly.FieldTextInput("$grp1"), "GROUP_LABEL");
-    this.setOutput(true, "group");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_dummy_group_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte skupinu");
-    this.setOutput(true, "group");
-    this.setColour(0);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_device"] = {
-  init: function () {
-    this.appendValueInput("NEXT").setCheck("device").appendField("ZAŘÍZENÍ").appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL");
-    this.setOutput(true, "device");
-    this.setColour(90);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_devices"] = {
-  init: function () {
-    this.appendValueInput("DEVICES").setCheck("device").appendField("POKRAČUJ na zařízeních");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(90);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_dummy_device_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte zařízení");
-    this.setOutput(true, "device");
-    this.setColour(90);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_port"] = {
-  init: function () {
-    this.appendValueInput("NEXT")
-      .setCheck("port")
-      .appendField("PORT")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["Port A", "$PORTA"],
-          ["Port B", "$PORTB"],
-          ["Port C", "$PORTC"],
-          ["Port D", "$PORTD"],
-          ["Port E", "$PORTE"],
-          ["Port F", "$PORTF"],
-          ["Port G", "$PORTG"],
-          [" Port H", "$PORTH"],
-        ]),
-        "PORT"
-      );
-    this.setOutput(true, "port");
-    this.setColour(60);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_ports"] = {
-  init: function () {
-    this.appendValueInput("PORTS").setCheck("port").appendField("POKRAČUJ na portech");
-    this.appendStatementInput("BODY").setCheck("construct");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(60);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["siftcanvas_dummy_port_add"] = {
-  init: function () {
-    this.appendDummyInput().appendField("přidejte port");
-    this.setOutput(true, "port");
-    this.setColour(60);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["code_inline"] = {
-  init: function () {
+      .appendField(" na zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
+    this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
 Blockly.Blocks["commentary_block"] = {
   init: function () {
-    this.appendDummyInput().appendField("  ").appendField(new Blockly.FieldTextInput("This is a comment"), "COMMENT");
+    this.appendDummyInput().appendField("  ").appendField(new Blockly.FieldTextInput("napiš si vlastní komentář!"), "COMMENT");
     this.appendStatementInput("CANVAS_COMMANDS").setCheck(null);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
+    this.setColour("#cdcdcd");
   },
 };
 
 Blockly.Blocks["commentary_line"] = {
   init: function () {
-    this.appendDummyInput().appendField(new Blockly.FieldTextInput("This is a comment"), "COMMENT");
+    this.appendDummyInput().appendField(new Blockly.FieldTextInput("okomentuj si bloky!"), "COMMENT");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
+    this.setColour("#cdcdcd");
+  },
+};
+
+Blockly.Blocks["dummy_animation_next"] = {
+  init: function () {
+    this.appendDummyInput().appendField("následující");
+    this.setOutput(true, "animation");
+    this.setColour(240);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["dummy_add_animation"] = {
+  init: function () {
+    this.appendDummyInput().appendField("přidejte animaci");
+    this.setOutput(true, "animation");
+    this.setColour(240);
+    this.setTooltip("");
+    this.setHelpUrl("");
   },
 };
 
@@ -941,362 +304,631 @@ Blockly.Blocks["commentary_spacer"] = {
     this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
+    this.setColour("#cdcdcd");
   },
 };
 
-Blockly.Blocks["device_4ports"] = {
+Blockly.Blocks["window"] = {
   init: function () {
-    this.appendDummyInput().setAlign(Blockly.ALIGN_CENTRE).appendField("TANGLE ZAŘÍZENÍ");
-    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL");
-    this.appendDummyInput().appendField("Device address/id").appendField(new Blockly.FieldNumber(0, 0, 255), "DEVICE_IDENTIFIER");
-    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldTextInput("100%"), "DEVICE_BRIGHTNESS");
-    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_A_LENGTH");
-    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_B_LENGTH");
-    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_C_LENGTH");
-    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_D_LENGTH");
-    this.appendDummyInput().appendField("  SENSORS:");
-    this.appendStatementInput("SENSORS").setCheck("sensor");
-    this.setColour(90);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["device_8ports"] = {
-  init: function () {
-    this.appendDummyInput().setAlign(Blockly.ALIGN_CENTRE).appendField("TANGLE ZAŘÍZENÍ");
-    this.appendDummyInput().appendField("Device label").appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL");
-    this.appendDummyInput().appendField("Device address/id").appendField(new Blockly.FieldNumber(0, 0, 255), "DEVICE_IDENTIFIER");
-    this.appendDummyInput().appendField("Device brightness").appendField(new Blockly.FieldTextInput("100%"), "DEVICE_BRIGHTNESS");
-    this.appendDummyInput().appendField("PORTA").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_A").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_A_LENGTH");
-    this.appendDummyInput().appendField("PORTB").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_B").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_B_LENGTH");
-    this.appendDummyInput().appendField("PORTC").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_C").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_C_LENGTH");
-    this.appendDummyInput().appendField("PORTD").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_D").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_D_LENGTH");
-    this.appendDummyInput().appendField("PORTE").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_E").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_E_LENGTH");
-    this.appendDummyInput().appendField("PORTF").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_F").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_F_LENGTH");
-    this.appendDummyInput().appendField("PORTG").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_G").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_G_LENGTH");
-    this.appendDummyInput().appendField("PORTH").appendField(new Blockly.FieldCheckbox("TRUE"), "TANGLE_H").appendField("size").appendField(new Blockly.FieldTextInput("0px"), "PORT_H_LENGTH");
-    this.appendDummyInput().appendField("  SENSORS:");
-    this.appendStatementInput("SENSORS").setCheck("sensor");
-    this.setColour(90);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-Blockly.Blocks["variable_create"] = {
-  init: function () {
-    this.appendValueInput("SOURCE").setCheck("value").appendField("WRITE 📦").appendField(new Blockly.FieldTextInput("$var1"), "LABEL");
-    this.setPreviousStatement(true, "construct");
-    this.setNextStatement(true, "construct");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["value_dummy"] = {
-  init: function () {
-    this.appendDummyInput().appendField("🢀  value");
-    this.setOutput(true, "value");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["value_math"] = {
-  init: function () {
-    this.appendValueInput("PARAMETER_A")
-      .setCheck("value")
-      .appendField("🢀 ")
+    this.appendDummyInput()
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(5, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
       .appendField(
         new Blockly.FieldDropdown([
-          ["+", "ADD"],
-          ["-", "SUB"],
-          ["*", "MUL"],
-          ["/", "DIV"],
+          ["⠀", "NONE"],
+          ["PŘIDEJ", "ADD"],
+          ["PŘEPIŠ", "SET"],
+          ["ODEBER", "SUB"],
+          ["VYNÁSOB", "MUL"],
+          ["VYFILTRUJ", "FIL"],
         ]),
-        "OPTION"
+        "DRAW_MODE"
       );
-    this.appendValueInput("PARAMETER_B").setCheck("value");
-    this.setOutput(true, "value");
-    this.setColour(270);
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(180);
     this.setTooltip("");
     this.setHelpUrl("");
   },
 };
 
-Blockly.Blocks["value_map"] = {
+Blockly.Blocks["tangle_definition"] = {
   init: function () {
-    this.appendValueInput("PARAMETER_X").setCheck("value").appendField("🢀   MAP");
-    this.appendValueInput("PARAMETER_INMIN").setCheck("value").setAlign(Blockly.ALIGN_RIGHT).appendField("from min");
-    this.appendValueInput("PARAMETER_INMAX").setCheck("value").setAlign(Blockly.ALIGN_RIGHT).appendField("from max");
-    this.appendValueInput("PARAMETER_OUTMIN").setCheck("value").setAlign(Blockly.ALIGN_RIGHT).appendField("to min");
-    this.appendValueInput("PARAMETER_OUTMAX").setCheck("value").setAlign(Blockly.ALIGN_RIGHT).appendField("to max");
-    this.setOutput(true, "value");
-    this.setColour(270);
+    this.appendValueInput("PIXELS").setCheck("pixels").appendField("definice TANGLE").appendField(new Blockly.FieldTextInput("tangle1"), "TANGLE_ID");
+    this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["value_read_variable"] = {
+Blockly.Blocks["tangle_pixels"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  READ 📦").appendField(new Blockly.FieldTextInput("$var1"), "VARIABLE_LABEL");
-    this.setOutput(true, "value");
-    this.setColour(270);
-    this.setTooltip("");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["value_constant"] = {
-  init: function () {
-    this.appendDummyInput().appendField("🢀  VALUE").appendField(new Blockly.FieldTextInput(""), "VALUE");
-    this.setOutput(true, "value");
-    this.setColour(270);
-    this.setTooltip("Set SCALE by '100%', TOUPLE '[0x01,0x02,0x03,0x04]' , COLOR '#ffaacc,' LABEL '$label'");
-    this.setHelpUrl("");
-    this.setValidators();
-  },
-};
-
-Blockly.Blocks["sensor_artnet"] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField("ART-NET universe")
-      .appendField(new Blockly.FieldNumber(0, 0, 255, 1), "DMX_UNIVERSE")
-      .appendField("channel")
-      .appendField(new Blockly.FieldNumber(0, 1, 256, 1), "DMX_CHANNEL")
+    this.appendValueInput("PIXELS")
+      .setCheck("pixels")
+      .appendField("PIXELS")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["Port A", "'A'"],
+          ["Port B", "'B'"],
+          ["Port C", "'C'"],
+          [" Port D", "'D'"],
+        ]),
+        "PORT"
+      )
+      .appendField(" device")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL")
+      .appendField(" |  from")
+      .appendField(new Blockly.FieldNumber(0, 0, 32767, 1), "RANGE_FROM")
       .appendField("count")
-      .appendField(new Blockly.FieldNumber(0, 1, 255, 1), "DMX_CHANNEL_COUNT")
-      .appendField(" EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("$dmx1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
+      .appendField(new Blockly.FieldNumber(60, -32768, 32767, 1), "RANGE_COUNT")
+      .appendField("step")
+      .appendField(new Blockly.FieldNumber(1, -32768, 32767, 1), "RANGE_STEP");
+    this.setOutput(true, "pixels");
+    this.setColour(30);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_touch"] = {
+Blockly.Blocks["dummy_tangle_pixels_extend"] = {
   init: function () {
-    this.appendDummyInput()
-      .appendField("TOUCH")
-      .appendField(new Blockly.FieldTextInput("$tou1"), "TOUCH_LABEL")
+    this.appendDummyInput().appendField("rozšiřující pixely");
+    this.setOutput(true, "pixels");
+    this.setColour(30);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["drawing"] = {
+  init: function () {
+    this.appendValueInput("ANIMATION")
+      .setCheck("animation")
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(5, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
       .appendField(
         new Blockly.FieldDropdown([
-          ["on PRESSED", "ON_PRESSED"],
-          ["on RELEASED", "ON_RELEASED"],
-          ["on PUSHED", "ON_PUSHED"],
-          ["on HOLDED", "ON_HOLDED"],
+          ["PŘIDEJ", "ADD"],
+          ["PŘEPIŠ", "SET"],
+          ["ODEBER", "SUB"],
+          ["VYNÁSOB", "MUL"],
+          ["VYFILTRUJ", "FIL"],
         ]),
-        "ACTION"
-      )
-      .appendField("EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("$tou1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
+        "DRAW_MODE"
+      );
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_gyro"] = {
+Blockly.Blocks["dummy_drawing_add"] = {
   init: function () {
-    this.appendDummyInput()
-      .appendField("GYROSCOPE")
+    this.appendDummyInput().appendField("přidejte vykreslení");
+    this.setPreviousStatement(true, "drawable");
+    this.setColour(240);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_neopixels"] = {
+  init: function () {
+    this.appendValueInput("NEOPIXELS").setCheck("neopixel").appendField("POKRAČUJ na neopixelech");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(60);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_neopixel"] = {
+  init: function () {
+    this.appendValueInput("NEXT")
+      .setCheck("neopixel")
+      .appendField("NEOPIXEL")
       .appendField(
         new Blockly.FieldDropdown([
-          ["XYZ as TUPLE", "AXIES"],
-          ["X as SCALE", "OPTIONNAME"],
-          ["Y as SCALE", "OPTIONNAME"],
-          ["Z as SCALE", "OPTIONNAME"],
-          ["IMPACT as SCALE", "IMPACT"],
+          ["Port A", "__porta__"],
+          ["Port B", "__portb__"],
+          ["Port C", "__portc__"],
+          [" Port D", "__portd__"],
         ]),
-        "ACTION"
-      )
-      .appendField("EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("gyr1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
-    this.setTooltip("event parameter gets a list of X,Y,Z axies");
+        "TANGLE"
+      );
+    this.setOutput(true, "neopixel");
+    this.setColour(60);
+    this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_acc"] = {
+Blockly.Blocks["dummy_siftcanvas_neopixel"] = {
+  init: function () {
+    this.appendDummyInput().appendField("přidejte neopixel");
+    this.setOutput(true, "neopixel");
+    this.setColour(60);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_tangles"] = {
+  init: function () {
+    this.appendValueInput("TANGLES").setCheck("tangle").appendField("POKRAČUJ na tanglech");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(30);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_tangle"] = {
+  init: function () {
+    this.appendValueInput("NEXT").setCheck("tangle").appendField("TANGLE").appendField(new Blockly.FieldTextInput("tangle1"), "TANGLE_ID");
+    this.setOutput(true, "tangle");
+    this.setColour(30);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["dummy_siftcanvas_tangle"] = {
+  init: function () {
+    this.appendDummyInput().appendField("přidejte tangle");
+    this.setOutput(true, "tangle");
+    this.setColour(30);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["group_definition"] = {
+  init: function () {
+    this.appendDummyInput().appendField("definice SKUPINY").appendField(new Blockly.FieldTextInput("group1"), "GROUP_ID");
+    this.appendStatementInput("TANGLES").setCheck(["group_tangle", "group_device"]);
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["group_tangle"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("ACCELEROMETER")
-      .appendField(
-        new Blockly.FieldDropdown([
-          ["XYZ as TUPLE", "AXIES"],
-          ["X as SCALE", "X"],
-          ["Y as SCALE", "Y"],
-          ["Z as SCALE", "Z"],
-        ]),
-        "ACTION"
-      )
-      .appendField("EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("$acc1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
-    this.setTooltip("Event parameter gets a list of X,Y,Z values");
+      .appendField("TANGLE")
+      .appendField(new Blockly.FieldTextInput("tangle1"), "TANGLE_ID")
+      .appendField("  |   posun")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "SHIFT")
+      .appendField("s");
+    this.setPreviousStatement(true, "group_tangle");
+    this.setNextStatement(true, "group_tangle");
+    this.setColour(0);
+    this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_gesture"] = {
+Blockly.Blocks["dummy_group_tangle"] = {
+  init: function () {
+    this.appendDummyInput().appendField("přidejte tangle");
+    this.setPreviousStatement(true, "group_tangle");
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_groups"] = {
+  init: function () {
+    this.appendValueInput("GROUPS").setCheck("group").appendField("POKRAČUJ ve skupinách");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["siftcanvas_group"] = {
+  init: function () {
+    this.appendValueInput("NEXT").setCheck("group").appendField("SKUPINA").appendField(new Blockly.FieldTextInput("group1"), "GROUP_ID");
+    this.setOutput(true, "group");
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["dummy_siftcanvas_group"] = {
+  init: function () {
+    this.appendDummyInput().appendField("přidejte skupinu");
+    this.setOutput(true, "group");
+    this.setColour(0);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["group_neopixel"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("GESTURE")
+      .appendField("NEOPIXEL")
       .appendField(
         new Blockly.FieldDropdown([
-          ["PROXIMITY", "GESTURE_PROXIMITY"],
-          ["LEFT to RIGHT", "GESTURE_LEFT_RIGHT"],
-          ["RIGHT to LEFT", "GESTURE_RIGHT_LEFT"],
-          ["FRONT to BACK", "GESTURE_FRONT_BACK"],
-          ["BACK to FRONT", "GESTURE_BACK_FRONT"],
+          ["Port A", "__porta__"],
+          ["Port B", "__portb__"],
+          ["Port C", "__portc__"],
+          [" Port D", "__portd__"],
         ]),
-        "ACTION"
+        "TANGLE_ID"
       )
-      .appendField("EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("$ges1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
+      .appendField("  |   posun")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "SHIFT")
+      .appendField("s");
+    this.setPreviousStatement(true, "group_tangle");
+    this.setNextStatement(true, "group_tangle");
+    this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_button"] = {
+Blockly.Blocks["handler"] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("BUTTON")
-      .appendField(new Blockly.FieldTextInput("$btn1"), "BUTTON_LABEL")
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(3600, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
+      .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
       .appendField(
         new Blockly.FieldDropdown([
-          ["on PRESSED", "ON_PRESSED"],
-          ["on RELEASED", "ON_RELEASED"],
-          ["on PUSHED", "ON_PUSHED"],
-          ["on HOLDED", "ON_HOLDED"],
+          ["PŘI STISKU   Shift+Q", "handlerKeyPress['Q']"],
+          ["PŘI STISKU   Shift+A", "handlerKeyPress['A']"],
+          ["PŘI STISKU   Shift+S", "handlerKeyPress['S']"],
+          ["PŘI STISKU   Shift+D", "handlerKeyPress['D']"],
+          ["PŘI STISKU   Shift+F", "handlerKeyPress['F']"],
+          ["PŘI OTŘESU", "handlerMovement[0x01]"],
+          ["PŘI POHYBU", "handlerMovement[0x02]"],
+          ["PŘI KLIDU", "handlerMovement[0x03]"],
+          ["PŘI DOTYKU   Portu A", "handlerTouch['A']"],
+          ["PŘI DOTYKU   Portu B", "handlerTouch['B']"],
         ]),
-        "ACTION"
+        "HANDLER_TYPE"
       )
-      .appendField("EMIT 🕹️")
-      .appendField(new Blockly.FieldTextInput("$btn1"), "EVENT_LABEL");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
+      .appendField("na zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(120);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["sensor_dummy"] = {
+Blockly.Blocks['device'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField("TANGLE ZAŘÍZENÍ");
+    this.appendDummyInput()
+        .appendField("Device label")
+        .appendField(new Blockly.FieldTextInput("device1"), "DEVICE_LABEL");
+    this.appendDummyInput()
+        .appendField("Device address/id")
+        .appendField(new Blockly.FieldNumber(0, 0, 255), "DEVICE_IDENTIFIER");
+    this.appendDummyInput()
+        .appendField("Device brightness")
+        .appendField(new Blockly.FieldNumber(255, 0, 255), "DEVICE_BRIGHTNESS");
+    this.appendDummyInput()
+        .appendField("Port A")
+        .appendField("count")
+        .appendField(new Blockly.FieldNumber(60, 0, 10000), "PORT_A_LENGTH")
+        .appendField("px");
+    this.appendDummyInput()
+        .appendField("Port B")
+        .appendField("count")
+        .appendField(new Blockly.FieldNumber(60, 0, 10000), "PORT_B_LENGTH")
+        .appendField("px");
+    this.appendDummyInput()
+        .appendField("Port C")
+        .appendField("count")
+        .appendField(new Blockly.FieldNumber(60, 0, 10000), "PORT_C_LENGTH")
+        .appendField("px");
+    this.appendDummyInput()
+        .appendField("Port D")
+        .appendField("count")
+        .appendField(new Blockly.FieldNumber(60, 0, 10000), "PORT_D_LENGTH")
+        .appendField("px");
+    this.setColour(90);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.Blocks["siftcanvas_device"] = {
   init: function () {
-    this.appendDummyInput().appendField("přidejte sensor");
-    this.setPreviousStatement(true, "sensor");
-    this.setNextStatement(true, "sensor");
-    this.setColour(105);
+    this.appendValueInput("NEXT").setCheck("device").appendField("ZAŘÍZENÍ").appendField(new Blockly.FieldTextInput("device1"), "DEVICE_LABEL");
+    this.setOutput(true, "device");
+    this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_sin"] = {
+Blockly.Blocks["siftcanvas_devices"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  SINE WAVE  period").appendField(new Blockly.FieldTextInput("0s"), "PERIOD");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendValueInput("DEVICES").setCheck("device").appendField("POKRAČUJ na zařízeních");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_last_event_parameter"] = {
+Blockly.Blocks["dummy_siftcanvas_device"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  LAST VALUE of 🕹️").appendField(new Blockly.FieldTextInput("$evt1"), "EVENT_LABEL");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput().appendField("přidejte zařízení");
+    this.setOutput(true, "device");
+    this.setColour(90);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_perlin_noise"] = {
+Blockly.Blocks["group_device"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  PERLIN NOISE");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput()
+      .appendField("ZAŘÍZENÍ")
+      .appendField(new Blockly.FieldTextInput("device1"), "DEVICE_LABEL")
+      .appendField("  |   shift")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "SHIFT")
+      .appendField("s");
+    this.setPreviousStatement(true, "group_device");
+    this.setNextStatement(true, "group_device");
+    this.setColour(0);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_saw"] = {
+Blockly.Blocks["code_inline"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  SAW WAVE  period").appendField(new Blockly.FieldTextInput("5s"), "PERIOD");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput().appendField("code").appendField(new Blockly.FieldTextInput(""), "INLINE_CODE");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_triangle"] = {
+Blockly.Blocks["clip"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  TRIANGLE WAVE  period").appendField(new Blockly.FieldTextInput("5s"), "PERIOD");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput()
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(60, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
+      .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
+      .appendField("v časech")
+      .appendField(new Blockly.FieldTextInput("marks1"), "MARKS");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_square"] = {
+Blockly.Blocks["clip_marks_definition"] = {
   init: function () {
-    this.appendDummyInput().appendField("🢀  SQUARE WAVE  period").appendField(new Blockly.FieldTextInput("5s"), "PERIOD");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput().appendField("ČASOVÉ ZNAČKY").appendField(new Blockly.FieldTextInput("marks1"), "MARKS_LABEL");
+    this.appendStatementInput("MARKS").setCheck("mark");
+    this.setInputsInline(false);
+    this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
   },
 };
 
-Blockly.Blocks["generator_smoothout"] = {
+Blockly.Blocks["dummy_clip_mark_add"] = {
   init: function () {
-    this.appendValueInput("SMOOTHED_VALUE").setCheck("value").appendField("🢀  SMOOTH OUT over").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
-    this.setOutput(true, "value");
-    this.setColour(255);
+    this.appendDummyInput().appendField("přidejte čas");
+    this.setOutput(true, "mark");
+    this.setColour(270);
     this.setTooltip("");
     this.setHelpUrl("");
-    this.setValidators();
+  },
+};
+
+Blockly.Blocks["dummy_clip_mark"] = {
+  init: function () {
+    this.appendDummyInput().appendField("další");
+    this.setOutput(true, "mark");
+    this.setColour(270);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["clip_mark_timestamp"] = {
+  init: function () {
+    this.appendValueInput("NEXT_MARK").setCheck("mark").appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "TIMESTAMP").appendField("s");
+    this.setInputsInline(false);
+    this.setOutput(true, "mark");
+    this.setColour(270);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["clip_marks"] = {
+  init: function () {
+    this.appendValueInput("MARKS").setCheck("mark").appendField("");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(270);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["handler_manual"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "START")
+      .appendField("s")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldNumber(3600, 0, 2147483.647, 0.001), "DURATION")
+      .appendField("s ")
+      .appendField(new Blockly.FieldDropdown([["PROVEĎ", "DO"]]), "TYPE")
+      .appendField("PŘI")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["KEYPRESS", "handlerKeyPress"],
+          ["MOVEMENT", "handlerMovement"],
+          ["TOUCH", "handlerTouch"],
+        ]),
+        "HANDLER_TRIGGER"
+      )
+      .appendField(" parametr")
+      .appendField(new Blockly.FieldTextInput("'Q'"), "HANDLER_PARAM")
+      .appendField(" na zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(120);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["tangle_neopixel"] = {
+  init: function () {
+    this.appendValueInput("PIXELS")
+      .setCheck("pixels")
+      .appendField("NEOPIXEL")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["Port A", "'A'"],
+          ["Port B", "'B'"],
+          ["Port C", "'C'"],
+          [" Port D", "'D'"],
+        ]),
+        "PORT"
+      )
+      .appendField(" zařízení")
+      .appendField(new Blockly.FieldTextInput(""), "DEVICE_LABEL")
+      .appendField(" obrátit směr")
+      .appendField(new Blockly.FieldCheckbox("FALSE"), "REVERSE");
+    this.setOutput(true, "pixels");
+    this.setColour(30);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["film_definition"] = {
+  init: function () {
+    this.appendDummyInput().appendField("FILM").appendField(new Blockly.FieldTextInput("film1"), "FILM_LABEL").appendField(" ⌛").appendField(new Blockly.FieldNumber(5, 0, 2147483.647, 0.001), "DURATION").appendField("s");
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setInputsInline(false);
+    this.setColour(300);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["film_call"] = {
+  init: function () {
+    this.appendValueInput("NEXT")
+      .setCheck("animation")
+      .appendField("FILM")
+      .appendField(new Blockly.FieldTextInput("film1"), "FILM_LABEL")
+      .appendField(" ⌛")
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "DURATION")
+      .appendField("s");
+    this.setInputsInline(false);
+    this.setOutput(true, "animation");
+    this.setColour(300);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["time_manipulator"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("změna časové jednotky ")
+      .appendField(new Blockly.FieldNumber(1, 0, 2147483.647, 0.001), "FROM_TIME_UNIT")
+      .appendField("s ➤")
+      .appendField(new Blockly.FieldNumber(1, 0, 2147483.647, 0.001), "TO_TIME_UNIT")
+      .appendField("s");
+    this.appendStatementInput("DRAWABLES").setCheck("drawable");
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(210);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};
+
+Blockly.Blocks["window_2"] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("v čase")
+      .appendField(new Blockly.FieldNumber(0, -2147483.648, 2147483.647, 0.001), "FROM")
+      .appendField("s")
+      .appendField("➡️")
+      .appendField(new Blockly.FieldNumber(5, -2147483.648, 2147483.647, 0.001), "TO")
+      .appendField("s ")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["⠀", "NONE"],
+          ["PŘIDEJ", "ADD"],
+          ["PŘEPIŠ", "SET"],
+          ["ODEBER", "SUB"],
+          ["VYNÁSOB", "MUL"],
+          ["VYFILTRUJ", "FIL"],
+        ]),
+        "DRAW_MODE"
+      );
+    this.appendStatementInput("SEQUENCE").setCheck("drawable");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, "drawable");
+    this.setNextStatement(true, "drawable");
+    this.setColour(180);
+    this.setTooltip("");
+    this.setHelpUrl("");
   },
 };

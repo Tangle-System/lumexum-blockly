@@ -18,8 +18,6 @@
   <script src="blockly/tngl/tngl.js"></script>
   <script src="blockly/tngl/tngl_generator.js"></script>
   <script src="blockly/tngl/tngl_blocks.js"></script>
-  <script src="blockly/tngl/tngl_validators.js"></script>
-  <script src="blockly/tngl/tngl_mutators.js"></script>
 
   <script src="lib/functions.js"></script>
   <script src="lib/TangleBluetoothConnection.js"></script>
@@ -29,21 +27,18 @@
   <script src="lib/TangleParser.js"></script>
   <script src="lib/TimeTrack.js"></script>
 
-  <script src="lib/other/jszip.min.js" defer></script>
-  <script src="lib/other/wavesurfer.js" defer></script>
-
   <link rel="shortcut icon" href="#">
 </head>
 
 <body>
 
 
-  <!-- <p id="notSupported" class="hidden" style="color:red;">
+  <p id="notSupported" class="hidden" style="color:red;">
     Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
     running Chrome 78 or later and have enabled the
     <code>#enable-experimental-web-platform-features</code> flag in
     <code>chrome://flags</code>
-  </p> -->
+  </p>
 
 
   <table width="100%" height="100%">
@@ -63,15 +58,6 @@
           <select id="metronomeOutputSelect"></select>
         </div>
       </td>
-
-      <div class="" style="position: absolute;right: 10px;display: flex; margin-top: 10px;">
-        <input type="text" id="filename" value="blocks">
-        <button id="saveFile">Save File</button>
-        <br>
-        <button id="loadFile">Load File</button>
-      </div>
-
-
     </tr>
     <tr>
       <td colspan="2">
@@ -84,8 +70,6 @@
             <td id="tab_xml" class="taboff tab_collapse">XML</td>
             <td class="tabmin">&nbsp;</td>
             <td id="tab_debug" class="taboff tab_collapse">Device</td>
-            <td class="tabmin">&nbsp;</td>
-            <td id="tab_control" class="taboff tab_collapse">Control</td>
             <td class="tabmin">&nbsp;</td>
             <td id="tab_code" class="taboff">
               <select id="code_menu"></select>
@@ -101,6 +85,8 @@
                   <img src='../blockly/media/1x1.gif' class="run icon21">
               </button> -->
 
+              
+
               <span>USB</span>
               <button id="connectSerialButton" class="notext" title="...">
                 <img src="blockly/media/1x1.gif" class="connect icon21">
@@ -110,7 +96,9 @@
                 <img src="blockly/media/1x1.gif" class="connect icon21">
               </button>
 
-
+              <button id="otaUpdate">
+                BLE OTA
+              </button>
 
               <span id="revTime">00:00</span>
 
@@ -143,14 +131,7 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2" id="timeline_container" style="height: 130px;">
-        <audio id="timeline" title="timeline" controls style="width: 97.5%;"></audio> 
-        <button id="timeline_toggle" style="width: 2%; position: absolute; right: 0; z-index: 10; text-align: center; padding: 0;">^</button>
-        <div  id="waveform_container" >
-          <div id="waveform"  style="width: 100%;height: 50px;"></div>
-        </div>
-
-      </td>
+      <td colspan="2"> <audio id="timeline" title="timeline" controls></audio> </td>
     </tr>
 
   </table>
@@ -160,83 +141,6 @@
     wrap="off"></textarea>
   <textarea id="content_xml" data-gramm_editor="false" spellcheck="false" class="content" wrap="off"></textarea>
   <textarea id="content_debug" data-gramm_editor="false" spellcheck="false" class="content" wrap="off"></textarea>
-  <div id="content_control" class="content">
-    <div style="display: flex; justify-content: space-around; flex-direction: column;max-width: 800px;margin:auto">
-
-      <div>
-
-        <button id="rebootButton">
-          Device Reboot
-        </button>
-
-        <button id="simplifyButton">
-          Remove Shadow Blocks
-        </button>
-
-        <div>
-        <span>
-          <input type="file" id="otaFirmware">
-          <button id="otaUpdateFirmware">
-            Write OTA
-          </button>
-        </span>
-
-        <span>
-          <input type="file" id="otaConfig">
-          <button id="otaUpdateConfig">
-            Write Config
-          </button>
-        </span>
-      </div>
-
-
-
-      </div>
-
-      <br>
-
-      <div>
-        🕹️ LABEL <input style="width: 10%;" type="text" id="control_label" value="evt1">
-        Event Type 
-        <select id="control_type" style="width: 30%;">
-            <option value="percentage_control">Percentage</option>
-            <option value="color_control">Color</option>
-            <option value="timestamp_control">Timestamp</option>
-        </select>
-      </div>
-
-      <div id="percentage_control">
-        🕹️ PERCENTAGE <input style="width: 10%;" type="number" id="control_percentage_value" min="0" max="100" value="0"> %
-        -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0" step="10"> 100%
-      </div>
-
-      <div id="color_control" style="display: none;">
-        🕹️ COLOR <input style="width: 10%;" type="text" id="control_color_value" value="#ff0000">
-         <input style="border:0" type="color" id="control_color_picker" value="#ff0000">
-      </div>
-
-      <div id="timestamp_control" style="display: none;">
-        🕹️ TIMESTAMP <input style="width: 10%;" type="number" id="control_timestamp_value" min="0" max="2147483647" value="1000"> ms
-      </div>
-
-      <div>
-        🕹️ DESTI <input style="width: 10%;" type="number" id="control_destination" value="255">
-      </div>
-
-      <br>
-
-      <button id="control_send">Send</button>
-
-
-    </div>
-
-    <ul
-      style="list-style: none;max-height: 50vh;overflow: auto; display: flex; flex-direction: column-reverse;max-width: 500px;margin:auto;margin-top: 40px;"
-      id="event_logs">
-    </ul>
-
-  </div>
-
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
     <category name="Nápověda">
@@ -281,16 +185,16 @@
             <field name="COMMENT">1) Přetáhni bloky do pracovního prostoru</field>
             <next>
               <block type="commentary_line" disabled="true">
-                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [  ⬆  ]</field>
+                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [ ⬆ ]</field>
                 <next>
                   <block type="commentary_line" disabled="true">
-                    <field name="COMMENT">3) Tlačítkem PLAY [   ▷  ] se animace spustí</field>
+                    <field name="COMMENT">3) Tlačítkem PLAY [ ▷ ] se animace spustí</field>
                     <next>
                       <block type="commentary_line" disabled="true">
-                        <field name="COMMENT">4) Tlačítkem PAUZA [   ||   ] se animace pozastaví</field>
+                        <field name="COMMENT">4) Tlačítkem PAUZA [ || ] se animace pozastaví</field>
                         <next>
                           <block type="commentary_line" disabled="true">
-                            <field name="COMMENT">5) Tlačítkem STOP [   ■   ] se animace zruší</field>
+                            <field name="COMMENT">5) Tlačítkem STOP [ ■ ] se animace zruší</field>
                           </block>
                         </next>
                       </block>
@@ -354,7 +258,7 @@
                 <field name="START">10</field>
                 <field name="DURATION">5</field>
                 <field name="DRAW_MODE">ADD</field>
-                <statement name="BODY">
+                <statement name="SEQUENCE">
                   <block type="drawing">
                     <field name="START">0</field>
                     <field name="DURATION">5</field>
@@ -450,26 +354,30 @@
     </category>
     <category name="Zařízení" colour="#5ba58c">
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Definice zařízení</field>
+        <field name="COMMENT">Definice zařízení (používá se pro nastevení</field>
+        <next>
+          <block type="commentary_line" disabled="true">
+            <field name="COMMENT">počtu LED). Id je "adresa" krabičky, label</field>
+            <next>
+              <block type="commentary_line" disabled="true">
+                <field name="COMMENT">je tu pro vás, abyste si zvolili pro </field>
+                <next>
+                  <block type="commentary_line" disabled="true">
+                    <field name="COMMENT">tu krabičku nějaké označení</field>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
       </block>
-      <block type="device_4ports">
-        <field name="DEVICE_LABEL">$dev1</field>
+      <block type="device">
+        <field name="DEVICE_LABEL">device1</field>
         <field name="DEVICE_IDENTIFIER">0</field>
-        <field name="DEVICE_BRIGHTNESS">255</field>
-        <field name="TANGLE_A">TRUE</field>
-        <field name="PORT_A_LENGTH">0</field>
-        <field name="TANGLE_B">TRUE</field>
-        <field name="PORT_B_LENGTH">0</field>
-        <field name="TANGLE_C">TRUE</field>
-        <field name="PORT_C_LENGTH">0</field>
-        <field name="TANGLE_D">TRUE</field>
-        <field name="PORT_D_LENGTH">0</field>
-        <statement name="SENSORS">
-          <shadow type="sensor_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Event flow modifications</field>
+        <field name="PORT_A_LENGTH">60</field>
+        <field name="PORT_B_LENGTH">60</field>
+        <field name="PORT_C_LENGTH">60</field>
+        <field name="PORT_D_LENGTH">60</field>
       </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Vykreslování pouze na určitém zařízení</field>
@@ -477,150 +385,135 @@
       <block type="siftcanvas_devices">
         <value name="DEVICES">
           <block type="siftcanvas_device">
-            <field name="DEVICE_LABEL">$dev1</field>
+            <field name="DEVICE_LABEL">device1</field>
             <value name="NEXT">
-              <shadow type="siftcanvas_dummy_device_add"></shadow>
+              <shadow type="dummy_siftcanvas_device"></shadow>
             </value>
           </block>
         </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
         </statement>
       </block>
       <block type="siftcanvas_device">
-        <field name="DEVICE_LABEL">$dev2</field>
+        <field name="DEVICE_LABEL">device2</field>
         <value name="NEXT">
-          <shadow type="siftcanvas_dummy_device_add"></shadow>
+          <shadow type="dummy_siftcanvas_device"></shadow>
         </value>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Definice zařízení 8 portů</field>
-      </block>
-      <block type="device_8ports">
-        <field name="DEVICE_LABEL">$dev1</field>
-        <field name="DEVICE_IDENTIFIER">0</field>
-        <field name="DEVICE_BRIGHTNESS">255</field>
-        <field name="TANGLE_A">TRUE</field>
-        <field name="PORT_A_LENGTH">0</field>
-        <field name="TANGLE_B">TRUE</field>
-        <field name="PORT_B_LENGTH">0</field>
-        <field name="TANGLE_C">TRUE</field>
-        <field name="PORT_C_LENGTH">0</field>
-        <field name="TANGLE_D">TRUE</field>
-        <field name="PORT_D_LENGTH">0</field>
-        <field name="TANGLE_E">TRUE</field>
-        <field name="PORT_E_LENGTH">0</field>
-        <field name="TANGLE_F">TRUE</field>
-        <field name="PORT_F_LENGTH">0</field>
-        <field name="TANGLE_G">TRUE</field>
-        <field name="PORT_G_LENGTH">0</field>
-        <field name="TANGLE_H">TRUE</field>
-        <field name="PORT_H_LENGTH">0</field>
-        <statement name="SENSORS">
-          <shadow type="sensor_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Sensory</field>
-      </block>
-      <block type="sensor_button" disabled="true">
-        <field name="BUTTON_LABEL">$btn1</field>
-        <field name="ACTION">ON_PRESSED</field>
-        <field name="EVENT_LABEL">$btn1</field>
-      </block>
-      <block type="sensor_touch" disabled="true">
-        <field name="TOUCH_LABEL">$tou1</field>
-        <field name="ACTION">ON_PRESSED</field>
-        <field name="EVENT_LABEL">$tou1</field>
-      </block>
-      <block type="sensor_gyro" disabled="true">
-        <field name="ACTION">AXIES</field>
-        <field name="EVENT_LABEL">$gyr1</field>
-      </block>
-      <block type="sensor_acc" disabled="true">
-        <field name="ACTION">AXIES</field>
-        <field name="EVENT_LABEL">$acc1</field>
-      </block>
-      <block type="sensor_gesture" disabled="true">
-        <field name="ACTION">GESTURE_PROXIMITY</field>
-        <field name="EVENT_LABEL">$ges1</field>
-      </block>
-      <block type="sensor_artnet" disabled="true">
-        <field name="DMX_UNIVERSE">0</field>
-        <field name="DMX_CHANNEL">1</field>
-        <field name="DMX_CHANNEL_COUNT">1</field>
-        <field name="EVENT_LABEL">$art1</field>
       </block>
     </category>
     <sep></sep>
-    <category name="Animace" colour="#5b67a5">
+    <category name="Vykreslování" colour="#5b67a5">
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Vykresleni animace</field>
+        <field name="COMMENT">Vykreslování animací na plátně</field>
       </block>
       <block type="drawing">
-        <field name="START">0s</field>
-        <field name="DURATION">5s</field>
+        <field name="START">0</field>
+        <field name="DURATION">5</field>
         <field name="DRAW_MODE">ADD</field>
         <value name="ANIMATION">
-          <shadow type="animation_dummy_add"></shadow>
+          <shadow type="dummy_add_animation"></shadow>
         </value>
       </block>
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Základní animace</field>
+        <field name="COMMENT">Vykreslování nového plátna do plátna</field>
+      </block>
+      <block type="window">
+        <field name="START">0</field>
+        <field name="DURATION">5</field>
+        <field name="DRAW_MODE">ADD</field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
+      </block>
+      <block type="window_2">
+        <field name="FROM">0</field>
+        <field name="TO">5</field>
+        <field name="DRAW_MODE">ADD</field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
+      </block>
+      <block type="commentary_line" disabled="true">
+        <field name="COMMENT">Vykreslování pouze na určitém plátně</field>
+      </block>
+      <block type="siftcanvas_neopixels">
+        <value name="NEOPIXELS">
+          <block type="siftcanvas_neopixel">
+            <field name="TANGLE">__porta__</field>
+            <value name="NEXT">
+              <shadow type="dummy_siftcanvas_neopixel"></shadow>
+            </value>
+          </block>
+        </value>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
+      </block>
+      <block type="siftcanvas_neopixel">
+        <field name="TANGLE">__portb__</field>
+        <value name="NEXT">
+          <shadow type="dummy_siftcanvas_neopixel"></shadow>
+        </value>
+      </block>
+    </category>
+    <category name="Animace" colour="#5b67a5">
+      <block type="commentary_line" disabled="true">
+        <field name="COMMENT">Animace</field>
       </block>
       <block type="animation_fill">
         <field name="COLOR">#ffffff</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_rainbow">
-        <field name="ZOOM">100%</field>
-        <field name="DURATION">5s</field>
+        <field name="ZOOM">100</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_fade">
         <field name="COLOR1">#ffffff</field>
         <field name="COLOR2">#000000</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_plasma_shot">
         <field name="COLOR">#ffffff</field>
-        <field name="PERCENTAGE">25%</field>
-        <field name="DURATION">5s</field>
+        <field name="PERCENTAGE">10</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_loading_bar">
         <field name="COLOR1">#ffffff</field>
         <field name="COLOR2">#000000</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_none">
-        <field name="DURATION">5s</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
       <block type="animation_color_roll">
         <field name="COLOR1">#ffffff</field>
         <field name="COLOR2">#000000</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
       </block>
-      <block type="animation_palette_roll" disabled="true">
+      <block type="animation_palette_roll">
         <field name="COLOR1">#000000</field>
         <field name="COLOR2">#000000</field>
         <field name="COLOR3">#000000</field>
@@ -629,371 +522,169 @@
         <field name="COLOR6">#000000</field>
         <field name="COLOR7">#000000</field>
         <field name="COLOR8">#000000</field>
-        <field name="ZOOM">100%</field>
-        <field name="DURATION">5s</field>
+        <field name="ZOOM">100</field>
+        <field name="DURATION">5</field>
         <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
+          <shadow type="dummy_animation_next"></shadow>
         </value>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Vlastni animace</field>
-      </block>
-      <block type="animation_definition" disabled="true">
-        <field name="ANIMATION_LABEL">$ani1</field>
-        <field name="DURATION">5s</field>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="animation_call" disabled="true">
-        <field name="ANIMATION_LABEL">$ani1</field>
-        <field name="DURATION">5s</field>
-        <value name="NEXT">
-          <shadow type="animation_dummy_next"></shadow>
-        </value>
-      </block>
-    </category>
-    <category name="Vykreslování" colour="#5b67a5">
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Vykreslovací okna (plátna)</field>
-      </block>
-      <block type="window">
-        <field name="START">0s</field>
-        <field name="DURATION">5s</field>
-        <field name="DRAW_MODE">ADD</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="window_2">
-        <field name="FROM">0s</field>
-        <field name="TO">5s</field>
-        <field name="DRAW_MODE">ADD</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="modifier_brightness">
-        <field name="VARIABLE_LABEL">$var1</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_timeline" disabled="true">
-        <field name="TIME_SOURCE">0x01</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_fade" disabled="true">
-        <field name="FADE_TYPE">FADE_IN</field>
-        <field name="DURATION">0s</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_color_switch" disabled="true">
-        <field name="OPTION">MODIFIER_SWITCH_RG</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_timeloop">
-        <field name="LOOP">0s</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_timescale">
-        <field name="VARIABLE_LABEL">$var1</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_timechange">
-        <field name="FROM_TIME_UNIT">1s</field>
-        <field name="TO_TIME_UNIT">1</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_settime">
-        <field name="TIMESTAMP">5s</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Posun času</field>
-      </block>
-      <block type="frame">
-        <field name="START">0s</field>
-        <field name="DURATION">5s</field>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
-        </statement>
       </block>
     </category>
     <sep></sep>
-    <category name="Eventy" colour="#5ba55b">
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Event flow modifications</field>
-      </block>
-      <block type="event_source">
-        <field name="EVENT_LABEL">evt1</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_replace_param">
-        <field name="EVENT_PARAMETER">10s</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_replace_param">
-        <field name="EVENT_PARAMETER">100%</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_replace_param">
-        <field name="EVENT_PARAMETER">#ffaacc</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_replace_param">
-        <field name="EVENT_PARAMETER">$var1</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_replace_param" disabled="true">
-        <field name="EVENT_PARAMETER">[0xff,0xff,0xff,0xff]</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="event_emit_code">
-        <field name="EVENT_LABEL">$evt1</field>
-        <value name="EVENT">
-          <shadow type="event_dummy_add"></shadow>
-        </value>
-      </block>
+    <category name="Interakce" colour="#5ba55b">
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Interakce</field>
       </block>
-      <block type="handler_manual">
-        <field name="START">0s</field>
-        <field name="DURATION">1h</field>
-        <field name="EVENT_LABEL">$evt1</field>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
+      <block type="handler">
+        <field name="START">0</field>
+        <field name="DURATION">3600</field>
+        <field name="TYPE">DO</field>
+        <field name="HANDLER_TYPE">handlerKeyPress['Q']</field>
+        <field name="DEVICE_LABEL"></field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
         </statement>
       </block>
-    </category>
-    <category name="Proměnné" colour="#745ba5">
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Variables</field>
+        <field name="COMMENT">Prednastavené interakce</field>
       </block>
-      <block type="variable_create">
-        <field name="LABEL">$var1</field>
-        <value name="SOURCE">
-          <shadow type="value_dummy"></shadow>
-        </value>
+      <block type="handler_onkeypress">
+        <field name="START">0</field>
+        <field name="DURATION">3600</field>
+        <field name="TYPE">DO</field>
+        <field name="KEY">'Q'</field>
+        <field name="DEVICE_LABEL"></field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
       </block>
-      <block type="value_read_variable">
-        <field name="VARIABLE_LABEL">$var1</field>
+      <block type="handler_ontouch">
+        <field name="START">0</field>
+        <field name="DURATION">3600</field>
+        <field name="TYPE">DO</field>
+        <field name="TOUCH_PORT">'A'</field>
+        <field name="DEVICE_LABEL"></field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
       </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Constants</field>
-      </block>
-      <block type="value_constant">
-        <field name="VALUE">10s</field>
-      </block>
-      <block type="value_constant">
-        <field name="VALUE">#ffaacc</field>
-      </block>
-      <block type="value_constant">
-        <field name="VALUE">100%</field>
-      </block>
-      <block type="value_constant">
-        <field name="VALUE">$var1</field>
-      </block>
-      <block type="value_constant" disabled="true">
-        <field name="VALUE">[0xff,0xff,0xff,0xff]</field>
-      </block>
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Math</field>
-      </block>
-      <block type="value_math">
-        <field name="OPTION">ADD</field>
-        <value name="PARAMETER_A">
-          <shadow type="value_dummy"></shadow>
-        </value>
-        <value name="PARAMETER_B">
-          <shadow type="value_dummy"></shadow>
-        </value>
-      </block>
-      <block type="value_map">
-        <value name="PARAMETER_X">
-          <shadow type="value_dummy"></shadow>
-        </value>
-        <value name="PARAMETER_INMIN">
-          <shadow type="value_dummy"></shadow>
-        </value>
-        <value name="PARAMETER_INMAX">
-          <shadow type="value_dummy"></shadow>
-        </value>
-        <value name="PARAMETER_OUTMIN">
-          <shadow type="value_dummy"></shadow>
-        </value>
-        <value name="PARAMETER_OUTMAX">
-          <shadow type="value_dummy"></shadow>
-        </value>
+      <block type="handler_onimpact">
+        <field name="START">0</field>
+        <field name="DURATION">3600</field>
+        <field name="TYPE">DO</field>
+        <field name="INTENSITY">0x01</field>
+        <field name="DEVICE_LABEL"></field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
       </block>
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Generators</field>
+        <field name="COMMENT">Manuální nastavení interakcí</field>
       </block>
-      <block type="generator_smoothout">
-        <field name="DURATION">5s</field>
-        <value name="SMOOTHED_VALUE">
-          <shadow type="value_dummy"></shadow>
-        </value>
+      <block type="handler_manual">
+        <field name="START">0</field>
+        <field name="DURATION">3600</field>
+        <field name="TYPE">DO</field>
+        <field name="HANDLER_TRIGGER">handlerKeyPress</field>
+        <field name="HANDLER_PARAM">'Q'</field>
+        <field name="DEVICE_LABEL"></field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
       </block>
-      <block type="generator_last_event_parameter">
-        <field name="EVENT_LABEL">$evt1</field>
-      </block>
-      <block type="generator_sin" disabled="true">
-        <field name="PERIOD">1s</field>
-      </block>
-      <block type="generator_saw" disabled="true">
-        <field name="PERIOD">1s</field>
-      </block>
-      <block type="generator_triangle" disabled="true">
-        <field name="PERIOD">1s</field>
-      </block>
-      <block type="generator_square" disabled="true">
-        <field name="PERIOD">1s</field>
-      </block>
-      <block type="generator_perlin_noise" disabled="true"></block>
     </category>
     <category name="Klipy" colour="#745ba5">
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Klipy budou v 0.7.0 nahrazeny trigrama </field>
-        <next>
-          <block type="commentary_line" disabled="true">
-            <field name="COMMENT">spouštěných z timeline. Markry nahrazeny eventama</field>
-          </block>
-        </next>
+        <field name="COMMENT">Definice markerů klipu</field>
       </block>
       <block type="clip_marks_definition">
-        <field name="MARKS_LABEL">$mrk1</field>
+        <field name="MARKS_LABEL">marks1</field>
         <statement name="MARKS">
-          <block type="clip_mark">
-            <field name="TIMESTAMP">0s</field>
-            <value name="MARK">
-              <shadow type="clip_dummy_mark"></shadow>
+          <block type="clip_marks">
+            <value name="MARKS">
+              <block type="clip_mark_timestamp">
+                <field name="TIMESTAMP">5</field>
+                <value name="NEXT_MARK">
+                  <shadow type="dummy_clip_mark"></shadow>
+                </value>
+              </block>
             </value>
           </block>
         </statement>
       </block>
-      <block type="clip_mark">
-        <field name="TIMESTAMP">5s</field>
-        <value name="MARK">
-          <shadow type="clip_dummy_mark"></shadow>
+      <block type="clip_marks">
+        <value name="MARKS">
+          <shadow type="dummy_clip_mark_add"></shadow>
         </value>
       </block>
       <block type="clip_mark_timestamp">
-        <field name="TIMESTAMP">5s</field>
+        <field name="TIMESTAMP">5</field>
         <value name="NEXT_MARK">
-          <shadow type="clip_dummy_mark"></shadow>
+          <shadow type="dummy_clip_mark"></shadow>
         </value>
-      </block>
-      <block type="clip_marks_inline">
-        <field name="MARKS">0s, 1s, 2s</field>
       </block>
       <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Vykreslovani markerů</field>
+        <field name="COMMENT">Vykreslení markerů</field>
       </block>
       <block type="clip">
-        <field name="START">0s</field>
-        <field name="DURATION">60s</field>
+        <field name="START">0</field>
+        <field name="DURATION">60</field>
         <field name="TYPE">DO</field>
-        <value name="MARKS">
-          <block type="clip_marks">
-            <field name="MARKS">$mrk1</field>
-          </block>
-        </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
+        <field name="MARKS">marks1</field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
         </statement>
+      </block>
+    </category>
+    <category name="Filmy" colour="#995ba5">
+      <block type="commentary_line" disabled="true">
+        <field name="COMMENT">Filmy jsou jakoby funkce (WIP)</field>
+      </block>
+      <block type="film_definition" disabled="false">
+        <field name="FILM_LABEL">film1</field>
+        <field name="DURATION">5</field>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
+      </block>
+      <block type="film_call" disabled="false">
+        <field name="FILM_LABEL">film1</field>
+        <field name="DURATION">5</field>
       </block>
     </category>
     <sep></sep>
-    <category name="Porty" colour="#9fa55b">
-      <block type="commentary_line" disabled="true">
-        <field name="COMMENT">Vykreslování na porty všech zařízení</field>
-      </block>
-      <block type="siftcanvas_ports">
-        <value name="PORTS">
-          <block type="siftcanvas_port">
-            <field name="PORT">$PORTA</field>
-            <value name="NEXT">
-              <shadow type="siftcanvas_dummy_port_add"></shadow>
-            </value>
-          </block>
-        </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
-        </statement>
-      </block>
-      <block type="siftcanvas_port">
-        <field name="PORT">$PORTA</field>
-        <value name="NEXT">
-          <shadow type="siftcanvas_dummy_port_add"></shadow>
-        </value>
-      </block>
-    </category>
     <category name="Tangle" colour="#a5745b">
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Definice Tangle</field>
       </block>
       <block type="tangle_definition">
-        <field name="TANGLE_LABEL">$tan1</field>
+        <field name="TANGLE_ID">tangle1</field>
         <value name="PIXELS">
-          <block type="tangle_port">
+          <block type="tangle_neopixel">
             <field name="PORT">'A'</field>
-            <field name="DEVICE_LABEL">$dev1</field>
+            <field name="DEVICE_LABEL"></field>
             <field name="REVERSE">FALSE</field>
             <value name="PIXELS">
-              <shadow type="tangle_dummy_pixels_extend"></shadow>
+              <shadow type="dummy_tangle_pixels_extend"></shadow>
             </value>
           </block>
         </value>
       </block>
-      <block type="tangle_port">
+      <block type="tangle_neopixel">
         <field name="PORT">'A'</field>
-        <field name="DEVICE_LABEL">$dev1</field>
+        <field name="DEVICE_LABEL"></field>
         <field name="REVERSE">FALSE</field>
         <value name="PIXELS">
-          <shadow type="tangle_dummy_pixels_extend"></shadow>
+          <shadow type="dummy_tangle_pixels_extend"></shadow>
         </value>
       </block>
       <block type="tangle_pixels">
-        <field name="DEVICE_LABEL">$tan1</field>
-        <field name="RANGE_FROM">0px</field>
-        <field name="RANGE_COUNT">60px</field>
-        <field name="RANGE_STEP">1px</field>
+        <field name="PORT">'A'</field>
+        <field name="DEVICE_LABEL"></field>
+        <field name="RANGE_FROM">0</field>
+        <field name="RANGE_COUNT">60</field>
+        <field name="RANGE_STEP">1</field>
         <value name="PIXELS">
-          <shadow type="tangle_dummy_pixels_extend"></shadow>
+          <shadow type="dummy_tangle_pixels_extend"></shadow>
         </value>
       </block>
       <block type="commentary_line" disabled="true">
@@ -1002,20 +693,20 @@
       <block type="siftcanvas_tangles">
         <value name="TANGLES">
           <block type="siftcanvas_tangle">
-            <field name="TANGLE_LABEL">$tan1</field>
+            <field name="TANGLE_ID">tangle1</field>
             <value name="NEXT">
-              <shadow type="siftcanvas_dummy_tangle_add"></shadow>
+              <shadow type="dummy_siftcanvas_tangle"></shadow>
             </value>
           </block>
         </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
         </statement>
       </block>
       <block type="siftcanvas_tangle">
-        <field name="TANGLE_LABEL">$tan2</field>
+        <field name="TANGLE_ID">tangle2</field>
         <value name="NEXT">
-          <shadow type="siftcanvas_dummy_tangle_add"></shadow>
+          <shadow type="dummy_siftcanvas_tangle"></shadow>
         </value>
       </block>
     </category>
@@ -1024,18 +715,22 @@
         <field name="COMMENT">Definice skupiny</field>
       </block>
       <block type="group_definition">
-        <field name="GROUP_LABEL">$grp1</field>
-        <statement name="BODY">
-          <shadow type="group_dummy_tangle"></shadow>
+        <field name="GROUP_ID">group1</field>
+        <statement name="TANGLES">
+          <shadow type="dummy_group_tangle"></shadow>
         </statement>
       </block>
-      <block type="group_port">
-        <field name="PORT">&amp;PORTA</field>
-        <field name="SHIFT">0s</field>
+      <block type="group_neopixel">
+        <field name="TANGLE_ID">__porta__</field>
+        <field name="SHIFT">0</field>
       </block>
       <block type="group_tangle">
-        <field name="TANGLE_LABEL">$tan1</field>
-        <field name="SHIFT">0s</field>
+        <field name="TANGLE_ID">tangle1</field>
+        <field name="SHIFT">0</field>
+      </block>
+      <block type="group_device" disabled="true">
+        <field name="DEVICE_LABEL">device1</field>
+        <field name="SHIFT">0</field>
       </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Vykreslování ve skupině</field>
@@ -1043,45 +738,56 @@
       <block type="siftcanvas_groups">
         <value name="GROUPS">
           <block type="siftcanvas_group">
-            <field name="GROUP_LABEL">$grp1</field>
+            <field name="GROUP_ID">group1</field>
             <value name="NEXT">
-              <shadow type="siftcanvas_dummy_group_add"></shadow>
+              <shadow type="dummy_siftcanvas_group"></shadow>
             </value>
           </block>
         </value>
-        <statement name="BODY">
-          <shadow type="drawing_dummy"></shadow>
+        <statement name="SEQUENCE">
+          <shadow type="dummy_drawing_add"></shadow>
         </statement>
       </block>
       <block type="siftcanvas_group">
-        <field name="GROUP_LABEL">$grp1</field>
+        <field name="GROUP_ID">group2</field>
         <value name="NEXT">
-          <shadow type="siftcanvas_dummy_group_add"></shadow>
+          <shadow type="dummy_siftcanvas_group"></shadow>
         </value>
       </block>
     </category>
+    <sep></sep>
     <category name="Nástroje">
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Komentáře a vizuální oddělovače</field>
       </block>
       <block type="commentary_block">
-        <field name="COMMENT">This is a comment</field>
+        <field name="COMMENT">napiš si vlastní!</field>
       </block>
       <block type="commentary_line">
-        <field name="COMMENT">This is a comment</field>
+        <field name="COMMENT">okomentuj si bloky!</field>
       </block>
       <block type="commentary_spacer"></block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Inline vložení TNGL kodu</field>
       </block>
-      <block type="code_inline"></block>
+      <block type="code_inline">
+        <field name="INLINE_CODE"></field>
+      </block>
+      <block type="commentary_line" disabled="true">
+        <field name="COMMENT">Time manipulation</field>
+      </block>
+      <block type="time_manipulator">
+        <field name="FROM_TIME_UNIT">1</field>
+        <field name="TO_TIME_UNIT">1</field>
+        <statement name="DRAWABLES">
+          <shadow type="dummy_drawing_add"></shadow>
+        </statement>
+      </block>
     </category>
   </xml>
 
 </body>
 
 <script src="code.js"></script>
-<script src="control.js"></script>
-
 
 </html>
