@@ -173,8 +173,8 @@ window.onload = function () {
 
         console.log("File " + filename + " is loaded");
 
-        console.log("Trying to upload tngl...");
-        Code.device.writeTngl();
+        // console.log("Trying to upload tngl...");
+        // Code.device.writeTngl();
 
         if (success) {
           Code.renderContent();
