@@ -727,7 +727,7 @@ Code.init = function () {
 
   Code.otaUpdate = function () {
 
-    let fw_url = prompt("Insert FW url:", "https://blockly.tangle.cz/master/firmware/firmware_0.7.2_gamma.enc");
+    let fw_url = prompt("Insert FW url:", "https://blockly.tangle.cz/master/firmware/firmware.enc");
     
     if (fw_url == null || fw_url == "") {
       console.warn("Invalid FW url")
