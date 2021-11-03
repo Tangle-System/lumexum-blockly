@@ -14,11 +14,11 @@ if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-// if (!navigator.bluetooth) {
-//   alert(
-//     "Oops, bluetooth doesn't work. Try to open this page as a secure https://"
-//   );
-// }
+if (!navigator.bluetooth) {
+  alert(
+    "Oops, bluetooth doesn't work here."
+  );
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // butConnect.addEventListener("click", clickConnect);
@@ -727,7 +727,7 @@ Code.init = function () {
 
   Code.otaUpdate = function () {
 
-    let fw_url = prompt("Insert FW url:", "firmware.enc");
+    let fw_url = prompt("Insert FW url:", "https://blockly.tangle.cz/master/firmware/firmware_0.7.2_gamma.enc");
     
     if (fw_url == null || fw_url == "") {
       console.warn("Invalid FW url")
