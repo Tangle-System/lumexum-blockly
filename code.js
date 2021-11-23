@@ -9,6 +9,11 @@
  * @author fraser@google.com (Neil Fraser)
  */
 
+/// <reference path="lib/TangleWebBluetoothConnector.js" />
+/// <reference path="blockly/blockly_compressed.js" />
+
+
+
 "use strict";
 
 if (!("TextDecoder" in window)) {
@@ -38,136 +43,170 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Code.device = {};
+Code.device = new TangleDevice("00112233445566778899aabbccddeeff");
 
-Code.device.bluetoothDevice = new TangleBluetoothDevice();
+Code.device.addEventListener("connected", (event) => {
+  return event.target
+    .requestTimeline()
+    .then(() => {
+      console.log("Bluetooth Device connected");
 
-Code.device.bluetoothDevice.addEventListener("connected", (event) => {
-  const icon = document.getElementById("connectBluetoothButton").childNodes[1];
-  icon.classList.remove("connect");
-  icon.classList.add("disconnect");
+      const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+      icon.classList.remove("connect");
+      icon.classList.add("disconnect");
+    })
+    .catch((error) => {
+      console.warn(error);
+      //event.target.connect();
+    });
 });
 
-Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
-  const icon = document.getElementById("connectBluetoothButton").childNodes[1];
+Code.device.addEventListener("disconnected", (event) => {
+  const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
 });
 
-Code.device.serialDevice = new TangleSerialDevice();
+// Code.device.bluetoothDevice = new TangleDevice();
 
-Code.device.serialDevice.addEventListener("connected", (event) => {
-  const icon = document.getElementById("connectSerialButton").childNodes[1];
-  icon.classList.remove("connect");
-  icon.classList.add("disconnect");
+// Code.device.bluetoothDevice.addEventListener("connected", (event) => {
+//   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
+//   icon.classList.remove("connect");
+//   icon.classList.add("disconnect");
+// });
 
-});
+// Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
+//   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
+//   icon.classList.remove("disconnect");
+//   icon.classList.add("connect");
+// });
 
-Code.device.serialDevice.addEventListener("disconnected", (event) => {
-  const icon = document.getElementById("connectSerialButton").childNodes[1];
-  icon.classList.remove("disconnect");
-  icon.classList.add("connect");
-});
+// Code.device.serialDevice = new TangleSerialDevice();
 
-Code.device.serialDevice.addEventListener("receive", (event) => {
-  const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-  const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
+// Code.device.serialDevice.addEventListener("connected", (event) => {
+//   const icon = document.getElementById("connectSerialButton").childNodes[1];
+//   icon.classList.remove("connect");
+//   icon.classList.add("disconnect");
 
-  const textarea = document.getElementById("content_debug");
-  textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
+// });
 
-  while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-    textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-  }
-});
+// Code.device.serialDevice.addEventListener("disconnected", (event) => {
+//   const icon = document.getElementById("connectSerialButton").childNodes[1];
+//   icon.classList.remove("disconnect");
+//   icon.classList.add("connect");
+// });
 
-Code.device.setTimeline = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-};
+// Code.device.serialDevice.addEventListener("receive", (event) => {
+//   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
+//   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
 
-Code.device.reboot = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.reboot();
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.reboot();
-  }
-};
+//   const textarea = document.getElementById("content_debug");
+//   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
 
-Code.device.writeTngl = function (tngl_bytes) {
-  if (tngl_bytes === null) {
-    tngl_bytes = [];
-  }
+//   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
+//     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
+//   }
+// });
 
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.uploadTngl(tngl_bytes, 0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.uploadTngl(tngl_bytes, 0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-};
+// Code.device.setTimeline = function () {
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.setTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.setTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   // }
+//   return Promise.reject();
 
-Code.device.emitPercentageEvent = function (event_label, event_percentage_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
+// };
 
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitPercentageEvent(event_label, event_percentage_value, Code.timeline.millis(), event_destination);
-  }
-};
+// Code.device.reboot = function () {
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.reboot();
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.reboot();
+//   // }
+//   return Promise.reject();
 
-Code.device.emitColorEvent = function (event_label, event_color_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
+// };
 
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitColorEvent(event_label, event_color_value, Code.timeline.millis(), event_destination);
-  }
-};
+// Code.device.writeTngl = function (tngl_bytes) {
+//   if (tngl_bytes === null) {
+//     tngl_bytes = [];
+//   }
 
-Code.device.emitTimestampEvent = function (event_label, event_timestamp_value, event_destination) {
-  if (event_destination === null) {
-    event_destination = 0xff;
-  }
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.uploadTngl(tngl_bytes, 0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.uploadTngl(tngl_bytes, 0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   // }
+//   return Promise.reject();
 
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.timeline.millis(), event_destination);
-  }
-};
+// };
 
-Code.device.syncTimeline = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.syncTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.syncTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
-  }
-};
+// Code.device.emitPercentageEvent = function (event_label, event_percentage_value, event_destination) {
+//   if (event_destination === null) {
+//     event_destination = 0xff;
+//   }
 
-Code.device.syncClock = function () {
-  if (Code.device.serialDevice.isConnected()) {
-    Code.device.serialDevice.syncClock();
-  }
-  if (Code.device.bluetoothDevice.isConnected()) {
-    Code.device.bluetoothDevice.syncClock();
-  }
-};
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.emitPercentageEvent(event_label, event_percentage_value, Code.device.timeline.millis(), event_destination);
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.emitPercentageEvent(event_label, event_percentage_value, Code.device.timeline.millis(), event_destination);
+//   // }
+//   return Promise.reject();
+// };
+
+// Code.device.emitColorEvent = function (event_label, event_color_value, event_destination) {
+//   if (event_destination === null) {
+//     event_destination = 0xff;
+//   }
+
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.emitColorEvent(event_label, event_color_value, Code.device.timeline.millis(), event_destination);
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.emitColorEvent(event_label, event_color_value, Code.device.timeline.millis(), event_destination);
+//   // }
+//   return Promise.reject();
+// };
+
+// Code.device.emitTimestampEvent = function (event_label, event_timestamp_value, event_destination) {
+//   if (event_destination === null) {
+//     event_destination = 0xff;
+//   }
+
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.device.timeline.millis(), event_destination);
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.device.timeline.millis(), event_destination);
+//   // }
+//   return Promise.reject();
+
+// };
+
+// Code.device.syncTimeline = function () {
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.syncTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.syncTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
+//   // }
+//   return Promise.reject();
+// };
+
+// Code.device.syncClock = function () {
+//   if (Code.device.serialDevice.isConnected()) {
+//     return Code.device.serialDevice.syncClock();
+//   }
+//   // if (Code.device.bluetoothDevice.isConnected()) {
+//   //   return Code.device.bluetoothDevice.syncClock();
+//   // }
+//   return Promise.reject();
+// };
 
 function toggleUIConnected(connected) {
   if (connected) {
@@ -278,7 +317,7 @@ Code.debug.setVisible = function (enable) {
 };
 
 Code.control = {
-  div: document.querySelector('#content_control')
+  div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control")),
 };
 
 Code.control.setVisible = function (enable) {
@@ -291,15 +330,12 @@ Code.control.setVisible = function (enable) {
   }
 };
 
+Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline"));
+// Code.metronome = new Audio();
 
+Code.device.timeline = new TimeTrack();
 
-
-Code.music = document.getElementById("timeline");
-Code.metronome = new Audio();
-
-Code.timeline = new TimeTrack();
-
-Code.bank = 0;
+// Code.bank = 0;
 
 // function sleep(ms) {
 //   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -309,103 +345,106 @@ Code.bank = 0;
 //   Code.device.syncTimeline();
 // }, 10000);
 
-// Code.device = new TangleSerialDevice();
 
 Code.music.addEventListener("timeupdate", () => {
-  Code.timeline.setMillis(Code.music.currentTime * 1000);
+  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
   Code.device.syncTimeline();
 });
 
 Code.music.addEventListener("play", () => {
-  Code.timeline.unpause();
-  Code.timeline.setMillis(Code.music.currentTime * 1000);
+  Code.device.timeline.unpause();
+  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
-  if (Code.metronome.src) {
-    Code.metronome.currentTime = Code.music.currentTime;
-    Code.metronome.play();
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.currentTime = Code.music.currentTime;
+  //   Code.metronome.play();
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 });
 
 Code.music.addEventListener("pause", () => {
-  Code.timeline.pause();
-  Code.timeline.setMillis(Code.music.currentTime * 1000);
+  Code.device.timeline.pause();
+  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
-  if (Code.metronome.src) {
-    Code.metronome.pause();
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.pause();
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 });
 
 Code.play = async function () {
-  Code.timeline.unpause();
   console.log("Play");
+
+  Code.device.timeline.unpause();
 
   if (Code.music.src) {
     Code.music.play();
   }
-  if (Code.metronome.src) {
-    Code.metronome.play();
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.play();
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 };
 
 Code.cycle = async function () {
-  Code.timeline.setMillis(0);
   console.log("Cycle");
+
+  Code.device.timeline.setMillis(0);
 
   if (Code.music.src) {
     Code.music.load();
-    if (!Code.timeline.paused()) {
+    if (!Code.device.timeline.paused()) {
       Code.music.play();
     }
   }
 
-  if (Code.metronome.src) {
-    Code.metronome.load();
-    if (!Code.timeline.paused()) {
-      Code.metronome.play();
-    }
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.load();
+  //   if (!Code.device.timeline.paused()) {
+  //     Code.metronome.play();
+  //   }
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 };
 
 Code.pause = async function () {
-  Code.timeline.pause();
   console.log("Pause");
+
+  Code.device.timeline.pause();
 
   if (Code.music.src) {
     Code.music.pause();
   }
 
-  if (Code.metronome.src) {
-    Code.metronome.pause();
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.pause();
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 };
 
 Code.stop = async function () {
-  Code.timeline.pause();
-  Code.timeline.setMillis(0);
   console.log("Stop");
+
+  Code.device.timeline.pause();
+  Code.device.timeline.setMillis(0);
 
   if (Code.music.src) {
     Code.music.pause();
     Code.music.load();
   }
 
-  if (Code.metronome.src) {
-    Code.metronome.pause();
-    Code.metronome.load();
-  }
+  // if (Code.metronome.src) {
+  //   Code.metronome.pause();
+  //   Code.metronome.load();
+  // }
 
-  Code.device.setTimeline();
+  Code.device.syncTimeline();
 };
 
 Code.upload = async function () {
@@ -421,7 +460,7 @@ Code.upload = async function () {
   // console.log(tngl_bytes);
   //prompt("Copy to clipboard: Ctrl+C, Enter", tngl_bytes);
 
-  Code.device.writeTngl(tngl_bytes);
+  Code.device.writeTngl(tngl_bytes).catch((e) => console.error(e));
 };
 
 /**
@@ -787,340 +826,6 @@ Code.init = function () {
 
   //   var init_blocks_xml =
 
-  //   '<xml xmlns="https://developers.google.com/blockly/xml">' +
-  // '  <block type="device_4ports" id="jNE)v$X2vIU,2t#xwd~e" x="247" y="-265">' +
-  // '    <field name="DEVICE_LABEL">device1</field>' +
-  // '    <field name="DEVICE_IDENTIFIER">0</field>' +
-  // '    <field name="DEVICE_BRIGHTNESS">64</field>' +
-  // '    <field name="TANGLE_A">TRUE</field>' +
-  // '    <field name="PORT_A_LENGTH">10</field>' +
-  // '    <field name="TANGLE_B">FALSE</field>' +
-  // '    <field name="PORT_B_LENGTH">0</field>' +
-  // '    <field name="TANGLE_C">FALSE</field>' +
-  // '    <field name="PORT_C_LENGTH">0</field>' +
-  // '    <field name="TANGLE_D">FALSE</field>' +
-  // '    <field name="PORT_D_LENGTH">0</field>' +
-  // '  </block>' +
-  // '  <block type="commentary_line" id="7Yc$b|yJm!]qKjy4QVty" x="248" y="-30">' +
-  // '    <field name="COMMENT">Blockly vysila eventy pri keypressu klaves</field>' +
-  // '    <next>' +
-  // '      <block type="commentary_line" id="Qd6=-$JrucXV=ky,#C~,">' +
-  // '        <field name="COMMENT">Q,W,E,R,A,S,D,F,Y,X,C,V,Z</field>' +
-  // '        <next>' +
-  // '          <block type="commentary_line" id="9?J]zFy})q9UL=NgZUgF">' +
-  // '            <field name="COMMENT">(bud s capslockem, nebo shiftem)</field>' +
-  // '            <next>' +
-  // '              <block type="commentary_line" id="zL2lE|kv!ff_`]7II-m5">' +
-  // '                <field name="COMMENT">event code je ascii hodnota klavesy</field>' +
-  // '                <next>' +
-  // '                  <block type="commentary_line" id="1,vDRDAH__1NnFnL*.(i">' +
-  // '                    <field name="COMMENT">parametr je vzdy 0</field>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="commentary_line" id="BJt-6xbm80bYyX51b~5x" x="246" y="142">' +
-  // '    <field name="COMMENT">RED pri stisku Q (code = 81)</field>' +
-  // '    <next>' +
-  // '      <block type="event_source" id="jZeQE-1`}{-K=j9Ij)gC">' +
-  // '        <field name="EVENT_LABEL">81</field>' +
-  // '        <value name="EVENT">' +
-  // '          <shadow type="event_dummy_add" id="#Z*80=6oS]j{Ry7;~5aI"></shadow>' +
-  // '          <block type="event_replace_param" id="w=yT8wWwC*^Rq{V1eI-W">' +
-  // '            <field name="EVENT_PARAMETER">255</field>' +
-  // '            <value name="EVENT">' +
-  // '              <shadow type="event_dummy_add" id="iO95R,BPBMp6hI4:j4nY"></shadow>' +
-  // '              <block type="event_emit_code" id="`+Nw?=/u15{E/^4bp5],">' +
-  // '                <field name="EVENT_LABEL">0</field>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <next>' +
-  // '          <block type="commentary_line" id="LFwi!IV4Ia#Q{?ta8-Jh">' +
-  // '            <field name="COMMENT">GREEN pri stisku W (code = 87)</field>' +
-  // '            <next>' +
-  // '              <block type="event_source" id="xyup-+N.N4*i0mSNVSpg">' +
-  // '                <field name="EVENT_LABEL">87</field>' +
-  // '                <value name="EVENT">' +
-  // '                  <shadow type="event_dummy_add"></shadow>' +
-  // '                  <block type="event_replace_param" id="v)!MW)DjK9.To`k-)g9E">' +
-  // '                    <field name="EVENT_PARAMETER">255</field>' +
-  // '                    <value name="EVENT">' +
-  // '                      <shadow type="event_dummy_add"></shadow>' +
-  // '                      <block type="event_emit_code" id="r|r;j*g:cC;e7x+liQk~">' +
-  // '                        <field name="EVENT_LABEL">1</field>' +
-  // '                      </block>' +
-  // '                    </value>' +
-  // '                  </block>' +
-  // '                </value>' +
-  // '                <next>' +
-  // '                  <block type="commentary_line" id="-lfN]L!5AG%bOl!VJ}oS">' +
-  // '                    <field name="COMMENT">BLUE pri stisku E (code = 69)</field>' +
-  // '                    <next>' +
-  // '                      <block type="event_source" id="n@ccTF]#u7(81K=z#f^F">' +
-  // '                        <field name="EVENT_LABEL">69</field>' +
-  // '                        <value name="EVENT">' +
-  // '                          <shadow type="event_dummy_add"></shadow>' +
-  // '                          <block type="event_replace_param" id="i,qbjOyCT|Vvz3E8h]{c">' +
-  // '                            <field name="EVENT_PARAMETER">255</field>' +
-  // '                            <value name="EVENT">' +
-  // '                              <shadow type="event_dummy_add"></shadow>' +
-  // '                              <block type="event_emit_code" id="oe#W16|Tw)mX%S2CUR1,">' +
-  // '                                <field name="EVENT_LABEL">2</field>' +
-  // '                              </block>' +
-  // '                            </value>' +
-  // '                          </block>' +
-  // '                        </value>' +
-  // '                        <next>' +
-  // '                          <block type="commentary_line" id="KR!?,Fla3Typ?J2c_yS`">' +
-  // '                            <field name="COMMENT">RESET pri stisku R (code = 82)</field>' +
-  // '                            <next>' +
-  // '                              <block type="event_source" id="ro@|IDAG`HE8-gY0vf*a">' +
-  // '                                <field name="EVENT_LABEL">82</field>' +
-  // '                                <value name="EVENT">' +
-  // '                                  <shadow type="event_dummy_add"></shadow>' +
-  // '                                  <block type="event_replace_param" id="9noQ8K~X:*}ho-V?q/{4">' +
-  // '                                    <field name="EVENT_PARAMETER">0</field>' +
-  // '                                    <value name="EVENT">' +
-  // '                                      <shadow type="event_dummy_add"></shadow>' +
-  // '                                      <block type="event_emit_code" id="]m%#Rv91n~t[_)ac~cIC">' +
-  // '                                        <field name="EVENT_LABEL">0</field>' +
-  // '                                      </block>' +
-  // '                                    </value>' +
-  // '                                  </block>' +
-  // '                                </value>' +
-  // '                                <next>' +
-  // '                                  <block type="event_source" id="H?u*](fU;1I%u!tQu5=R">' +
-  // '                                    <field name="EVENT_LABEL">82</field>' +
-  // '                                    <value name="EVENT">' +
-  // '                                      <shadow type="event_dummy_add"></shadow>' +
-  // '                                      <block type="event_replace_param" id="ozak+5s?*QAj-r!~1EA2">' +
-  // '                                        <field name="EVENT_PARAMETER">0</field>' +
-  // '                                        <value name="EVENT">' +
-  // '                                          <shadow type="event_dummy_add"></shadow>' +
-  // '                                          <block type="event_emit_code" id="S_ANT,jFGvR6;NeU/=eq">' +
-  // '                                            <field name="EVENT_LABEL">1</field>' +
-  // '                                          </block>' +
-  // '                                        </value>' +
-  // '                                      </block>' +
-  // '                                    </value>' +
-  // '                                    <next>' +
-  // '                                      <block type="event_source" id="W0Vozr`2]MN~N*4W;a=o">' +
-  // '                                        <field name="EVENT_LABEL">82</field>' +
-  // '                                        <value name="EVENT">' +
-  // '                                          <shadow type="event_dummy_add"></shadow>' +
-  // '                                          <block type="event_replace_param" id="qKGCs@q.},*Xw1jVVu.6">' +
-  // '                                            <field name="EVENT_PARAMETER">0</field>' +
-  // '                                            <value name="EVENT">' +
-  // '                                              <shadow type="event_dummy_add"></shadow>' +
-  // '                                              <block type="event_emit_code" id="Phef,pK7OQ^(JVn;MNmK">' +
-  // '                                                <field name="EVENT_LABEL">2</field>' +
-  // '                                              </block>' +
-  // '                                            </value>' +
-  // '                                          </block>' +
-  // '                                        </value>' +
-  // '                                      </block>' +
-  // '                                    </next>' +
-  // '                                  </block>' +
-  // '                                </next>' +
-  // '                              </block>' +
-  // '                            </next>' +
-  // '                          </block>' +
-  // '                        </next>' +
-  // '                      </block>' +
-  // '                    </next>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="channel_write" id="Jys|bVHSgsT9}G*O2uio" x="245" y="453">' +
-  // '    <field name="CHANNEL">0</field>' +
-  // '    <value name="SOURCE">' +
-  // '      <shadow type="channel_dummy_add" id="[:4PObqXXG+upXC9|T6x"></shadow>' +
-  // '      <block type="channel_event_parameter_smoother" id=";:[i!eRet,$){2Y=k*L/">' +
-  // '        <field name="EVENT_LABEL">0</field>' +
-  // '        <field name="DURATION">1</field>' +
-  // '      </block>' +
-  // '    </value>' +
-  // '    <next>' +
-  // '      <block type="channel_write" id="BFjS:eDN=PCgTt@t%]gD">' +
-  // '        <field name="CHANNEL">1</field>' +
-  // '        <value name="SOURCE">' +
-  // '          <shadow type="channel_dummy_add" id="s*Rd7Ror%s[duj9vmX-,"></shadow>' +
-  // '          <block type="channel_event_parameter_smoother" id="`dEtVU0)$#`9qT.JL{dE">' +
-  // '            <field name="EVENT_LABEL">1</field>' +
-  // '            <field name="DURATION">1</field>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <next>' +
-  // '          <block type="channel_write" id="Xf;0L(xGLt-,c9z,/eeS">' +
-  // '            <field name="CHANNEL">2</field>' +
-  // '            <value name="SOURCE">' +
-  // '              <shadow type="channel_dummy_add" id="}0xZaw:jRO_/kD_EY!hO"></shadow>' +
-  // '              <block type="channel_event_parameter_smoother" id="3gy|Ibm3Ns+2XNPV$3y?">' +
-  // '                <field name="EVENT_LABEL">2</field>' +
-  // '                <field name="DURATION">1</field>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '  <block type="window" id="SA*EF*X}wuJJgQiJlHOU" x="248" y="592">' +
-  // '    <field name="START">0</field>' +
-  // '    <field name="DURATION">2147483.647</field>' +
-  // '    <field name="DRAW_MODE">ADD</field>' +
-  // '    <value name="MODIFIER">' +
-  // '      <shadow type="modifier_dummy_add" id="{/yVaM]NW3]g:_^-/Jf+"></shadow>' +
-  // '      <block type="modifier_brightness" id=")0+qWl:j{w;K;`c1@cHO">' +
-  // '        <field name="CHANNEL">0</field>' +
-  // '        <value name="MODIFIER">' +
-  // '          <shadow type="modifier_dummy_add" id="6$o]~5UMMm87R?vr2!eU"></shadow>' +
-  // '        </value>' +
-  // '      </block>' +
-  // '    </value>' +
-  // '    <statement name="BODY">' +
-  // '      <shadow type="drawing_dummy" id="grCh*GtLmL|}rk(@:9hA"></shadow>' +
-  // '      <block type="drawing" id=".=9h,zhB2{T^(St7o^ny">' +
-  // '        <field name="START">0</field>' +
-  // '        <field name="DURATION">2147483.647</field>' +
-  // '        <field name="DRAW_MODE">ADD</field>' +
-  // '        <value name="ANIMATION">' +
-  // '          <shadow type="animation_dummy_add" id="!6OHDqZ~Ws%0s!-l9@Bh"></shadow>' +
-  // '          <block type="animation_color_roll" id=".P-oOu*AyU){miQwYNF8">' +
-  // '            <field name="COLOR1">#00ff00</field>' +
-  // '            <field name="COLOR2">#003600</field>' +
-  // '            <field name="DURATION">1</field>' +
-  // '            <value name="NEXT">' +
-  // '              <shadow type="animation_dummy_next" id="c$(2%:8w-Tv[^by7YpT}"></shadow>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '      </block>' +
-  // '    </statement>' +
-  // '    <next>' +
-  // '      <block type="window" id="A7q^xH]VPO2A%S.jc/V_">' +
-  // '        <field name="START">0</field>' +
-  // '        <field name="DURATION">2147483.647</field>' +
-  // '        <field name="DRAW_MODE">ADD</field>' +
-  // '        <value name="MODIFIER">' +
-  // '          <shadow type="modifier_dummy_add"></shadow>' +
-  // '          <block type="modifier_brightness" id="[a:g8n_tn|*?=l$Vj/.,">' +
-  // '            <field name="CHANNEL">1</field>' +
-  // '            <value name="MODIFIER">' +
-  // '              <shadow type="modifier_dummy_add" id="JWQ$0fIcwaG=o?Btv/i3"></shadow>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </value>' +
-  // '        <statement name="BODY">' +
-  // '          <shadow type="drawing_dummy" id="{5rCPz/DcDMVRH2@:v2h"></shadow>' +
-  // '          <block type="drawing" id="*4iNWZ^LgKkb@O*@dSM6">' +
-  // '            <field name="START">0</field>' +
-  // '            <field name="DURATION">2147483.647</field>' +
-  // '            <field name="DRAW_MODE">ADD</field>' +
-  // '            <value name="ANIMATION">' +
-  // '              <shadow type="animation_dummy_add" id="):a*ieq=+@kt_xMajF~,"></shadow>' +
-  // '              <block type="animation_color_roll" id=".-NpXJyi6#pf2V*^?U2R">' +
-  // '                <field name="COLOR1">#ff0000</field>' +
-  // '                <field name="COLOR2">#360000</field>' +
-  // '                <field name="DURATION">1</field>' +
-  // '                <value name="NEXT">' +
-  // '                  <shadow type="animation_dummy_next" id="0WxJeGy=Cdz.M%lGDCl{"></shadow>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '          </block>' +
-  // '        </statement>' +
-  // '        <next>' +
-  // '          <block type="window" id="BJ0KUmQOlb*f=`gmYVPx">' +
-  // '            <field name="START">0</field>' +
-  // '            <field name="DURATION">2147483.647</field>' +
-  // '            <field name="DRAW_MODE">ADD</field>' +
-  // '            <value name="MODIFIER">' +
-  // '              <shadow type="modifier_dummy_add"></shadow>' +
-  // '              <block type="modifier_brightness" id="+Q2$~g9N|zj()NOymB#:">' +
-  // '                <field name="CHANNEL">2</field>' +
-  // '                <value name="MODIFIER">' +
-  // '                  <shadow type="modifier_dummy_add" id="s!B!:(ON;Vx#aey3GQW."></shadow>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </value>' +
-  // '            <statement name="BODY">' +
-  // '              <shadow type="drawing_dummy" id="#guRG0/wqNAZ/W~3O~0f"></shadow>' +
-  // '              <block type="drawing" id="w$;8P#W7D97Ge+qw;y):">' +
-  // '                <field name="START">0</field>' +
-  // '                <field name="DURATION">2147483.647</field>' +
-  // '                <field name="DRAW_MODE">ADD</field>' +
-  // '                <value name="ANIMATION">' +
-  // '                  <shadow type="animation_dummy_add" id="(=VW;(V;$}]Qn!Zoo1(k"></shadow>' +
-  // '                  <block type="animation_color_roll" id="qiVSY0la?!lUiZkY9tdK">' +
-  // '                    <field name="COLOR1">#0000ff</field>' +
-  // '                    <field name="COLOR2">#000036</field>' +
-  // '                    <field name="DURATION">1</field>' +
-  // '                    <value name="NEXT">' +
-  // '                      <shadow type="animation_dummy_next" id="Vu0)RRHW#vv2DCP]DEz$"></shadow>' +
-  // '                    </value>' +
-  // '                  </block>' +
-  // '                </value>' +
-  // '              </block>' +
-  // '            </statement>' +
-  // '            <next>' +
-  // '              <block type="commentary_line" id="Oqtga|FY@O@DVw6SWdWn">' +
-  // '                <field name="COMMENT">Strobo efekt pri resetu</field>' +
-  // '                <next>' +
-  // '                  <block type="handler_manual" id="QjK#9DxxRYIBTt%IO5m,">' +
-  // '                    <field name="START">0</field>' +
-  // '                    <field name="DURATION">2147483.647</field>' +
-  // '                    <field name="EVENT_LABEL">82</field>' +
-  // '                    <field name="EVENT_PARAMETER">0</field>' +
-  // '                    <statement name="BODY">' +
-  // '                      <shadow type="drawing_dummy" id="#ZL9_(-9O(e:444KF?b]"></shadow>' +
-  // '                      <block type="drawing" id="kgy5o-74{iw(5TOt)f~[">' +
-  // '                        <field name="START">0</field>' +
-  // '                        <field name="DURATION">1</field>' +
-  // '                        <field name="DRAW_MODE">SUB</field>' +
-  // '                        <value name="ANIMATION">' +
-  // '                          <shadow type="animation_dummy_add" id="oPr;{~z+HsGC:1vrb6*a"></shadow>' +
-  // '                          <block type="animation_fill" id="OhJg.391)zCg7SV$$E$?">' +
-  // '                            <field name="COLOR">#ffffff</field>' +
-  // '                            <field name="DURATION">0.05</field>' +
-  // '                            <value name="NEXT">' +
-  // '                              <shadow type="animation_dummy_next" id="f)Ed+xO;AAZdOeo8J#/N"></shadow>' +
-  // '                              <block type="animation_fill" id="S%y,N*7lH~.QM-QOdnHD">' +
-  // '                                <field name="COLOR">#000000</field>' +
-  // '                                <field name="DURATION">0.05</field>' +
-  // '                                <value name="NEXT">' +
-  // '                                  <shadow type="animation_dummy_next" id="$/K}7,-kq%h}%Hv9Xz4N"></shadow>' +
-  // '                                </value>' +
-  // '                              </block>' +
-  // '                            </value>' +
-  // '                          </block>' +
-  // '                        </value>' +
-  // '                      </block>' +
-  // '                    </statement>' +
-  // '                  </block>' +
-  // '                </next>' +
-  // '              </block>' +
-  // '            </next>' +
-  // '          </block>' +
-  // '        </next>' +
-  // '      </block>' +
-  // '    </next>' +
-  // '  </block>' +
-  // '</xml>';
-
   // Code.loadBlocks(init_blocks_xml);
 
   //   if ("BlocklyStorage" in window) {
@@ -1144,7 +849,7 @@ Code.init = function () {
   };
 
   Code.otaReboot = function () {
-    Code.device.reboot();
+    Code.device.deviceReboot();
   };
 
   document.getElementById("otaFirmware").addEventListener("change", function () {
@@ -1168,7 +873,7 @@ Code.init = function () {
       .arrayBuffer()
       .then(function (firmware) {
         console.log(firmware);
-        return Code.device.bluetoothDevice.updateFirmware(new Uint8Array(firmware));
+        return Code.device.updateFirmware(new Uint8Array(firmware));
       })
       .catch(function (err) {
         console.warn("Something went wrong.", err);
@@ -1180,18 +885,6 @@ Code.init = function () {
   });
 
   Code.otaUpdateConfig = function () {
-    // fetch("config.json")
-    //   .then(function (response) {
-    //     return response.arrayBuffer();
-    //   })
-    //   .then(function (config) {
-    //     console.log(config);
-    //     return Code.device.bluetoothDevice.update(new Uint8Array(config));
-    //   })
-    //   .catch(function (err) {
-    //     console.warn("Something went wrong.", err);
-    //   });
-
     try {
       if (!window.ota_config) throw "No config file selected";
 
@@ -1206,7 +899,7 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.bluetoothDevice.updateConfig(new Uint8Array(config));
+            return Code.device.updateConfig(new Uint8Array(config));
           });
         })
 
@@ -1228,6 +921,7 @@ Code.init = function () {
   Code.bindClick("otaUpdateConfig", Code.otaUpdateConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
   Code.bindClick("connectBluetoothButton", Code.connectBluetooth);
+  Code.bindClick("adoptBluetoothButton", Code.adoptBluetooth);
   Code.bindClick("uploadButton", Code.upload);
   Code.bindClick("playButton", Code.play);
   Code.bindClick("cycleButton", Code.cycle);
@@ -1327,7 +1021,7 @@ Code.initLanguage = function () {
   // languageMenu.addEventListener('change', Code.changeLanguage, true);
 
   // Populate the coding language selection menu.
-  var codeMenu = document.getElementById("code_menu");
+  var codeMenu =  /** @type {any} */ (document.getElementById("code_menu"));
   codeMenu.options.length = 0;
   for (var i = 1; i < Code.TABS_.length; i++) {
     codeMenu.options.add(new Option(Code.TABS_DISPLAY_[i], Code.TABS_[i]));
@@ -1344,7 +1038,8 @@ Code.initLanguage = function () {
   document.getElementById("trashButton").title = MSG["trashTooltip"];
 
   document.getElementById("connectSerialButton").title = "Připojit se k Tangle přes USB";
-  document.getElementById("connectBluetoothButton").title = "Připojit se k Tangle přes Bluetooth";
+  document.getElementById("adoptBluetoothButton").title = "Zadoptovat Tangle zařízení";
+  document.getElementById("connectBluetoothButton").title = "Připojit se k Tangle";
   document.getElementById("uploadButton").title = "Nahrát projekt";
   document.getElementById("playButton").title = "Přehrát animaci";
   document.getElementById("cycleButton").title = "Opakovat animaci";
@@ -1367,12 +1062,81 @@ Code.discard = function () {
 
 // var port;
 
+Code.adoptBluetooth = function () { 
+  Code.device.adopt();
+}
+
 Code.connectBluetooth = function () {
-  Code.device.bluetoothDevice.connect();
+  if (Code.device.variant != "webbluetooth") {
+    Code.device.assignConnector("webbluetooth");
+
+    // Code.device.addEventListener("connected", (event) => {
+    //   return event.target
+    //     .requestTimeline()
+    //     .then(() => {
+    //       console.log("Bluetooth Device connected");
+
+    //       const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+    //       icon.classList.remove("connect");
+    //       icon.classList.add("disconnect");
+    //     })
+    //     .catch((error) => {
+    //       console.warn(error);
+    //       //event.target.connect();
+    //     });
+    // });
+
+    // Code.device.addEventListener("disconnected", (event) => {
+    //   const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+    //   icon.classList.remove("disconnect");
+    //   icon.classList.add("connect");
+    // });
+
+    // Code.device.addEventListener("receive", (event) => {
+    //   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
+    //   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
+
+    //   const textarea = document.getElementById("content_debug");
+    //   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
+
+    //   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
+    //     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
+    //   }
+    // });
+  }
+  Code.device.connect();
 };
 
 Code.connectSerial = function () {
-  Code.device.serialDevice.connect();
+  // if (Code.device.variant != "webserial") {
+  //   Code.device.assignConnector("webserial");
+
+  //   Code.device.addEventListener("connected", (event) => {
+  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
+  //     icon.classList.remove("connect");
+  //     icon.classList.add("disconnect");
+    
+  //   });
+    
+  //   Code.device.addEventListener("disconnected", (event) => {
+  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
+  //     icon.classList.remove("disconnect");
+  //     icon.classList.add("connect");
+  //   });
+    
+  //   Code.device.addEventListener("receive", (event) => {
+  //     const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
+  //     const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
+    
+  //     const textarea = document.getElementById("content_debug");
+  //     textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
+    
+  //     while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
+  //       textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
+  //     }
+  //   });
+  // }
+  // Code.device.connect();
 };
 
 Code.onKeyPress = function (e) {
@@ -1396,24 +1160,25 @@ window.addEventListener("load", Code.init);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Number.prototype.pad = function (size) {
-  var s = String(this);
-  while (s.length < (size || 2)) {
-    s = "0" + s;
-  }
-  return s;
-};
+
 
 setInterval(function () {
-  
-  let now = Code.timeline.millis();
+  let now = Code.device.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
   let sec = Math.floor(now / 1000);
   now %= 1000;
   let msec = Math.floor(now / 10);
 
-  document.getElementById("revTime").innerHTML = "" + min + ":" + sec.pad(2) + ":" + msec.pad(2);
+  const pad = (number, size) => {
+    var s = String(number);
+    while (s.length < (size || 2)) {
+      s = "0" + s;
+    }
+    return s;
+  };
+
+  document.getElementById("revTime").innerHTML = "" + min + ":" + pad(sec, 2) + ":" + pad(msec, 2);
 }, 100);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1426,11 +1191,11 @@ document.getElementById("music").addEventListener("change", function () {
   Code.music.setAttribute("src", url);
 });
 
-document.getElementById("metronome").addEventListener("change", function () {
-  var url = URL.createObjectURL(this.files[0]);
-  window.blockly_metronome = this.files[0];
-  Code.metronome.setAttribute("src", url);
-});
+// document.getElementById("metronome").addEventListener("change", function () {
+//   var url = URL.createObjectURL(this.files[0]);
+//   window.blockly_metronome = this.files[0];
+//   Code.metronome.setAttribute("src", url);
+// });
 
 try {
   navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(enumerateDevices).then(gotDevices).catch(handleError);
@@ -1462,9 +1227,9 @@ function gotDevices(deviceInfos) {
   newMusicOutputSelector.addEventListener("change", changeMusicDestination);
   document.querySelector("select#musicOutputSelect").replaceWith(newMusicOutputSelector);
 
-  const newMetronomeOutputSelector = masterOutputSelector.cloneNode(true);
-  newMetronomeOutputSelector.addEventListener("change", changeMetronomeDestination);
-  document.querySelector("select#metronomeOutputSelect").replaceWith(newMetronomeOutputSelector);
+  // const newMetronomeOutputSelector = masterOutputSelector.cloneNode(true);
+  // newMetronomeOutputSelector.addEventListener("change", changeMetronomeDestination);
+  // document.querySelector("select#metronomeOutputSelect").replaceWith(newMetronomeOutputSelector);
 }
 
 function handleError(error) {
@@ -1477,11 +1242,11 @@ function changeMusicDestination(event) {
   attachSinkId(element, deviceId);
 }
 
-function changeMetronomeDestination(event) {
-  const deviceId = event.target.value;
-  const element = Code.metronome;
-  attachSinkId(element, deviceId);
-}
+// function changeMetronomeDestination(event) {
+//   const deviceId = event.target.value;
+//   const element = Code.metronome;
+//   attachSinkId(element, deviceId);
+// }
 
 // Attach audio output device to the provided media element using the deviceId.
 function attachSinkId(element, sinkId) {

@@ -72,11 +72,11 @@ window.onload = function () {
     let log_value = "";
     if (currentControlType === "percentage_control") {
       if (value === null) {
-        log_value = control_percentage_value.value + '%';
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value);
+        log_value = control_percentage_value.value + "%";
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value).then(()=>{console.log("Sent!")});
       } else {
         log_value = value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value);
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value).then(()=>{console.log("Sent!")});
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
@@ -116,9 +116,9 @@ window.onload = function () {
     if (window.blockly_music) {
       zip.file("music.mp3", window.blockly_music);
     }
-    if (window.blockly_metronome) {
-      zip.file("metronome.mp3", window.blockly_metronome);
-    }
+    // if (window.blockly_metronome) {
+    //   zip.file("metronome.mp3", window.blockly_metronome);
+    // }
 
     zip.generateAsync({ type: "blob",compression: "DEFLATE" }).then(function (content) {
       saveAs(content, document.querySelector("#filename").value.replace(/\.tgbl$/, "") + ".tgbl");
@@ -220,7 +220,7 @@ window.onload = function () {
 
 Code.music.addEventListener("timeupdate", () => {
   if (!musicDebounce && Code.music.paused) {
-    Code.timeline.setMillis(Code.music.currentTime * 1000);
+    Code.device.timeline.setMillis(Code.music.currentTime * 1000);
     wavesurfer.setCurrentTime(Code.music.currentTime);
     Code.device.syncTimeline();
     musicDebounce = true

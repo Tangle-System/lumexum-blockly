@@ -143,7 +143,7 @@ var validator_P = function (value) {
     return null;
   }
 
-  let reg = value.match(/(\d+)\s*px/);
+  let reg = value.match(/(-?\d+)\s*px/);
 
   if (reg) {
     return reg[1] + "px";
