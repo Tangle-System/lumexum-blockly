@@ -291,6 +291,8 @@ Code.control.setVisible = function (enable) {
   }
 };
 
+Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
+// Code.metronome = new Audio();
 
 
 
@@ -1367,12 +1369,44 @@ Code.discard = function () {
 
 // var port;
 
+Code.adoptBluetooth = function () {
+  Code.device.adopt();
+}
+
 Code.connectBluetooth = function () {
   Code.device.bluetoothDevice.connect();
 };
 
 Code.connectSerial = function () {
-  Code.device.serialDevice.connect();
+  // if (Code.device.variant != "webserial") {
+  //   Code.device.assignConnector("webserial");
+
+  //   Code.device.addEventListener("connected", (event) => {
+  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
+  //     icon.classList.remove("connect");
+  //     icon.classList.add("disconnect");
+
+  //   });
+
+  //   Code.device.addEventListener("disconnected", (event) => {
+  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
+  //     icon.classList.remove("disconnect");
+  //     icon.classList.add("connect");
+  //   });
+
+  //   Code.device.addEventListener("receive", (event) => {
+  //     const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
+  //     const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
+
+  //     const textarea = document.getElementById("content_debug");
+  //     textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
+
+  //     while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
+  //       textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
+  //     }
+  //   });
+  // }
+  // Code.device.connect();
 };
 
 Code.onKeyPress = function (e) {
@@ -1405,7 +1439,7 @@ Number.prototype.pad = function (size) {
 };
 
 setInterval(function () {
-  
+
   let now = Code.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
