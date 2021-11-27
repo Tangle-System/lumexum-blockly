@@ -37,7 +37,14 @@
   <script src="lib/TangleParser.js"></script>
 
   <script src="lib/other/jszip.min.js" defer></script>
-  <script src="lib/other/wavesurfer.js" defer></script>
+
+  <script src="lib/other/wavesurfer/wavesurfer.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.cursor.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.markers.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.mediasession.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.playhead.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.timeline.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.regions.js" ></script>
 
   <link rel="shortcut icon" href="#">
 </head>
@@ -53,7 +60,7 @@
   </p> -->
 
 
-  <table width="100%" height="100%">
+  <table ondragover="handleDrop(event)" ondrop="handleDrop(event)" width="100%" height="100%">
     <tr>
       <td>
         <img src="tangle.png" alt="Tangle" style="width:80px;height:40px;">
@@ -158,10 +165,13 @@
     </tr>
     <tr>
       <td colspan="2" id="timeline_container" style="height: 130px;">
-        <audio id="timeline" title="timeline" controls style="width: 97.5%;"></audio> 
+        <audio id="timeline-old" style="display: none !important;" title="timeline" controls style="width: 97.5%;"></audio> 
         <button id="timeline_toggle" style="width: 2%; position: absolute; right: 0; z-index: 10; text-align: center; padding: 0;">^</button>
         <div  id="waveform_container" >
-          <div id="waveform"  style="width: 100%;height: 50px;"></div>
+          <div id="waveform"  style="width: 100%;height: 50px;">
+          </div>
+                        <div id="timeline"></div>
+
         </div>
 
       </td>
