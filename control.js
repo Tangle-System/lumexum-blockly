@@ -85,8 +85,18 @@ window.onload = function () {
   });
   // wavesurfer.setMute(true);
   window.musicDebounce = false;
+  const playPause = document.querySelector("#playPause")
+  playPause.onclick = function () {
+    if (wavesurfer.isPlaying()) {
+      wavesurfer.pause();
+      playPause.innerHTML = "Play";
+    } else {
+      wavesurfer.play();
+      playPause.innerHTML = "Pause";
+    }
+  };
 
-  wavesurfer.load('./elevator.mp3');
+  // wavesurfer.load('./elevator.mp3');
 
   let count = 100
 
