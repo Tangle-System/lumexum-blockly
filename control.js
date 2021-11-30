@@ -88,14 +88,22 @@ window.onload = function () {
   const playPause = document.querySelector("#playPause")
   playPause.onclick = function () {
     if (wavesurfer.isPlaying()) {
+      Code.timeline.pause();
       wavesurfer.pause();
       playPause.innerHTML = "Play";
     } else {
+      Code.timeline.unpause();
       wavesurfer.play();
       playPause.innerHTML = "Pause";
     }
   };
 
+  wavesurfer.on('interaction', function () {
+    setTimeout(() => {
+      Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+
+    }, 1)
+  });
   // wavesurfer.load('./elevator.mp3');
 
   let count = 100
@@ -352,10 +360,10 @@ function getHexColor(colorStr) {
 }
 
 
-document.body.ondrop = function (e) {
-  console.log("ondrop", e);
-  e.preventDefault();
-}
+// document.body.ondrop = function (e) {
+//   console.log("ondrop", e);
+//   e.preventDefault();
+// }
 
 function handleFileDrop(e) {
   console.log("ondrop", e);
@@ -364,8 +372,8 @@ function handleFileDrop(e) {
   e.preventDefault();
 }
 
-document.querySelector('#filename').ondrop = handleFileDrop;
-document.querySelector('#loadFile').ondrop = handleFileDrop;
-document.querySelector('#saveFile').ondrop = handleFileDrop;
-document.querySelector(".blocklySvg").ondrop = handleFileDrop;
+// document.querySelector('#filename').ondrop = handleFileDrop;
+// document.querySelector('#loadFile').ondrop = handleFileDrop;
+// document.querySelector('#saveFile').ondrop = handleFileDrop;
+// document.querySelector(".blocklySvg").ondrop = handleFileDrop;
 

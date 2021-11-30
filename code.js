@@ -1378,35 +1378,7 @@ Code.connectBluetooth = function () {
 };
 
 Code.connectSerial = function () {
-  // if (Code.device.variant != "webserial") {
-  //   Code.device.assignConnector("webserial");
-
-  //   Code.device.addEventListener("connected", (event) => {
-  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
-  //     icon.classList.remove("connect");
-  //     icon.classList.add("disconnect");
-
-  //   });
-
-  //   Code.device.addEventListener("disconnected", (event) => {
-  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
-  //     icon.classList.remove("disconnect");
-  //     icon.classList.add("connect");
-  //   });
-
-  //   Code.device.addEventListener("receive", (event) => {
-  //     const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-  //     const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
-
-  //     const textarea = document.getElementById("content_debug");
-  //     textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
-
-  //     while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-  //       textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-  //     }
-  //   });
-  // }
-  // Code.device.connect();
+  Code.device.serialDevice.connect();
 };
 
 Code.onKeyPress = function (e) {
