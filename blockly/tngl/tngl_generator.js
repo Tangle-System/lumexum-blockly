@@ -84,6 +84,69 @@ function decodeExtendDeviceValue(value_next) {
   }
 }
 
+function subTimestamps(t1, t2) {
+  function getTimestamp(timestamp) {
+    timestamp.replace(/_/g, ""); // replaces all '_' with nothing
+
+    let total_tics = 0;
+
+    while (timestamp) {
+      let reg = timestamp.match(/([+-]?[0-9]*[.]?[0-9]+)([dhmst])/); // for example gets "-1.4d" from "-1.4d23.2m1s"
+
+      if (!reg) {
+        // if the regex match failes, then the algorithm is done
+        if (timestamp != "") {
+          console.error("Error while parsing timestamp");
+          console.log("Leftover string:", timestamp);
+        }
+        break;
+      }
+
+      let value = reg[0]; // gets "-1.4d" from "-1.4d"
+      let unit = reg[2]; // gets "d" from "-1.4d"
+      let number = parseFloat(reg[1]); // gets "-1.4" from "-1.4d"
+
+      // console.log("value:", value);
+      // console.log("unit:", unit);
+      // console.log("number:", number);
+
+      switch (unit) {
+        case "d":
+          total_tics += number * 86400000;
+          break;
+
+        case "h":
+          total_tics += number * 3600000;
+          break;
+
+        case "m":
+          total_tics += number * 60000;
+          break;
+
+        case "s":
+          total_tics += number * 1000;
+          break;
+
+        case "t":
+          total_tics += number;
+          break;
+
+        default:
+          console.error("Error while parsing timestamp");
+          break;
+      }
+
+      timestamp = timestamp.replace(value, ""); // removes one value from the string
+    }
+
+    // console.log("total_tics:", total_tics);
+
+    return total_tics;
+  }
+
+  return getTimestamp(t1) - getTimestamp(t2) + "t";
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 Blockly.Tngl["animation_dummy_next"] = function (block) {

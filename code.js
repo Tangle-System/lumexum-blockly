@@ -346,6 +346,8 @@ Code.play = async function () {
   Code.timeline.unpause();
   console.log("Play");
 
+  wavesurfer.play();
+
   if (Code.music.src) {
     Code.music.play();
   }
@@ -359,6 +361,11 @@ Code.play = async function () {
 Code.cycle = async function () {
   Code.timeline.setMillis(0);
   console.log("Cycle");
+
+  wavesurfer.stop();
+  if (!Code.timeline.paused()) {
+    wavesurfer.play();
+  }
 
   if (Code.music.src) {
     Code.music.load();
@@ -381,6 +388,8 @@ Code.pause = async function () {
   Code.timeline.pause();
   console.log("Pause");
 
+  wavesurfer.pause();
+
   if (Code.music.src) {
     Code.music.pause();
   }
@@ -396,6 +405,9 @@ Code.stop = async function () {
   Code.timeline.pause();
   Code.timeline.setMillis(0);
   console.log("Stop");
+
+  wavesurfer.pause();
+  wavesurfer.stop();
 
   if (Code.music.src) {
     Code.music.pause();
