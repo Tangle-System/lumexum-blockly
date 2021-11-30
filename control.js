@@ -85,8 +85,27 @@ window.onload = function () {
   });
   // wavesurfer.setMute(true);
   window.musicDebounce = false;
+  const playPause = document.querySelector("#playPause")
+  playPause.onclick = function () {
+    if (wavesurfer.isPlaying()) {
+      Code.timeline.pause();
+      wavesurfer.pause();
+      playPause.innerHTML = "Play";
+    } else {
+      Code.timeline.unpause();
+      wavesurfer.play();
+      playPause.innerHTML = "Pause";
+    }
+  };
 
-  wavesurfer.load('./elevator.mp3');
+  wavesurfer.on('interaction', function () {
+    setTimeout(() => {
+      Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+
+    }, 1)
+  });
+
+  // wavesurfer.load('./elevator.mp3');
 
   let count = 100
 
