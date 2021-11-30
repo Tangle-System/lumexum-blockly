@@ -43,26 +43,29 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Code.device = new TangleDevice("00112233445566778899aabbccddeeff");
+const owner_signature = /** @type {HTMLInputElement} */ (document.querySelector("#owner_signature"));
+console.log("owner signature:", owner_signature.value);
+Code.device = new TangleDevice(owner_signature.value);
 
 Code.device.addEventListener("connected", (event) => {
   return event.target
     .requestTimeline()
     .then(() => {
       console.log("Bluetooth Device connected");
-
-      const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+      const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
+      const icon = /** @type {Element} */ (button.childNodes[1]);
       icon.classList.remove("connect");
       icon.classList.add("disconnect");
     })
     .catch((error) => {
       console.warn(error);
-      //event.target.connect();
     });
 });
 
 Code.device.addEventListener("disconnected", (event) => {
-  const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+  console.log("Bluetooth Device disconnected");
+  const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
+  const icon = /** @type {Element} */ (button.childNodes[1]);
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
 });
@@ -1104,7 +1107,13 @@ Code.connectBluetooth = function () {
     //   }
     // });
   }
-  Code.device.connect();
+  if (!Code.device.isConnected()) {
+    console.log("Connecting device...");
+    Code.device.connect();
+  } else {
+    console.log("Disconnecting device...");
+    Code.device.disconnect();
+  }
 };
 
 Code.connectSerial = function () {

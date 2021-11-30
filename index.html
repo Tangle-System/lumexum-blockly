@@ -124,8 +124,6 @@
                 <img src="blockly/media/1x1.gif" class="connect icon21">
               </button>
 
-
-
               <span id="revTime">00:00</span>
 
               <button id="uploadButton" class="notext primary" title="...">
@@ -177,34 +175,39 @@
   <div id="content_control" class="content">
     <div style="display: flex; justify-content: space-around; flex-direction: column;max-width: 800px;margin:auto">
 
+
       <div>
-
-        <button id="rebootButton">
-          Device Reboot
-        </button>
-
-        <button id="simplifyButton">
-          Remove Shadow Blocks
-        </button>
-
-        <div>
         <span>
-          <input type="file" id="otaFirmware">
-          <button id="otaUpdateFirmware">
-            Write OTA
-          </button>
-        </span>
-
-        <span>
-          <input type="file" id="otaConfig">
-          <button id="otaUpdateConfig">
-            Write Config
-          </button>
+          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="bfd39c89ccc2869f240508e9a0609420">
         </span>
       </div>
 
+      <div>
+        <span>
+          <button id="rebootButton">
+            Device Reboot
+          </button>
 
+          <button id="simplifyButton">
+            Remove Shadow Blocks
+          </button>
+        </span>
 
+        <div>
+          <span>
+            <input type="file" id="otaFirmware">
+            <button id="otaUpdateFirmware">
+              Write OTA
+            </button>
+          </span>
+
+          <span>
+            <input type="file" id="otaConfig">
+            <button id="otaUpdateConfig">
+              Write Config
+            </button>
+          </span>
+        </div>
       </div>
 
       <br>
