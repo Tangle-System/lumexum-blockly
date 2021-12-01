@@ -1273,13 +1273,11 @@ window.onbeforeunload = function (e) {
   let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
 
   if (window.localStorage.getItem("blocks") !== xml_code) {
+    e.preventDefault();
     e.cancelBubble = true;
     e.returnValue = 'Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.'
     window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
-
-    e.preventDefault();
   }
 }
-// window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
 
 
