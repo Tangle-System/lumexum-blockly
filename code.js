@@ -1049,6 +1049,11 @@ Code.initLanguage = function () {
   document.getElementById("pauseButton").title = "Pozastavit animaci";
   document.getElementById("stopButton").title = "Resetovat animaci";
 };
+document.querySelector('#saveButton').onclick = _ => {
+  let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
+  localStorage.setItem("blocks", xml_code);
+};
+
 
 /**
  * Discard all blocks from the workspace.
@@ -1270,3 +1275,18 @@ function attachSinkId(element, sinkId) {
     console.warn("Browser does not support output device selection.");
   }
 }
+
+window.onbeforeunload = function (e) {
+  if (!e) e = window.event;
+
+  let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
+
+  if (window.localStorage.getItem("blocks") !== xml_code) {
+    e.preventDefault();
+    e.cancelBubble = true;
+    e.returnValue = 'Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.'
+    window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
+  }
+}
+
+
