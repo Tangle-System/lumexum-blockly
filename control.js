@@ -262,6 +262,35 @@ window.onload = function () {
   Code.music.onplay = _ => wavesurfer.play();
   Code.music.onpause = _ => wavesurfer.pause();
   Code.music.onstop = _ => wavesurfer.stop();
+
+  setupOwnership();
+}
+
+
+function setupOwnership() {
+  const owner_identifier = /** @type {HTMLInputElement} */ (document.querySelector("#owner_identifier"));
+  const owner_signature = /** @type {HTMLInputElement} */ (document.querySelector("#owner_signature"));
+  const owner_key = /** @type {HTMLInputElement} */ (document.querySelector("#owner_key"));
+  
+  console.log("owner identifier:", owner_identifier.value);
+  console.log("owner key:", owner_key.value);
+
+  owner_identifier.onchange = async (e) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(owner_identifier.value);
+    const hash = await crypto.subtle.digest("SHA-1", data);
+
+    owner_signature.value = uint8ArrayToHexString(hash).slice(0,32);
+
+    Code.device.assignOwnerSignature(owner_signature.value);
+  };
+
+  owner_key.onchange = async (e) => {
+    Code.device.assignOwnerKey(owner_key.value);
+  };
+
+  owner_identifier.onchange(null);
+  owner_key.onchange(null);
 }
 
 function loadBlocksfromXmlDom(blocksXmlDom) {
@@ -376,5 +405,5 @@ function handleFileDrop(e) {
 document.querySelector('#filename').ondrop = handleFileDrop;
 document.querySelector('#loadFile').ondrop = handleFileDrop;
 document.querySelector('#saveFile').ondrop = handleFileDrop;
-document.querySelector(".blocklySvg").ondrop = handleFileDrop;
+//document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work 
 

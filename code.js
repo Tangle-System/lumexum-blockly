@@ -11,8 +11,8 @@
 
 /// <reference path="lib/TangleWebBluetoothConnector.js" />
 /// <reference path="blockly/blockly_compressed.js" />
-
-
+/// <reference path="lib/TangleParser.js" />
+/// <reference path="lib/TimeTrack.js" />
 
 "use strict";
 
@@ -43,9 +43,7 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const owner_signature = /** @type {HTMLInputElement} */ (document.querySelector("#owner_signature"));
-console.log("owner signature:", owner_signature.value);
-Code.device = new TangleDevice(owner_signature.value);
+Code.device = new TangleDevice();
 
 Code.device.addEventListener("connected", (event) => {
   return event.target
@@ -69,147 +67,6 @@ Code.device.addEventListener("disconnected", (event) => {
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
 });
-
-// Code.device.bluetoothDevice = new TangleDevice();
-
-// Code.device.bluetoothDevice.addEventListener("connected", (event) => {
-//   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
-//   icon.classList.remove("connect");
-//   icon.classList.add("disconnect");
-// });
-
-// Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
-//   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
-//   icon.classList.remove("disconnect");
-//   icon.classList.add("connect");
-// });
-
-// Code.device.serialDevice = new TangleSerialDevice();
-
-// Code.device.serialDevice.addEventListener("connected", (event) => {
-//   const icon = document.getElementById("connectSerialButton").childNodes[1];
-//   icon.classList.remove("connect");
-//   icon.classList.add("disconnect");
-
-// });
-
-// Code.device.serialDevice.addEventListener("disconnected", (event) => {
-//   const icon = document.getElementById("connectSerialButton").childNodes[1];
-//   icon.classList.remove("disconnect");
-//   icon.classList.add("connect");
-// });
-
-// Code.device.serialDevice.addEventListener("receive", (event) => {
-//   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-//   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
-
-//   const textarea = document.getElementById("content_debug");
-//   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
-
-//   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-//     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-//   }
-// });
-
-// Code.device.setTimeline = function () {
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.setTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.setTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   // }
-//   return Promise.reject();
-
-// };
-
-// Code.device.reboot = function () {
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.reboot();
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.reboot();
-//   // }
-//   return Promise.reject();
-
-// };
-
-// Code.device.writeTngl = function (tngl_bytes) {
-//   if (tngl_bytes === null) {
-//     tngl_bytes = [];
-//   }
-
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.uploadTngl(tngl_bytes, 0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.uploadTngl(tngl_bytes, 0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   // }
-//   return Promise.reject();
-
-// };
-
-// Code.device.emitPercentageEvent = function (event_label, event_percentage_value, event_destination) {
-//   if (event_destination === null) {
-//     event_destination = 0xff;
-//   }
-
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.emitPercentageEvent(event_label, event_percentage_value, Code.device.timeline.millis(), event_destination);
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.emitPercentageEvent(event_label, event_percentage_value, Code.device.timeline.millis(), event_destination);
-//   // }
-//   return Promise.reject();
-// };
-
-// Code.device.emitColorEvent = function (event_label, event_color_value, event_destination) {
-//   if (event_destination === null) {
-//     event_destination = 0xff;
-//   }
-
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.emitColorEvent(event_label, event_color_value, Code.device.timeline.millis(), event_destination);
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.emitColorEvent(event_label, event_color_value, Code.device.timeline.millis(), event_destination);
-//   // }
-//   return Promise.reject();
-// };
-
-// Code.device.emitTimestampEvent = function (event_label, event_timestamp_value, event_destination) {
-//   if (event_destination === null) {
-//     event_destination = 0xff;
-//   }
-
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.device.timeline.millis(), event_destination);
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.emitTimestampEvent(event_label, event_timestamp_value, Code.device.timeline.millis(), event_destination);
-//   // }
-//   return Promise.reject();
-
-// };
-
-// Code.device.syncTimeline = function () {
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.syncTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.syncTimeline(0x00, Code.device.timeline.millis(), Code.device.timeline.paused());
-//   // }
-//   return Promise.reject();
-// };
-
-// Code.device.syncClock = function () {
-//   if (Code.device.serialDevice.isConnected()) {
-//     return Code.device.serialDevice.syncClock();
-//   }
-//   // if (Code.device.bluetoothDevice.isConnected()) {
-//   //   return Code.device.bluetoothDevice.syncClock();
-//   // }
-//   return Promise.reject();
-// };
 
 function toggleUIConnected(connected) {
   if (connected) {
