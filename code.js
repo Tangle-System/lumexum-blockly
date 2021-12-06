@@ -708,8 +708,8 @@ Code.init = function () {
     //Code.renderContent();
   };
 
-  Code.otaReboot = function () {
-    Code.device.deviceReboot();
+  Code.rebootDevice = function () {
+    Code.device.reboot();
   };
 
   document.getElementById("otaFirmware").addEventListener("change", function () {
@@ -753,7 +753,6 @@ Code.init = function () {
         .then((data) => {
           JSON.parse(data);
           // TODO - validate also json fields and it's datatypes
-
           console.log(data);
         })
         .then(() => {
@@ -762,7 +761,6 @@ Code.init = function () {
             return Code.device.updateConfig(new Uint8Array(config));
           });
         })
-
         .catch(function (err) {
           console.warn("Something went wrong.", err);
         });
@@ -771,12 +769,10 @@ Code.init = function () {
     }
   };
 
-
-
   Code.tabClick(Code.selected);
 
   Code.bindClick("simplifyButton", Code.simplify);
-  Code.bindClick("rebootButton", Code.otaReboot);
+  Code.bindClick("rebootButton", Code.rebootDevice);
   Code.bindClick("otaUpdateFirmware", Code.otaUpdateFirmware);
   Code.bindClick("otaUpdateConfig", Code.otaUpdateConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
@@ -928,8 +924,13 @@ Code.discard = function () {
 // var port;
 
 Code.adoptBluetooth = function () {
-  Code.device.adopt();
-}
+  const name = document.getElementById("adoptName").value;
+  const id = document.getElementById("adoptId").value;
+
+  console.log('Adopting device as "' + name + '" id: ' + id);
+
+  Code.device.adopt(name, id);
+};
 
 Code.connectBluetooth = function () {
   if (Code.device.variant != "webbluetooth") {

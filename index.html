@@ -120,12 +120,6 @@
                 <img src="blockly/media/1x1.gif" class="connect icon21">
               </button>
 
-
-              <span>ADOPT</span>
-              <button id="adoptBluetoothButton" class="notext" title="...">
-                <img src="blockly/media/1x1.gif" class="connect icon21">
-              </button>
-
               <span>CONNECT</span>
               <button id="connectBluetoothButton" class="notext" title="...">
                 <img src="blockly/media/1x1.gif" class="connect icon21">
@@ -213,6 +207,7 @@
 
       <div>
         <span>
+
           <button id="rebootButton">
             Device Reboot
           </button>
@@ -223,19 +218,32 @@
         </span>
 
         <div>
-          <span>
+          &nbsp;
+        </div>
+
+        <div>
+
+          <div> 
+            Name <input type="text" value="Tangle" id="adoptName">
+            Id <input type="number" value="0" min="0" max="255" id="adoptId">
+            <button id="adoptBluetoothButton">
+              Adopt Device
+            </button>
+          </div>
+
+          <div>
             <input type="file" id="otaFirmware">
             <button id="otaUpdateFirmware">
               Write OTA
             </button>
-          </span>
+          </div>
 
-          <span>
+          <div>
             <input type="file" id="otaConfig">
             <button id="otaUpdateConfig">
               Write Config
             </button>
-          </span>
+          </div>
         </div>
       </div>
 
