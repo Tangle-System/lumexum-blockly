@@ -161,6 +161,7 @@ Blockly.Tngl["animation_dummy_add"] = function (block) {
 
 Blockly.Tngl["drawing"] = function (block) {
   var text_start = block.getFieldValue("START");
+  var dropdown_time_definition = block.getFieldValue("TIME_DEFINITION");
   var text_duration = block.getFieldValue("DURATION");
   var dropdown_draw_mode = block.getFieldValue("DRAW_MODE");
   var value_animation = Blockly.Tngl.valueToCode(block, "ANIMATION", Blockly.Tngl.ORDER_NONE);
@@ -185,8 +186,11 @@ Blockly.Tngl["drawing"] = function (block) {
       break;
   }
 
-  var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", " + value_animation + ");\n";
-  return code;
+  if (dropdown_time_definition === "DURATION") {
+    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", " + value_animation + ");\n";
+  } else {
+    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", " + value_animation + ");\n";
+  }
 };
 
 Blockly.Tngl["drawing_dummy"] = function (block) {
@@ -331,6 +335,7 @@ Blockly.Tngl["animation_palette_roll"] = function (block) {
 
 Blockly.Tngl["window"] = function (block) {
   var text_start = block.getFieldValue("START");
+  var dropdown_time_definition = block.getFieldValue("TIME_DEFINITION");
   var text_duration = block.getFieldValue("DURATION");
   var dropdown_draw_mode = block.getFieldValue("DRAW_MODE");
   var value_modifier = Blockly.Tngl.valueToCode(block, "MODIFIER", Blockly.Tngl.ORDER_NONE);
@@ -360,7 +365,12 @@ Blockly.Tngl["window"] = function (block) {
       break;
   }
 
-  var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  if (dropdown_time_definition === "DURATION") {
+    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  } else {
+    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  }
+
   return code;
 };
 
