@@ -160,6 +160,15 @@ Code.device.syncTimeline = function () {
   }
 };
 
+Code.device.setTimeline = function () {
+  if (Code.device.serialDevice.isConnected()) {
+    Code.device.serialDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+  }
+  if (Code.device.bluetoothDevice.isConnected()) {
+    Code.device.bluetoothDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+  }
+};
+
 Code.device.syncClock = function () {
   if (Code.device.serialDevice.isConnected()) {
     Code.device.serialDevice.syncClock();
@@ -291,7 +300,7 @@ Code.control.setVisible = function (enable) {
   }
 };
 
-Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
+// Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
 // Code.metronome = new Audio();
 
 
