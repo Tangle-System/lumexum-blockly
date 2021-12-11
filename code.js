@@ -206,108 +206,81 @@ Code.device.timeline = new TimeTrack();
 // }, 10000);
 
 
-Code.music.addEventListener("timeupdate", () => {
-  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
+// Code.music.addEventListener("timeupdate", () => {
+//   Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
-  Code.device.syncTimeline();
-});
+//   Code.device.syncTimeline();
+// });
 
-Code.music.addEventListener("play", () => {
-  Code.device.timeline.unpause();
-  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
+// Code.music.addEventListener("play", () => {
+//   Code.device.timeline.unpause();
+//   Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
-  // if (Code.metronome.src) {
-  //   Code.metronome.currentTime = Code.music.currentTime;
-  //   Code.metronome.play();
-  // }
+//   // if (Code.metronome.src) {
+//   //   Code.metronome.currentTime = Code.music.currentTime;
+//   //   Code.metronome.play();
+//   // }
 
-  Code.device.syncTimeline();
-});
+//   Code.device.syncTimeline();
+// });
 
-Code.music.addEventListener("pause", () => {
-  Code.device.timeline.pause();
-  Code.device.timeline.setMillis(Code.music.currentTime * 1000);
+// Code.music.addEventListener("pause", () => {
+//   Code.device.timeline.pause();
+//   Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 
-  // if (Code.metronome.src) {
-  //   Code.metronome.pause();
-  // }
+//   // if (Code.metronome.src) {
+//   //   Code.metronome.pause();
+//   // }
 
-  Code.device.syncTimeline();
-});
+//   Code.device.syncTimeline();
+// });
 
 Code.play = async function () {
   console.log("Play");
 
+  Code.device.timeline.unpause();
+  // Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+
   wavesurfer.play();
 
-  if (Code.music.src) {
-    Code.music.play();
-  }
-  // if (Code.metronome.src) {
-  //   Code.metronome.play();
-  // }
-
-  Code.device.syncTimeline();
+  // Code.device.syncTimeline();
 };
 
 Code.cycle = async function () {
   console.log("Cycle");
 
-  wavesurfer.stop();
-  if (!Code.timeline.paused()) {
-    wavesurfer.play();
-  }
+  wavesurfer.seekTo(0);
 
-  if (Code.music.src) {
-    Code.music.load();
-    if (!Code.device.timeline.paused()) {
-      Code.music.play();
-    }
-  }
+  Code.device.timeline.setMillis(0);
 
-  // if (Code.metronome.src) {
-  //   Code.metronome.load();
-  //   if (!Code.device.timeline.paused()) {
-  //     Code.metronome.play();
-  //   }
-  // }
-
-  Code.device.syncTimeline();
+  // Code.device.syncTimeline();
 };
 
 Code.pause = async function () {
   console.log("Pause");
 
+  Code.device.timeline.pause();
+  // Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+
   wavesurfer.pause();
 
-  if (Code.music.src) {
-    Code.music.pause();
-  }
+  const dur = wavesurfer.getDuration();
+  const pos = dur ? wavesurfer.getCurrentTime() / wavesurfer.getDuration() : 0;
+  wavesurfer.seekTo(pos); // workaround to trigger "interaction" wavesurfer event
 
-  // if (Code.metronome.src) {
-  //   Code.metronome.pause();
-  // }
-
-  Code.device.syncTimeline();
+  // Code.device.syncTimeline();
 };
 
 Code.stop = async function () {
   console.log("Stop");
 
+  Code.device.timeline.pause();
+  // Code.device.timeline.setMillis(0);
+
   wavesurfer.pause();
   wavesurfer.stop();
 
-  if (Code.music.src) {
-    Code.music.pause();
-    Code.music.load();
-  }
-
-  // if (Code.metronome.src) {
-  //   Code.metronome.pause();
-  //   Code.metronome.load();
-  // }
-
-  Code.device.syncTimeline();
+  // Code.device.syncTimeline();
 };
 
 Code.upload = async function () {
@@ -1061,11 +1034,12 @@ setInterval(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-document.getElementById("music").addEventListener("change", function () {
-  var url = URL.createObjectURL(this.files[0]);
-  window.blockly_music = this.files[0];
-  Code.music.setAttribute("src", url);
-});
+// document.getElementById("music").addEventListener("change", function () {
+//   //var url = URL.createObjectURL(this.files[0]);
+//   window.blockly_music = this.files[0];
+
+//   // Code.music.setAttribute("src", url);
+// });
 
 // document.getElementById("metronome").addEventListener("change", function () {
 //   var url = URL.createObjectURL(this.files[0]);
@@ -1113,9 +1087,10 @@ function handleError(error) {
 }
 
 function changeMusicDestination(event) {
-  const deviceId = event.target.value;
-  const element = Code.music;
-  attachSinkId(element, deviceId);
+  throw "NOT IMPLEMENTED";
+  // const deviceId = event.target.value;
+  // const element = Code.music;
+  // attachSinkId(element, deviceId);
 }
 
 // function changeMetronomeDestination(event) {

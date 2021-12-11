@@ -36,14 +36,14 @@ window.onload = function () {
     control_color_picker.value = getHexColor(control_color_value.value);
   };
 
-  const timeline_toggle = document.querySelector("#timeline_toggle");
+  // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
   const wavesurfer_container = document.querySelector("#waveform_container");
 
-  timeline_toggle.addEventListener("click", function () {
-    timeline_container.classList.toggle("openned");
-    wavesurfer_container.classList.toggle("hidden");
-  });
+  // timeline_toggle.addEventListener("click", function () {
+  //   timeline_container.classList.toggle("openned");
+  //   wavesurfer_container.classList.toggle("hidden");
+  // });
 
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
@@ -83,25 +83,39 @@ window.onload = function () {
     ],
   });
   // wavesurfer.setMute(true);
-  window.musicDebounce = false;
-  const playPause = document.querySelector("#playPause");
-  playPause.onclick = function () {
-    if (wavesurfer.isPlaying()) {
-      Code.timeline.pause();
-      wavesurfer.pause();
-      playPause.innerHTML = "Play";
-    } else {
-      Code.timeline.unpause();
-      wavesurfer.play();
-      playPause.innerHTML = "Pause";
-    }
-    Code.device.setTimeline();
-  };
+  //window.musicDebounce = false;
+  // const playPause = document.querySelector("#playPause");
+  // playPause.onclick = function () {
+  //   if (wavesurfer.isPlaying()) {
+  //     Code.device.timeline.pause();
+  //     wavesurfer.pause();
+  //     playPause.innerHTML = "Play";
+  //   } else {
+  //     Code.device.timeline.unpause();
+  //     wavesurfer.play();
+  //     playPause.innerHTML = "Pause";
+  //   }
+  //   Code.device.setTimeline();
+  // };
 
   wavesurfer.on("interaction", function () {
+    //console.log("interaction");
     setTimeout(() => {
-      Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
-      Code.device.syncTimeline();
+      // if (!wavesurfer.isPlaying() != Code.device.timeline.paused()) {
+      //   if (wavesurfer.isPlaying()) {
+      //     Code.device.timeline.unpause();
+      //   } else {
+      //     Code.device.timeline.pause();
+      //   }
+      // }
+
+      if (wavesurfer.getDuration()) {
+        Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+      }
+
+      Code.device.syncTimeline().catch(() => {
+        console.log("Device Disconnected");
+      });
     }, 1);
   });
   // wavesurfer.load('./elevator.mp3');
@@ -166,10 +180,14 @@ window.onload = function () {
     if (currentControlType === "percentage_control") {
       if (value === null) {
         log_value = control_percentage_value.value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value).then(() => { console.log("Sent!") });
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value).then(() => {
+          console.log("Sent!");
+        });
       } else {
         log_value = value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value).then(() => { console.log("Sent!") });
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value).then(() => {
+          console.log("Sent!");
+        });
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
@@ -238,20 +256,18 @@ window.onload = function () {
     selectFile.click();
   };
 
+  // // MUSIC controls
+  // wavesurfer.on('interaction', e => {
+  //   if (!musicDebounce) {
+  //     //Code.music.currentTime = wavesurfer.getCurrentTime()
+  //     musicDebounce = true;
+  //     setTimeout(_ => musicDebounce = false, 20)
+  //   }
+  // })
 
-
-  // MUSIC controls
-  wavesurfer.on('interaction', e => {
-    if (!musicDebounce) {
-      Code.music.currentTime = wavesurfer.getCurrentTime()
-      musicDebounce = true;
-      setTimeout(_ => musicDebounce = false, 20)
-    }
-  })
-
-  Code.music.onplay = _ => wavesurfer.play();
-  Code.music.onpause = _ => wavesurfer.pause();
-  Code.music.onstop = _ => wavesurfer.stop();
+  // Code.music.onplay = _ => wavesurfer.play();
+  // Code.music.onpause = _ => wavesurfer.pause();
+  // Code.music.onstop = _ => wavesurfer.stop();
 
   setupOwnership();
 }
@@ -318,13 +334,13 @@ const parseInputXMLfile = function (file) {
     if (zip.file("music.mp3")) {
       window.blockly_music = await zip.file("music.mp3").async("blob");
       const music_url = URL.createObjectURL(window.blockly_music);
-      Code.music.setAttribute("src", music_url);
+      // Code.music.setAttribute("src", music_url);
       wavesurfer.load(music_url);
     }
 
     if (zip.file("metronome.mp3")) {
-      window.blockly_music = await zip.file("metronome.mp3").async("blob");
-      Code.music.setAttribute("src", URL.createObjectURL(window.blockly_music));
+      window.blockly_metronome = await zip.file("metronome.mp3").async("blob");
+      // Code.music.setAttribute("src", URL.createObjectURL(window.blockly_music));
     }
 
     console.log("File " + filename + " is loaded");
@@ -345,7 +361,7 @@ const parseInputXMLfile = function (file) {
 //   console.log("timeupdate");
 
 //   if (!musicDebounce && Code.music.paused) {
-//     Code.timeline.setMillis(Code.music.currentTime * 1000);
+//    Code.device.timeline.setMillis(Code.music.currentTime * 1000);
 //     wavesurfer.setCurrentTime(Code.music.currentTime);
 //     Code.device.syncTimeline();
 //     musicDebounce = true
@@ -356,8 +372,12 @@ const parseInputXMLfile = function (file) {
 document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
   window.blockly_music = this.files[0];
-  Code.music.setAttribute("src", url);
+  // Code.music.setAttribute("src", url);
   wavesurfer.load(url);
+
+  Code.device.timeline.pause();
+  Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+  Code.device.syncTimeline();
 });
 
 

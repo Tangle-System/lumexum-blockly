@@ -225,6 +225,6 @@ audio { width: 100%; }
   height: 200px !important;
   z-index: 10;
 }
-.openned #timeline_toggle {
+/* .openned #timeline_toggle {
   transform: rotate(180deg);
-}
+} */
