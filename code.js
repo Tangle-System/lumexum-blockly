@@ -190,7 +190,7 @@ Code.control.setVisible = function (enable) {
   }
 };
 
-Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
+// Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
 // Code.metronome = new Audio();
 
 Code.device.timeline = new TimeTrack();
@@ -238,7 +238,7 @@ Code.music.addEventListener("pause", () => {
 Code.play = async function () {
   console.log("Play");
 
-  Code.device.timeline.unpause();
+  wavesurfer.play();
 
   if (Code.music.src) {
     Code.music.play();
@@ -253,7 +253,10 @@ Code.play = async function () {
 Code.cycle = async function () {
   console.log("Cycle");
 
-  Code.device.timeline.setMillis(0);
+  wavesurfer.stop();
+  if (!Code.timeline.paused()) {
+    wavesurfer.play();
+  }
 
   if (Code.music.src) {
     Code.music.load();
@@ -275,7 +278,7 @@ Code.cycle = async function () {
 Code.pause = async function () {
   console.log("Pause");
 
-  Code.device.timeline.pause();
+  wavesurfer.pause();
 
   if (Code.music.src) {
     Code.music.pause();
@@ -291,8 +294,8 @@ Code.pause = async function () {
 Code.stop = async function () {
   console.log("Stop");
 
-  Code.device.timeline.pause();
-  Code.device.timeline.setMillis(0);
+  wavesurfer.pause();
+  wavesurfer.stop();
 
   if (Code.music.src) {
     Code.music.pause();
@@ -1035,6 +1038,7 @@ window.addEventListener("load", Code.init);
 
 
 setInterval(function () {
+
   let now = Code.device.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;

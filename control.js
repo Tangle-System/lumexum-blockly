@@ -1,6 +1,5 @@
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
-
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");
@@ -15,27 +14,27 @@ window.onload = function () {
 
   // CONTROL TYPE HANDLER
   let currentControlType = "percentage_control";
-  document.querySelector("#control_type").onchange = e => {
+  document.querySelector("#control_type").onchange = (e) => {
     const controlType = e.target.options[e.target.selectedIndex].value;
     // Hide other controls
     document.querySelector(`#${currentControlType}`).style.display = "none";
     document.querySelector(`#${controlType}`).style.display = "block";
 
-    currentControlType = controlType
-  }
+    currentControlType = controlType;
+  };
 
-  control_label.onchange = e => {
+  control_label.onchange = (e) => {
     control_label.value = control_label.value.replace(/\W/g, "");
     control_label.value = control_label.value.substring(0, 5);
   };
 
-  control_color_picker.oninput = e => {
+  control_color_picker.oninput = (e) => {
     control_color_value.value = control_color_picker.value;
-  }
+  };
 
-  control_color_value.oninput = e => {
+  control_color_value.oninput = (e) => {
     control_color_picker.value = getHexColor(control_color_value.value);
-  }
+  };
 
   const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
@@ -44,14 +43,14 @@ window.onload = function () {
   timeline_toggle.addEventListener("click", function () {
     timeline_container.classList.toggle("openned");
     wavesurfer_container.classList.toggle("hidden");
-  })
+  });
 
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
   // TODO make wavesurfer rerenders only when openned
   // TODO add Zoom and time-line functionality like in Tangler
   window.wavesurfer = WaveSurfer.create({
-    container: '#waveform',
+    container: "#waveform",
     height: 60,
     plugins: [
       WaveSurfer.regions.create({
@@ -69,23 +68,23 @@ window.onload = function () {
         // ]
       }),
       WaveSurfer.timeline.create({
-        container: '#timeline'
+        container: "#timeline",
       }),
       WaveSurfer.cursor.create({
         showTime: true,
         opacity: 1,
         customShowTimeStyle: {
-          'background-color': '#000',
-          color: '#fff',
-          padding: '2px',
-          'font-size': '10px'
-        }
-      })
-    ]
+          "background-color": "#000",
+          color: "#fff",
+          padding: "2px",
+          "font-size": "10px",
+        },
+      }),
+    ],
   });
   // wavesurfer.setMute(true);
   window.musicDebounce = false;
-  const playPause = document.querySelector("#playPause")
+  const playPause = document.querySelector("#playPause");
   playPause.onclick = function () {
     if (wavesurfer.isPlaying()) {
       Code.timeline.pause();
@@ -96,25 +95,24 @@ window.onload = function () {
       wavesurfer.play();
       playPause.innerHTML = "Pause";
     }
+    Code.device.setTimeline();
   };
 
-  wavesurfer.on('interaction', function () {
+  wavesurfer.on("interaction", function () {
     setTimeout(() => {
       Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
-
-    }, 1)
+      Code.device.syncTimeline();
+    }, 1);
   });
-
   // wavesurfer.load('./elevator.mp3');
 
-  let count = 100
+  let count = 100;
 
   function handleAltZoom(e) {
-
     if (!e.altKey) {
       return;
     } else {
-      e.preventDefault()
+      e.preventDefault();
     }
 
     // TODO - implement debouncing to prevent render twice when zooming fast on long song
@@ -128,9 +126,8 @@ window.onload = function () {
       //   });
       // }, 100)
 
-
-      if ((count - e.deltaY) < 10) {
-        count = 10
+      if (count - e.deltaY < 10) {
+        count = 10;
       } else {
         count -= e.deltaY;
       }
@@ -142,20 +139,17 @@ window.onload = function () {
         count = 10;
       }
 
-
-      console.log('zoom count', count)
+      console.log("zoom count", count);
 
       if (count >= 10 && count <= 1500) {
-        wavesurfer.zoom(count)
+        wavesurfer.zoom(count);
 
         debounce = true;
       }
     }
   }
 
-
-  document.querySelector('#waveform').addEventListener('wheel', handleAltZoom);
-
+  document.querySelector("#waveform").addEventListener("wheel", handleAltZoom);
 
   function handlePercentageValueChange(e) {
     const value = e.target.value;
@@ -225,10 +219,6 @@ window.onload = function () {
   };
 
   loadFile.onclick = (_) => {
-
-
-
-
     // Create once invisible browse button with event listener, and click it
     var selectFile = document.getElementById("select_file");
     if (selectFile === null) {
@@ -351,15 +341,17 @@ const parseInputXMLfile = function (file) {
 };
 
 
-Code.music.addEventListener("timeupdate", () => {
-  if (!musicDebounce && Code.music.paused) {
-    Code.device.timeline.setMillis(Code.music.currentTime * 1000);
-    wavesurfer.setCurrentTime(Code.music.currentTime);
-    Code.device.syncTimeline();
-    musicDebounce = true
-    setTimeout(_ => musicDebounce = false, 20)
-  }
-});
+// Code.music.addEventListener("timeupdate", () => {
+//   console.log("timeupdate");
+
+//   if (!musicDebounce && Code.music.paused) {
+//     Code.timeline.setMillis(Code.music.currentTime * 1000);
+//     wavesurfer.setCurrentTime(Code.music.currentTime);
+//     Code.device.syncTimeline();
+//     musicDebounce = true
+//     setTimeout(_ => musicDebounce = false, 20)
+//   }
+// });
 
 document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
