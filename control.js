@@ -101,15 +101,19 @@ window.onload = function () {
   wavesurfer.on("interaction", function () {
     //console.log("interaction");
     setTimeout(() => {
-      // if (!wavesurfer.isPlaying() != Code.device.timeline.paused()) {
-      //   if (wavesurfer.isPlaying()) {
-      //     Code.device.timeline.unpause();
-      //   } else {
-      //     Code.device.timeline.pause();
-      //   }
-      // }
-
+      
       if (wavesurfer.getDuration()) {
+
+        const playing = wavesurfer.isPlaying();
+
+        if (playing != !Code.device.timeline.paused()) {
+          if (playing) {
+            Code.device.timeline.unpause();
+          } else {
+            Code.device.timeline.pause();
+          }
+        }
+
         Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
       }
 

@@ -249,7 +249,7 @@ Code.play = async function () {
 Code.cycle = async function () {
   console.log("Cycle");
 
-  wavesurfer.seekTo(0);
+  wavesurfer.seekAndCenter(0);
 
   Code.device.timeline.setMillis(0);
 
@@ -266,7 +266,7 @@ Code.pause = async function () {
 
   const dur = wavesurfer.getDuration();
   const pos = dur ? wavesurfer.getCurrentTime() / wavesurfer.getDuration() : 0;
-  wavesurfer.seekTo(pos); // workaround to trigger "interaction" wavesurfer event
+  wavesurfer.seekAndCenter(pos);
 
   // Code.device.syncTimeline();
 };
