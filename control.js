@@ -45,6 +45,7 @@ window.onload = function () {
   //   wavesurfer_container.classList.toggle("hidden");
   // });
 
+
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
   // TODO make wavesurfer rerenders only when openned
@@ -82,6 +83,7 @@ window.onload = function () {
       }),
     ],
   });
+
   // wavesurfer.setMute(true);
   //window.musicDebounce = false;
   // const playPause = document.querySelector("#playPause");
@@ -101,7 +103,7 @@ window.onload = function () {
   wavesurfer.on("interaction", function () {
     //console.log("interaction");
     setTimeout(() => {
-      
+
       if (wavesurfer.getDuration()) {
 
         const playing = wavesurfer.isPlaying();
@@ -123,6 +125,17 @@ window.onload = function () {
     }, 1);
   });
   // wavesurfer.load('./elevator.mp3');
+
+  document.addEventListener("keypress", function onPress(event) {
+    if (event.key === " ") {
+      wavesurfer.playPause()
+      if (wavesurfer.isPlaying()) {
+        Code.device.timeline.unpause();
+      } else {
+        Code.device.timeline.pause();
+      }
+    }
+  });
 
   let count = 100;
 
@@ -281,7 +294,7 @@ function setupOwnership() {
   const owner_identifier = /** @type {HTMLInputElement} */ (document.querySelector("#owner_identifier"));
   const owner_signature = /** @type {HTMLInputElement} */ (document.querySelector("#owner_signature"));
   const owner_key = /** @type {HTMLInputElement} */ (document.querySelector("#owner_key"));
-  
+
   console.log("owner identifier:", owner_identifier.value);
   console.log("owner key:", owner_key.value);
 
@@ -290,7 +303,7 @@ function setupOwnership() {
     const data = encoder.encode(owner_identifier.value);
     const hash = await crypto.subtle.digest("SHA-1", data);
 
-    owner_signature.value = uint8ArrayToHexString(hash).slice(0,32);
+    owner_signature.value = uint8ArrayToHexString(hash).slice(0, 32);
 
     Code.device.assignOwnerSignature(owner_signature.value);
   };
@@ -421,5 +434,5 @@ function handleFileDrop(e) {
 document.querySelector('#filename').ondrop = handleFileDrop;
 document.querySelector('#loadFile').ondrop = handleFileDrop;
 document.querySelector('#saveFile').ondrop = handleFileDrop;
-//document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work 
+//document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
 
