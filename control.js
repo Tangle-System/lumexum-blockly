@@ -45,6 +45,7 @@ window.onload = function () {
     wavesurfer_container.classList.toggle("hidden");
   });
 
+
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
   // TODO make wavesurfer rerenders only when openned
@@ -82,6 +83,7 @@ window.onload = function () {
       }),
     ],
   });
+
   // wavesurfer.setMute(true);
   window.musicDebounce = false;
   const playPause = document.querySelector("#playPause");
@@ -102,9 +104,39 @@ window.onload = function () {
     setTimeout(() => {
       Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
       Code.device.syncTimeline();
+
+      if (wavesurfer.getDuration()) {
+
+        const playing = wavesurfer.isPlaying();
+
+        if (playing != !Code.device.timeline.paused()) {
+          if (playing) {
+            Code.device.timeline.unpause();
+          } else {
+            Code.device.timeline.pause();
+          }
+        }
+
+        Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+      }
+
+      // Code.device.syncTimeline().catch(() => {
+      //   console.log("Device Disconnected");
+      // });
     }, 1);
   });
   // wavesurfer.load('./elevator.mp3');
+
+  document.addEventListener("keypress", function onPress(event) {
+    if (event.key === " ") {
+      wavesurfer.playPause()
+      if (wavesurfer.isPlaying()) {
+        Code.device.timeline.unpause();
+      } else {
+        Code.device.timeline.pause();
+      }
+    }
+  });
 
   let count = 100;
 
