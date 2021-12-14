@@ -84,7 +84,7 @@ function decodeExtendDeviceValue(value_next) {
   }
 }
 
-function subTimestamps(t1, t2) {
+function getDuration(from, to) {
   function getTimestamp(timestamp) {
     timestamp.replace(/_/g, ""); // replaces all '_' with nothing
 
@@ -144,7 +144,17 @@ function subTimestamps(t1, t2) {
     return total_tics;
   }
 
-  return getTimestamp(t1) - getTimestamp(t2) + "t";
+  if (from == "Infinity") {
+    return "0t";
+  } else if (from == "-Infinity") {
+    return to;
+  } else if (to == "-Infinity") {
+    return "0t";
+  } else if (to == "Infinity") {
+    return "Infinity";
+  } else {
+    return getTimestamp(to) - getTimestamp(from) + "t";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +199,7 @@ Blockly.Tngl["drawing"] = function (block) {
   if (dropdown_time_definition === "DURATION") {
     return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", " + value_animation + ");\n";
   } else {
-    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", " + value_animation + ");\n";
+    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(getDuration(text_start, text_duration)) + ", " + value_animation + ");\n";
   }
 };
 
@@ -368,7 +378,7 @@ Blockly.Tngl["window"] = function (block) {
   if (dropdown_time_definition === "DURATION") {
     var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
   } else {
-    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(getDuration(text_start, text_duration)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
   }
 
   return code;
@@ -408,7 +418,7 @@ Blockly.Tngl["window_2"] = function (block) {
       break;
   }
 
-  var code = func + "(" + formatTimestamp(text_from) + ", " + formatTimestamp(subTimestamps(text_to, text_from)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  var code = func + "(" + formatTimestamp(text_from) + ", " + formatTimestamp(getDuration(text_from, text_to)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
   return code;
 };
 

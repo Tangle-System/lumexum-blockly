@@ -28,13 +28,13 @@
   <script src="lib/TimeTrack.js"></script>
   <script src="lib/TnglReader.js"></script>
   <script src="lib/TnglWriter.js"></script>
-  <script src="lib/TangleConnector.js"></script>
+  <script src="lib/TangleParser.js"></script>
+  <script src="lib/TangleAccessInterface.js"></script>
   <script src="lib/TangleDummyConnector.js"></script>
   <script src="lib/TangleWebBluetoothConnector.js"></script>
   <script src="lib/TangleDevice.js"></script>
   <!-- <script src="lib/TangleSerialConnection.js"></script>
   <script src="lib/TangleSerialDevice.js"></script> -->
-  <script src="lib/TangleParser.js"></script>
 
   <script src="lib/other/jszip.min.js" defer></script>
 
@@ -208,7 +208,7 @@
         <span>
 
           <button id="rebootButton">
-            Device Reboot
+            Network Reboot
           </button>
 
           <button id="simplifyButton">
@@ -226,21 +226,24 @@
             Name <input type="text" value="Tangle" id="adoptName">
             Id <input type="number" value="0" min="0" max="255" id="adoptId">
             <button id="adoptBluetoothButton">
-              Adopt Device
+              Adopt device
             </button>
           </div>
 
           <div>
             <input type="file" id="otaFirmware">
-            <button id="otaUpdateFirmware">
-              Write OTA
+            <button id="otaUpdateDeviceFirmware">
+              OTA update device
+            </button>
+            <button id="otaUpdateNetworkFirmware">
+              OTA update network
             </button>
           </div>
 
           <div>
             <input type="file" id="otaConfig">
-            <button id="otaUpdateConfig">
-              Write Config
+            <button id="otaUpdateDeviceConfig">
+              Write device config
             </button>
           </div>
         </div>
@@ -721,7 +724,7 @@
           <shadow type="drawing_dummy"></shadow>
         </statement>
       </block>
-      <block type="window_2">
+      <!-- <block type="window_2">
         <field name="FROM">0s</field>
         <field name="TO">5s</field>
         <field name="DRAW_MODE">ADD</field>
@@ -731,7 +734,7 @@
         <statement name="BODY">
           <shadow type="drawing_dummy"></shadow>
         </statement>
-      </block>
+      </block> -->
       <block type="modifier_brightness">
         <field name="VARIABLE_LABEL">$var1</field>
         <value name="MODIFIER">

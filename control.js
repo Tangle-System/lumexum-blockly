@@ -101,7 +101,6 @@ window.onload = function () {
   // };
 
   wavesurfer.on("interaction", function () {
-    //console.log("interaction");
     setTimeout(() => {
 
       if (wavesurfer.getDuration()) {
@@ -128,12 +127,11 @@ window.onload = function () {
 
   document.addEventListener("keypress", function onPress(event) {
     if (event.key === " ") {
-      wavesurfer.playPause()
-      if (wavesurfer.isPlaying()) {
-        Code.device.timeline.unpause();
-      } else {
-        Code.device.timeline.pause();
-      }
+      wavesurfer.playPause();
+      
+      const dur = wavesurfer.getDuration();
+      const pos = dur ? wavesurfer.getCurrentTime() / wavesurfer.getDuration() : 0;
+      wavesurfer.seekAndCenter(pos);
     }
   });
 

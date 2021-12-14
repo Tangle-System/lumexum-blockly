@@ -99,7 +99,7 @@ function uint32ToBytes(x) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Code.parser = new TnglCodeParser();
+
 //Code.deviceManager = new TangleDeviceManager();
 
 /**
@@ -291,12 +291,11 @@ Code.upload = async function () {
   window.localStorage.setItem("blocks", xml_code);
 
   var code = Blockly.Tngl.workspaceToCode(Code.workspace);
-  var tngl_bytes = Code.parser.parseTnglCode(code);
 
   // console.log(tngl_bytes);
   //prompt("Copy to clipboard: Ctrl+C, Enter", tngl_bytes);
 
-  Code.device.writeTngl(tngl_bytes).catch((e) => console.error(e));
+  Code.device.writeTngl(code).catch((e) => console.error(e));
 };
 
 /**
@@ -692,24 +691,24 @@ Code.init = function () {
     window.ota_firmware = this.files[0];
   });
 
-  Code.otaUpdateFirmware = function () {
-    // fetch("firmware.bin")
-    //   .then(function (response) {
-    //     return response.arrayBuffer();
-    //   })
-    //   .then(function (firmware) {
-    //     console.log(firmware);
-    //     return Code.device.bluetoothDevice.update(new Uint8Array(firmware));
-    //   })
-    //   .catch(function (err) {
-    //     console.warn("Something went wrong.", err);
-    //   });
-
+  Code.otaUpdateDeviceFirmware = function () {
     window.ota_firmware
       .arrayBuffer()
       .then(function (firmware) {
         console.log(firmware);
-        return Code.device.updateFirmware(new Uint8Array(firmware));
+        return Code.device.updateDeviceFirmware(new Uint8Array(firmware));
+      })
+      .catch(function (err) {
+        console.warn("Something went wrong.", err);
+      });
+  };
+
+  Code.otaUpdateNetworkFirmware = function () {
+    window.ota_firmware
+      .arrayBuffer()
+      .then(function (firmware) {
+        console.log(firmware);
+        return Code.device.updateNetworkFirmware(new Uint8Array(firmware));
       })
       .catch(function (err) {
         console.warn("Something went wrong.", err);
@@ -720,7 +719,7 @@ Code.init = function () {
     window.ota_config = this.files[0];
   });
 
-  Code.otaUpdateConfig = function () {
+  Code.otaUpdateDeviceConfig = function () {
     try {
       if (!window.ota_config) throw "No config file selected";
 
@@ -749,8 +748,9 @@ Code.init = function () {
 
   Code.bindClick("simplifyButton", Code.simplify);
   Code.bindClick("rebootButton", Code.rebootDevice);
-  Code.bindClick("otaUpdateFirmware", Code.otaUpdateFirmware);
-  Code.bindClick("otaUpdateConfig", Code.otaUpdateConfig);
+  Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
+  Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
+  Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
   Code.bindClick("connectBluetoothButton", Code.connectBluetooth);
   Code.bindClick("adoptBluetoothButton", Code.adoptBluetooth);
