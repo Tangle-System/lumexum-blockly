@@ -36,14 +36,14 @@ window.onload = function () {
     control_color_picker.value = getHexColor(control_color_value.value);
   };
 
-  const timeline_toggle = document.querySelector("#timeline_toggle");
+  // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
   const wavesurfer_container = document.querySelector("#waveform_container");
 
-  timeline_toggle.addEventListener("click", function () {
-    timeline_container.classList.toggle("openned");
-    wavesurfer_container.classList.toggle("hidden");
-  });
+  // timeline_toggle.addEventListener("click", function () {
+  //   timeline_container.classList.toggle("openned");
+  //   wavesurfer_container.classList.toggle("hidden");
+  // });
 
 
   // !! problems with layout, so we need to do this somehow manually
@@ -86,19 +86,19 @@ window.onload = function () {
 
   // wavesurfer.setMute(true);
   window.musicDebounce = false;
-  const playPause = document.querySelector("#playPause");
-  playPause.onclick = function () {
-    if (wavesurfer.isPlaying()) {
-      Code.timeline.pause();
-      wavesurfer.pause();
-      playPause.innerHTML = "Play";
-    } else {
-      Code.timeline.unpause();
-      wavesurfer.play();
-      playPause.innerHTML = "Pause";
-    }
-    Code.device.setTimeline();
-  };
+  // const playPause = document.querySelector("#playPause");
+  // playPause.onclick = function () {
+  //   if (wavesurfer.isPlaying()) {
+  //     Code.timeline.pause();
+  //     wavesurfer.pause();
+  //     playPause.innerHTML = "Play";
+  //   } else {
+  //     Code.timeline.unpause();
+  //     wavesurfer.play();
+  //     playPause.innerHTML = "Pause";
+  //   }
+  //   Code.device.setTimeline();
+  // };
 
   wavesurfer.on("interaction", function () {
     setTimeout(() => {
