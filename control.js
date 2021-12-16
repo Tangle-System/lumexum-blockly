@@ -200,15 +200,18 @@ window.onload = function () {
         });
       } else {
         log_value = value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value).then(() => {
-          console.log("Sent!");
-        });
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value);
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
       log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
-      Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
+
+      for (let index = 0; index < 32; index++) {
+        Code.device.emitColorEvent(control_label.value, hexColor, index);
+      }
+      //Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
+
       // } else {
       // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);
       // }

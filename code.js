@@ -733,7 +733,32 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateConfig(new Uint8Array(config));
+            return Code.device.updateDeviceConfig(new Uint8Array(config));
+          });
+        })
+        .catch(function (err) {
+          console.warn("Something went wrong.", err);
+        });
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  Code.otaUpdateNetworkConfig = function () {
+    try {
+      if (!window.ota_config) throw "No config file selected";
+
+      window.ota_config
+        .text()
+        .then((data) => {
+          JSON.parse(data);
+          // TODO - validate also json fields and it's datatypes
+          console.log(data);
+        })
+        .then(() => {
+          window.ota_config.arrayBuffer().then(function (config) {
+            console.log(config);
+            return Code.device.updateNetworkConfig(new Uint8Array(config));
           });
         })
         .catch(function (err) {
@@ -751,6 +776,7 @@ Code.init = function () {
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
   Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
+  Code.bindClick("otaUpdateNetworkConfig", Code.otaUpdateNetworkConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
   Code.bindClick("connectBluetoothButton", Code.connectBluetooth);
   Code.bindClick("adoptBluetoothButton", Code.adoptBluetooth);
@@ -909,8 +935,8 @@ Code.adoptBluetooth = function () {
 };
 
 Code.connectBluetooth = function () {
-  if (Code.device.variant != "webbluetooth") {
-    Code.device.assignConnector("webbluetooth");
+  // if (Code.device.variant != "webbluetooth") {
+  //   Code.device.assignConnector("webbluetooth");
 
     // Code.device.addEventListener("connected", (event) => {
     //   return event.target
@@ -945,8 +971,8 @@ Code.connectBluetooth = function () {
     //     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
     //   }
     // });
-  }
-  if (!Code.device.isConnected()) {
+  // }
+  if (!Code.device.connected()) {
     console.log("Connecting device...");
     Code.device.connect();
   } else {
