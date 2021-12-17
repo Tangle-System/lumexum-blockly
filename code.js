@@ -42,7 +42,6 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 Code.device = new TangleDevice();
 
 Code.device.addEventListener("connected", (event) => {
@@ -938,39 +937,39 @@ Code.connectBluetooth = function () {
   // if (Code.device.variant != "webbluetooth") {
   //   Code.device.assignConnector("webbluetooth");
 
-    // Code.device.addEventListener("connected", (event) => {
-    //   return event.target
-    //     .requestTimeline()
-    //     .then(() => {
-    //       console.log("Bluetooth Device connected");
+  // Code.device.addEventListener("connected", (event) => {
+  //   return event.target
+  //     .requestTimeline()
+  //     .then(() => {
+  //       console.log("Bluetooth Device connected");
 
-    //       const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
-    //       icon.classList.remove("connect");
-    //       icon.classList.add("disconnect");
-    //     })
-    //     .catch((error) => {
-    //       console.warn(error);
-    //       //event.target.connect();
-    //     });
-    // });
+  //       const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+  //       icon.classList.remove("connect");
+  //       icon.classList.add("disconnect");
+  //     })
+  //     .catch((error) => {
+  //       console.warn(error);
+  //       //event.target.connect();
+  //     });
+  // });
 
-    // Code.device.addEventListener("disconnected", (event) => {
-    //   const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
-    //   icon.classList.remove("disconnect");
-    //   icon.classList.add("connect");
-    // });
+  // Code.device.addEventListener("disconnected", (event) => {
+  //   const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
+  //   icon.classList.remove("disconnect");
+  //   icon.classList.add("connect");
+  // });
 
-    // Code.device.addEventListener("receive", (event) => {
-    //   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-    //   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
+  // Code.device.addEventListener("receive", (event) => {
+  //   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
+  //   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
 
-    //   const textarea = document.getElementById("content_debug");
-    //   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
+  //   const textarea = document.getElementById("content_debug");
+  //   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
 
-    //   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-    //     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-    //   }
-    // });
+  //   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
+  //     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
+  //   }
+  // });
   // }
   if (!Code.device.connected()) {
     console.log("Connecting device...");
