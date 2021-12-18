@@ -206,11 +206,7 @@ window.onload = function () {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
       log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
-
-      for (let index = 0; index < 32; index++) {
-        Code.device.emitColorEvent(control_label.value, hexColor, index);
-      }
-      //Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
+      Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
 
       // } else {
       // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);

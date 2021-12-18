@@ -46,18 +46,11 @@ var Code = {};
 Code.device = new TangleDevice();
 
 Code.device.addEventListener("connected", (event) => {
-  return event.target
-    .requestTimeline()
-    .then(() => {
-      console.log("Bluetooth Device connected");
-      const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
-      const icon = /** @type {Element} */ (button.childNodes[1]);
-      icon.classList.remove("connect");
-      icon.classList.add("disconnect");
-    })
-    .catch((error) => {
-      console.warn(error);
-    });
+  console.log("Bluetooth Device connected");
+  const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
+  const icon = /** @type {Element} */ (button.childNodes[1]);
+  icon.classList.remove("connect");
+  icon.classList.add("disconnect");
 });
 
 Code.device.addEventListener("disconnected", (event) => {
