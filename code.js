@@ -1152,3 +1152,24 @@ window.onbeforeunload = function (e) {
 }
 
 
+
+function initAssistentEvents() {
+  var source = new EventSource("https://test-lukas.loutaci.cz/events");
+  console.log('initAssistentEvents Initialized');
+  source.addEventListener('tangle-event', function (event) {
+    const { type } = JSON.parse(event.data);
+    console.log({ type })
+    switch (type) {
+      case 'stop':
+        Code.device.emitPercentageEvent('speed', 0, 255);
+        break;
+      case 'go_backward':
+        Code.device.emitPercentageEvent('speed', -100, 255);
+        break;
+      case 'go_forward':
+        Code.device.emitPercentageEvent('speed', 100);
+        break;
+    }
+  });
+}
+initAssistentEvents();
