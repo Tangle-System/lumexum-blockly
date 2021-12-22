@@ -109,15 +109,15 @@ window.onload = function () {
 
         const playing = wavesurfer.isPlaying();
 
-        if (playing != !Code.device.timeline.paused()) {
+        if (playing != !Code.timeline.paused()) {
           if (playing) {
-            Code.device.timeline.unpause();
+            Code.timeline.unpause();
           } else {
-            Code.device.timeline.pause();
+            Code.timeline.pause();
           }
         }
 
-        Code.device.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+        Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
       }
 
       // Code.device.syncTimeline().catch(() => {
@@ -131,10 +131,12 @@ window.onload = function () {
     if (event.key === " ") {
       wavesurfer.playPause()
       if (wavesurfer.isPlaying()) {
-        Code.device.timeline.unpause();
+        Code.timeline.unpause();
       } else {
-        Code.device.timeline.pause();
+        Code.timeline.pause();
       }
+      Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+      Code.device.syncTimeline();
     }
   });
 
