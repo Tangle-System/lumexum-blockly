@@ -33,7 +33,13 @@ Blockly.Blocks["drawing"] = {
       .setCheck("animation")
       .appendField("v čase")
       .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["⌛", "DURATION"],
+          ["➡️", "FROM_TO"],
+        ]),
+        "TIME_DEFINITION"
+      )
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
       .appendField(
         new Blockly.FieldDropdown([
@@ -246,7 +252,13 @@ Blockly.Blocks["window"] = {
       .setCheck("modifier")
       .appendField("v čase")
       .appendField(new Blockly.FieldTextInput("0s"), "START")
-      .appendField(" ⌛")
+      .appendField(
+        new Blockly.FieldDropdown([
+          ["⌛", "DURATION"],
+          ["➡️", "FROM_TO"],
+        ]),
+        "TIME_DEFINITION"
+      )
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
       .appendField(
         new Blockly.FieldDropdown([

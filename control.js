@@ -1,6 +1,5 @@
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
-
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");
@@ -9,33 +8,33 @@ window.onload = function () {
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
   const control_percentage_value = document.querySelector("#control_percentage_value");
-  const control_timestamp_value  = document.querySelector("#control_timestamp_value");
-  const control_color_value  = document.querySelector("#control_color_value");
-  const control_color_picker  = document.querySelector("#control_color_picker");
+  const control_timestamp_value = document.querySelector("#control_timestamp_value");
+  const control_color_value = document.querySelector("#control_color_value");
+  const control_color_picker = document.querySelector("#control_color_picker");
 
   // CONTROL TYPE HANDLER
   let currentControlType = "percentage_control";
-  document.querySelector("#control_type").onchange = e => {
+  document.querySelector("#control_type").onchange = (e) => {
     const controlType = e.target.options[e.target.selectedIndex].value;
     // Hide other controls
     document.querySelector(`#${currentControlType}`).style.display = "none";
     document.querySelector(`#${controlType}`).style.display = "block";
 
-    currentControlType = controlType
-  }
+    currentControlType = controlType;
+  };
 
-  control_label.onchange = e => {
+  control_label.onchange = (e) => {
     control_label.value = control_label.value.replace(/\W/g, "");
     control_label.value = control_label.value.substring(0, 5);
   };
 
-  control_color_picker.oninput = e => {
+  control_color_picker.oninput = (e) => {
     control_color_value.value = control_color_picker.value;
-  }
+  };
 
-  control_color_value.oninput = e => {
+  control_color_value.oninput = (e) => {
     control_color_picker.value = getHexColor(control_color_value.value);
-  }
+  };
 
   const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
@@ -44,19 +43,113 @@ window.onload = function () {
   timeline_toggle.addEventListener("click", function () {
     timeline_container.classList.toggle("openned");
     wavesurfer_container.classList.toggle("hidden");
-  })
+  });
 
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
   // TODO make wavesurfer rerenders only when openned
   // TODO add Zoom and time-line functionality like in Tangler
   window.wavesurfer = WaveSurfer.create({
-    container: '#waveform',
-    height: 60
+    container: "#waveform",
+    height: 60,
+    plugins: [
+      WaveSurfer.regions.create({
+        // regions: [
+        //   {
+        //     start: 0,
+        //     end: 5,
+        //     color: 'hsla(400, 100%, 30%, 0.1)'
+        //   },
+        //   {
+        //     start: 10,
+        //     end: 20,
+        //     color: 'hsla(200, 50%, 70%, 0.1)'
+        //   }
+        // ]
+      }),
+      WaveSurfer.timeline.create({
+        container: "#timeline",
+      }),
+      WaveSurfer.cursor.create({
+        showTime: true,
+        opacity: 1,
+        customShowTimeStyle: {
+          "background-color": "#000",
+          color: "#fff",
+          padding: "2px",
+          "font-size": "10px",
+        },
+      }),
+    ],
   });
-  wavesurfer.setMute(true);
+  // wavesurfer.setMute(true);
   window.musicDebounce = false;
+  const playPause = document.querySelector("#playPause");
+  playPause.onclick = function () {
+    if (wavesurfer.isPlaying()) {
+      Code.timeline.pause();
+      wavesurfer.pause();
+      playPause.innerHTML = "Play";
+    } else {
+      Code.timeline.unpause();
+      wavesurfer.play();
+      playPause.innerHTML = "Pause";
+    }
+    Code.device.setTimeline();
+  };
 
+  wavesurfer.on("interaction", function () {
+    setTimeout(() => {
+      Code.timeline.setMillis(wavesurfer.getCurrentTime() * 1000);
+      Code.device.syncTimeline();
+    }, 1);
+  });
+  // wavesurfer.load('./elevator.mp3');
+
+  let count = 100;
+
+  function handleAltZoom(e) {
+    if (!e.altKey) {
+      return;
+    } else {
+      e.preventDefault();
+    }
+
+    // TODO - implement debouncing to prevent render twice when zooming fast on long song
+    debounce = false;
+
+    if (!debounce) {
+      // setTimeout(_ => {
+      //   setZoom((zoom) => {
+      //     debounce = false;
+      //     count = zoom;
+      //   });
+      // }, 100)
+
+      if (count - e.deltaY < 10) {
+        count = 10;
+      } else {
+        count -= e.deltaY;
+      }
+
+      if (count > 1500) {
+        count = 1500;
+      }
+      if (count <= 10) {
+        count = 10;
+      }
+
+      console.log("zoom count", count);
+
+      if (count >= 10 && count <= 1500) {
+        wavesurfer.zoom(count);
+
+        debounce = true;
+      }
+    }
+  }
+
+  document.querySelector("#waveform").addEventListener("wheel", handleAltZoom);
 
   function handlePercentageValueChange(e) {
     const value = e.target.value;
@@ -68,11 +161,11 @@ window.onload = function () {
     handleControlSend(value);
   }
 
-  function handleControlSend(value=null) {
+  function handleControlSend(value = null) {
     let log_value = "";
     if (currentControlType === "percentage_control") {
       if (value === null) {
-        log_value = control_percentage_value.value + '%';
+        log_value = control_percentage_value.value + "%";
         Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value);
       } else {
         log_value = value + "%";
@@ -120,70 +213,12 @@ window.onload = function () {
       zip.file("metronome.mp3", window.blockly_metronome);
     }
 
-    zip.generateAsync({ type: "blob",compression: "DEFLATE" }).then(function (content) {
+    zip.generateAsync({ type: "blob", compression: "DEFLATE" }).then(function (content) {
       saveAs(content, document.querySelector("#filename").value.replace(/\.tgbl$/, "") + ".tgbl");
     });
   };
 
   loadFile.onclick = (_) => {
-    function loadBlocksfromXmlDom(blocksXmlDom) {
-      try {
-        Blockly.Xml.domToWorkspace(blocksXmlDom, Code.workspace);
-      } catch (e) {
-        return false;
-      }
-      return true;
-    }
-
-    function replaceBlocksfromXml(blocksXml) {
-      var xmlDom = null;
-      try {
-        xmlDom = Blockly.Xml.textToDom(blocksXml);
-      } catch (e) {
-        return false;
-      }
-      Code.workspace.clear();
-      var sucess = false;
-      if (xmlDom) {
-        sucess = loadBlocksfromXmlDom(xmlDom);
-      }
-      return true;
-    }
-
-    // Create File Reader event listener function
-    const parseInputXMLfile = function (e) {
-      const file = e.target.files[0];
-      const filename = file.name;
-      document.querySelector("#filename").value = filename;
-      JSZip.loadAsync(file).then(async function (zip) {
-        const xmlContent = await zip.file("content.xml").async("text");
-        const success = replaceBlocksfromXml(xmlContent);
-
-        if (zip.file("music.mp3")) {
-          window.blockly_music = await zip.file("music.mp3").async("blob");
-          const music_url = URL.createObjectURL(window.blockly_music);
-          Code.music.setAttribute("src", music_url);
-          wavesurfer.load(music_url);
-        }
-
-        if (zip.file("metronome.mp3")) {
-          window.blockly_music = await zip.file("metronome.mp3").async("blob");
-          Code.music.setAttribute("src", URL.createObjectURL(window.blockly_music));
-        }
-
-        console.log("File " + filename + " is loaded");
-
-        // console.log("Trying to upload tngl...");
-        // Code.device.writeTngl();
-
-        if (success) {
-          Code.renderContent();
-        } else {
-          alert("Ooops something went wrong during load. Try again with another file.");
-        }
-      });
-    };
-
     // Create once invisible browse button with event listener, and click it
     var selectFile = document.getElementById("select_file");
     if (selectFile === null) {
@@ -198,35 +233,96 @@ window.onload = function () {
 
       document.body.appendChild(selectFileWrapperDom);
       selectFile = document.getElementById("select_file");
-      selectFile.addEventListener("change", parseInputXMLfile, false);
+      selectFile.addEventListener("change", (e) => parseInputXMLfile(e.target.files[0]), false);
     }
     selectFile.click();
   };
 
-  // MUSIC controls
-  wavesurfer.on('interaction', e => {
-    if (!musicDebounce) {
-      Code.music.currentTime = wavesurfer.getCurrentTime()
-      musicDebounce = true;
-      setTimeout(_ => musicDebounce = false, 20)
-    }
-  })
+  // // MUSIC controls
+  // wavesurfer.on("interaction", (e) => {
 
-  Code.music.onplay = _ => wavesurfer.play();
-  Code.music.onpause = _ => wavesurfer.pause();
-  Code.music.onstop = _ => wavesurfer.stop();
+  //   if (!musicDebounce) {
+  //     Code.music.currentTime = wavesurfer.getCurrentTime();
+  //     Code.device.syncTimeline();
+  //     musicDebounce = true;
+  //     setTimeout((_) => (musicDebounce = false), 20);
+  //   }
+  // });
+
+  Code.music.onplay = (_) => wavesurfer.play();
+  Code.music.onpause = (_) => wavesurfer.pause();
+  Code.music.onstop = (_) => wavesurfer.stop();
+};
+
+function loadBlocksfromXmlDom(blocksXmlDom) {
+  try {
+    Blockly.Xml.domToWorkspace(blocksXmlDom, Code.workspace);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
-
-Code.music.addEventListener("timeupdate", () => {
-  if (!musicDebounce && Code.music.paused) {
-    Code.timeline.setMillis(Code.music.currentTime * 1000);
-    wavesurfer.setCurrentTime(Code.music.currentTime);
-    Code.device.syncTimeline();
-    musicDebounce = true
-    setTimeout(_ => musicDebounce = false, 20)
+function replaceBlocksfromXml(blocksXml) {
+  var xmlDom = null;
+  try {
+    xmlDom = Blockly.Xml.textToDom(blocksXml);
+  } catch (e) {
+    return false;
   }
-});
+  Code.workspace.clear();
+  var sucess = false;
+  if (xmlDom) {
+    sucess = loadBlocksfromXmlDom(xmlDom);
+  }
+  return true;
+}
+
+// Create File Reader event listener function
+const parseInputXMLfile = function (file) {
+  const filename = file.name;
+  document.querySelector("#filename").value = filename;
+  JSZip.loadAsync(file).then(async function (zip) {
+    const xmlContent = await zip.file("content.xml").async("text");
+    const success = replaceBlocksfromXml(xmlContent);
+
+    if (zip.file("music.mp3")) {
+      window.blockly_music = await zip.file("music.mp3").async("blob");
+      const music_url = URL.createObjectURL(window.blockly_music);
+      Code.music.setAttribute("src", music_url);
+      wavesurfer.load(music_url);
+    }
+
+    if (zip.file("metronome.mp3")) {
+      window.blockly_music = await zip.file("metronome.mp3").async("blob");
+      Code.music.setAttribute("src", URL.createObjectURL(window.blockly_music));
+    }
+
+    console.log("File " + filename + " is loaded");
+
+    // console.log("Trying to upload tngl...");
+    // Code.device.writeTngl();
+
+    if (success) {
+      Code.renderContent();
+    } else {
+      alert("Ooops something went wrong during load. Try again with another file.");
+    }
+  });
+};
+
+
+// Code.music.addEventListener("timeupdate", () => {
+//   console.log("timeupdate");
+
+//   if (!musicDebounce && Code.music.paused) {
+//     Code.timeline.setMillis(Code.music.currentTime * 1000);
+//     wavesurfer.setCurrentTime(Code.music.currentTime);
+//     Code.device.syncTimeline();
+//     musicDebounce = true
+//     setTimeout(_ => musicDebounce = false, 20)
+//   }
+// });
 
 document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
@@ -255,3 +351,22 @@ function getHexColor(colorStr) {
       .substr(1)
     : false;
 }
+
+
+// document.body.ondrop = function (e) {
+//   console.log("ondrop", e);
+//   e.preventDefault();
+// }
+
+function handleFileDrop(e) {
+  console.log("ondrop", e);
+  console.log(e.dataTransfer.files)
+  parseInputXMLfile(e.dataTransfer.files[0]);
+  e.preventDefault();
+}
+
+// document.querySelector('#filename').ondrop = handleFileDrop;
+// document.querySelector('#loadFile').ondrop = handleFileDrop;
+// document.querySelector('#saveFile').ondrop = handleFileDrop;
+// document.querySelector(".blocklySvg").ondrop = handleFileDrop;
+

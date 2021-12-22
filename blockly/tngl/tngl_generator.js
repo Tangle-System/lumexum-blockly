@@ -84,6 +84,69 @@ function decodeExtendDeviceValue(value_next) {
   }
 }
 
+function subTimestamps(t1, t2) {
+  function getTimestamp(timestamp) {
+    timestamp.replace(/_/g, ""); // replaces all '_' with nothing
+
+    let total_tics = 0;
+
+    while (timestamp) {
+      let reg = timestamp.match(/([+-]?[0-9]*[.]?[0-9]+)([dhmst])/); // for example gets "-1.4d" from "-1.4d23.2m1s"
+
+      if (!reg) {
+        // if the regex match failes, then the algorithm is done
+        if (timestamp != "") {
+          console.error("Error while parsing timestamp");
+          console.log("Leftover string:", timestamp);
+        }
+        break;
+      }
+
+      let value = reg[0]; // gets "-1.4d" from "-1.4d"
+      let unit = reg[2]; // gets "d" from "-1.4d"
+      let number = parseFloat(reg[1]); // gets "-1.4" from "-1.4d"
+
+      // console.log("value:", value);
+      // console.log("unit:", unit);
+      // console.log("number:", number);
+
+      switch (unit) {
+        case "d":
+          total_tics += number * 86400000;
+          break;
+
+        case "h":
+          total_tics += number * 3600000;
+          break;
+
+        case "m":
+          total_tics += number * 60000;
+          break;
+
+        case "s":
+          total_tics += number * 1000;
+          break;
+
+        case "t":
+          total_tics += number;
+          break;
+
+        default:
+          console.error("Error while parsing timestamp");
+          break;
+      }
+
+      timestamp = timestamp.replace(value, ""); // removes one value from the string
+    }
+
+    // console.log("total_tics:", total_tics);
+
+    return total_tics;
+  }
+
+  return getTimestamp(t1) - getTimestamp(t2) + "t";
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 Blockly.Tngl["animation_dummy_next"] = function (block) {
@@ -98,6 +161,7 @@ Blockly.Tngl["animation_dummy_add"] = function (block) {
 
 Blockly.Tngl["drawing"] = function (block) {
   var text_start = block.getFieldValue("START");
+  var dropdown_time_definition = block.getFieldValue("TIME_DEFINITION");
   var text_duration = block.getFieldValue("DURATION");
   var dropdown_draw_mode = block.getFieldValue("DRAW_MODE");
   var value_animation = Blockly.Tngl.valueToCode(block, "ANIMATION", Blockly.Tngl.ORDER_NONE);
@@ -122,8 +186,11 @@ Blockly.Tngl["drawing"] = function (block) {
       break;
   }
 
-  var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", " + value_animation + ");\n";
-  return code;
+  if (dropdown_time_definition === "DURATION") {
+    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", " + value_animation + ");\n";
+  } else {
+    return func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", " + value_animation + ");\n";
+  }
 };
 
 Blockly.Tngl["drawing_dummy"] = function (block) {
@@ -268,6 +335,7 @@ Blockly.Tngl["animation_palette_roll"] = function (block) {
 
 Blockly.Tngl["window"] = function (block) {
   var text_start = block.getFieldValue("START");
+  var dropdown_time_definition = block.getFieldValue("TIME_DEFINITION");
   var text_duration = block.getFieldValue("DURATION");
   var dropdown_draw_mode = block.getFieldValue("DRAW_MODE");
   var value_modifier = Blockly.Tngl.valueToCode(block, "MODIFIER", Blockly.Tngl.ORDER_NONE);
@@ -297,7 +365,12 @@ Blockly.Tngl["window"] = function (block) {
       break;
   }
 
-  var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  if (dropdown_time_definition === "DURATION") {
+    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(text_duration) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  } else {
+    var code = func + "(" + formatTimestamp(text_start) + ", " + formatTimestamp(subTimestamps(text_duration, text_start)) + ", {\n" + statements_body + "})" + value_modifier + ";\n";
+  }
+
   return code;
 };
 

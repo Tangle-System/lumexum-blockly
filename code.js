@@ -160,6 +160,15 @@ Code.device.syncTimeline = function () {
   }
 };
 
+Code.device.setTimeline = function () {
+  if (Code.device.serialDevice.isConnected()) {
+    Code.device.serialDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+  }
+  if (Code.device.bluetoothDevice.isConnected()) {
+    Code.device.bluetoothDevice.setTimeline(0x00, Code.timeline.millis(), Code.timeline.paused());
+  }
+};
+
 Code.device.syncClock = function () {
   if (Code.device.serialDevice.isConnected()) {
     Code.device.serialDevice.syncClock();
@@ -291,6 +300,8 @@ Code.control.setVisible = function (enable) {
   }
 };
 
+// Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
+// Code.metronome = new Audio();
 
 
 
@@ -344,6 +355,8 @@ Code.play = async function () {
   Code.timeline.unpause();
   console.log("Play");
 
+  wavesurfer.play();
+
   if (Code.music.src) {
     Code.music.play();
   }
@@ -357,6 +370,11 @@ Code.play = async function () {
 Code.cycle = async function () {
   Code.timeline.setMillis(0);
   console.log("Cycle");
+
+  wavesurfer.stop();
+  if (!Code.timeline.paused()) {
+    wavesurfer.play();
+  }
 
   if (Code.music.src) {
     Code.music.load();
@@ -379,6 +397,8 @@ Code.pause = async function () {
   Code.timeline.pause();
   console.log("Pause");
 
+  wavesurfer.pause();
+
   if (Code.music.src) {
     Code.music.pause();
   }
@@ -394,6 +414,9 @@ Code.stop = async function () {
   Code.timeline.pause();
   Code.timeline.setMillis(0);
   console.log("Stop");
+
+  wavesurfer.pause();
+  wavesurfer.stop();
 
   if (Code.music.src) {
     Code.music.pause();
@@ -1367,6 +1390,10 @@ Code.discard = function () {
 
 // var port;
 
+Code.adoptBluetooth = function () {
+  Code.device.adopt();
+}
+
 Code.connectBluetooth = function () {
   Code.device.bluetoothDevice.connect();
 };
@@ -1405,7 +1432,7 @@ Number.prototype.pad = function (size) {
 };
 
 setInterval(function () {
-  
+
   let now = Code.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
