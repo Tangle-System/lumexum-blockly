@@ -30,7 +30,7 @@ var validator_S = function (value) {
 
   if (reg) {
     let num = parseFloat(reg[1]);
-    if (num < 0.0) num = 0.0;
+    if (num < -100.0) num = -100.0;
     if (num > 100.0) num = 100.0;
     return num + "%";
   }
