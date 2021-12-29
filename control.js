@@ -14,7 +14,7 @@ window.onload = function () {
 
   // CONTROL TYPE HANDLER
   let currentControlType = "percentage_control";
-  document.querySelector("#control_type").onchange = (e) => {
+  document.querySelector("#control_type").onchange = e => {
     const controlType = e.target.options[e.target.selectedIndex].value;
     // Hide other controls
     document.querySelector(`#${currentControlType}`).style.display = "none";
@@ -23,16 +23,16 @@ window.onload = function () {
     currentControlType = controlType;
   };
 
-  control_label.onchange = (e) => {
+  control_label.onchange = e => {
     control_label.value = control_label.value.replace(/\W/g, "");
     control_label.value = control_label.value.substring(0, 5);
   };
 
-  control_color_picker.oninput = (e) => {
+  control_color_picker.oninput = e => {
     control_color_value.value = control_color_picker.value;
   };
 
-  control_color_value.oninput = (e) => {
+  control_color_value.oninput = e => {
     control_color_picker.value = getHexColor(control_color_value.value);
   };
 
@@ -44,7 +44,6 @@ window.onload = function () {
   //   timeline_container.classList.toggle("openned");
   //   wavesurfer_container.classList.toggle("hidden");
   // });
-
 
   // !! problems with layout, so we need to do this somehow manually
   // TODO make it responsive on resize
@@ -69,7 +68,7 @@ window.onload = function () {
         // ]
       }),
       WaveSurfer.timeline.create({
-        container: "#timeline",
+        container: "#timeline"
       }),
       WaveSurfer.cursor.create({
         showTime: true,
@@ -78,10 +77,10 @@ window.onload = function () {
           "background-color": "#000",
           color: "#fff",
           padding: "2px",
-          "font-size": "10px",
-        },
-      }),
-    ],
+          "font-size": "10px"
+        }
+      })
+    ]
   });
 
   // wavesurfer.setMute(true);
@@ -102,9 +101,7 @@ window.onload = function () {
 
   wavesurfer.on("interaction", function () {
     setTimeout(() => {
-
       if (wavesurfer.getDuration()) {
-
         const playing = wavesurfer.isPlaying();
 
         if (playing != !Code.device.timeline.paused()) {
@@ -128,7 +125,7 @@ window.onload = function () {
   document.addEventListener("keypress", function onPress(event) {
     if (event.key === " ") {
       wavesurfer.playPause();
-      
+
       const dur = wavesurfer.getDuration();
       const pos = dur ? wavesurfer.getCurrentTime() / wavesurfer.getDuration() : 0;
       wavesurfer.seekAndCenter(pos);
@@ -227,12 +224,12 @@ window.onload = function () {
   control_percentage_range.oninput = handlePercentageValueChange;
   control_color_picker.onchange = handleColorValueChange;
 
-  control_send.onclick = (e) => handleControlSend();
+  control_send.onclick = e => handleControlSend();
 
   const saveFile = document.querySelector("#saveFile");
   const loadFile = document.querySelector("#loadFile");
 
-  saveFile.onclick = (_) => {
+  saveFile.onclick = _ => {
     const zip = new JSZip();
     const data = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
     zip.file("version", "0.6.1");
@@ -250,7 +247,7 @@ window.onload = function () {
     });
   };
 
-  loadFile.onclick = (_) => {
+  loadFile.onclick = _ => {
     // Create once invisible browse button with event listener, and click it
     var selectFile = document.getElementById("select_file");
     if (selectFile === null) {
@@ -265,7 +262,7 @@ window.onload = function () {
 
       document.body.appendChild(selectFileWrapperDom);
       selectFile = document.getElementById("select_file");
-      selectFile.addEventListener("change", (e) => parseInputXMLfile(e.target.files[0]), false);
+      selectFile.addEventListener("change", e => parseInputXMLfile(e.target.files[0]), false);
     }
     selectFile.click();
   };
@@ -284,8 +281,7 @@ window.onload = function () {
   // Code.music.onstop = _ => wavesurfer.stop();
 
   setupOwnership();
-}
-
+};
 
 function setupOwnership() {
   const owner_identifier = /** @type {HTMLInputElement} */ (document.querySelector("#owner_identifier"));
@@ -295,7 +291,7 @@ function setupOwnership() {
   console.log("owner identifier:", owner_identifier.value);
   console.log("owner key:", owner_key.value);
 
-  owner_identifier.onchange = async (e) => {
+  owner_identifier.onchange = async e => {
     const encoder = new TextEncoder();
     const data = encoder.encode(owner_identifier.value);
     const hash = await crypto.subtle.digest("SHA-1", data);
@@ -305,7 +301,7 @@ function setupOwnership() {
     Code.device.assignOwnerSignature(owner_signature.value);
   };
 
-  owner_key.onchange = async (e) => {
+  owner_key.onchange = async e => {
     Code.device.assignOwnerKey(owner_key.value);
   };
 
@@ -370,7 +366,6 @@ const parseInputXMLfile = function (file) {
   });
 };
 
-
 // Code.music.addEventListener("timeupdate", () => {
 //   console.log("timeupdate");
 
@@ -394,9 +389,6 @@ document.getElementById("music").addEventListener("change", function () {
   Code.device.syncTimeline();
 });
 
-
-
-
 function getHexColor(colorStr) {
   const a = document.createElement("div");
   a.style.color = colorStr;
@@ -407,29 +399,22 @@ function getHexColor(colorStr) {
       return parseInt(a, 10);
     });
   document.body.removeChild(a);
-  return colors.length >= 3
-    ? "#" +
-    ((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2])
-      .toString(16)
-      .substr(1)
-    : false;
+  return colors.length >= 3 ? "#" + ((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1) : false;
 }
-
 
 document.body.ondrop = function (e) {
   console.log("ondrop", e);
   e.preventDefault();
-}
+};
 
 function handleFileDrop(e) {
   console.log("ondrop", e);
-  console.log(e.dataTransfer.files)
+  console.log(e.dataTransfer.files);
   parseInputXMLfile(e.dataTransfer.files[0]);
   e.preventDefault();
 }
 
-document.querySelector('#filename').ondrop = handleFileDrop;
-document.querySelector('#loadFile').ondrop = handleFileDrop;
-document.querySelector('#saveFile').ondrop = handleFileDrop;
+document.querySelector("#filename").ondrop = handleFileDrop;
+document.querySelector("#loadFile").ondrop = handleFileDrop;
+document.querySelector("#saveFile").ondrop = handleFileDrop;
 //document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
-

@@ -21,9 +21,7 @@ if (!("TextDecoder" in window)) {
 }
 
 if (!navigator.bluetooth) {
-  alert(
-    "Oops, bluetooth doesn't work here."
-  );
+  alert("Oops, bluetooth doesn't work here.");
 }
 
 // document.addEventListener("DOMContentLoaded", () => {
@@ -44,7 +42,7 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Code.device = new TangleDevice();
 
-Code.device.addEventListener("connected", (event) => {
+Code.device.addEventListener("connected", event => {
   console.log("Bluetooth Device connected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
@@ -52,7 +50,7 @@ Code.device.addEventListener("connected", (event) => {
   icon.classList.add("disconnect");
 });
 
-Code.device.addEventListener("disconnected", (event) => {
+Code.device.addEventListener("disconnected", event => {
   console.log("Bluetooth Device disconnected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
@@ -90,7 +88,6 @@ function uint32ToBytes(x) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //Code.deviceManager = new TangleDeviceManager();
 
@@ -141,7 +138,7 @@ Code.LANGUAGE_NAME = {
   uk: "Українська",
   vi: "Tiếng Việt",
   "zh-hans": "简体中文",
-  "zh-hant": "正體中文",
+  "zh-hant": "正體中文"
 };
 
 /**
@@ -169,7 +166,7 @@ Code.debug.setVisible = function (enable) {
 };
 
 Code.control = {
-  div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control")),
+  div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control"))
 };
 
 Code.control.setVisible = function (enable) {
@@ -196,7 +193,6 @@ Code.device.timeline = new TimeTrack();
 // setInterval(async function () {
 //   Code.device.syncTimeline();
 // }, 10000);
-
 
 // Code.music.addEventListener("timeupdate", () => {
 //   Code.device.timeline.setMillis(Code.music.currentTime * 1000);
@@ -287,7 +283,7 @@ Code.upload = async function () {
   // console.log(tngl_bytes);
   //prompt("Copy to clipboard: Ctrl+C, Enter", tngl_bytes);
 
-  Code.device.writeTngl(code).catch((e) => console.error(e));
+  Code.device.writeTngl(code).catch(e => console.error(e));
 };
 
 /**
@@ -406,7 +402,7 @@ Code.getBBox_ = function (element) {
     height: height,
     width: width,
     x: x,
-    y: y,
+    y: y
   };
 };
 
@@ -433,7 +429,7 @@ Code.TABS_DISPLAY_ = [
   "Tngl",
   "XML",
   "Debug",
-  "Control",
+  "Control"
 ];
 
 Code.selected = "blocks";
@@ -631,7 +627,7 @@ Code.init = function () {
       startScale: 1,
       maxScale: 3,
       minScale: 0.3,
-      scaleSpeed: 1.2,
+      scaleSpeed: 1.2
     },
 
     collapse: true,
@@ -643,7 +639,7 @@ Code.init = function () {
     toolboxPosition: "start",
     css: true,
     scrollbars: true,
-    sounds: false,
+    sounds: false
     //oneBasedIndex: false
   });
 
@@ -717,7 +713,7 @@ Code.init = function () {
 
       window.ota_config
         .text()
-        .then((data) => {
+        .then(data => {
           JSON.parse(data);
           // TODO - validate also json fields and it's datatypes
           console.log(data);
@@ -742,7 +738,7 @@ Code.init = function () {
 
       window.ota_config
         .text()
-        .then((data) => {
+        .then(data => {
           JSON.parse(data);
           // TODO - validate also json fields and it's datatypes
           console.log(data);
@@ -871,7 +867,7 @@ Code.initLanguage = function () {
   // languageMenu.addEventListener('change', Code.changeLanguage, true);
 
   // Populate the coding language selection menu.
-  var codeMenu =  /** @type {any} */ (document.getElementById("code_menu"));
+  var codeMenu = /** @type {any} */ (document.getElementById("code_menu"));
   codeMenu.options.length = 0;
   for (var i = 1; i < Code.TABS_.length; i++) {
     codeMenu.options.add(new Option(Code.TABS_DISPLAY_[i], Code.TABS_[i]));
@@ -896,11 +892,10 @@ Code.initLanguage = function () {
   document.getElementById("pauseButton").title = "Pozastavit animaci";
   document.getElementById("stopButton").title = "Resetovat animaci";
 };
-document.querySelector('#saveButton').onclick = _ => {
+document.querySelector("#saveButton").onclick = _ => {
   let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
   localStorage.setItem("blocks", xml_code);
 };
-
 
 /**
  * Discard all blocks from the workspace.
@@ -976,27 +971,21 @@ Code.connectBluetooth = function () {
 Code.connectSerial = function () {
   // if (Code.device.variant != "webserial") {
   //   Code.device.assignConnector("webserial");
-
   //   Code.device.addEventListener("connected", (event) => {
   //     const icon = document.getElementById("connectSerialButton").childNodes[1];
   //     icon.classList.remove("connect");
   //     icon.classList.add("disconnect");
-
   //   });
-
   //   Code.device.addEventListener("disconnected", (event) => {
   //     const icon = document.getElementById("connectSerialButton").childNodes[1];
   //     icon.classList.remove("disconnect");
   //     icon.classList.add("connect");
   //   });
-
   //   Code.device.addEventListener("receive", (event) => {
   //     const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
   //     const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
-
   //     const textarea = document.getElementById("content_debug");
   //     textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
-
   //     while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
   //       textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
   //     }
@@ -1026,10 +1015,7 @@ window.addEventListener("load", Code.init);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
 setInterval(function () {
-
   let now = Code.device.timeline.millis();
   let min = Math.floor(now / 60000);
   now %= 60000;
@@ -1139,9 +1125,7 @@ window.onbeforeunload = function (e) {
   if (window.localStorage.getItem("blocks") !== xml_code) {
     e.preventDefault();
     e.cancelBubble = true;
-    e.returnValue = 'Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.'
+    e.returnValue = "Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.";
     window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
   }
-}
-
-
+};
