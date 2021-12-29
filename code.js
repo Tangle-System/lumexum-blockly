@@ -9,10 +9,10 @@
  * @author fraser@google.com (Neil Fraser)
  */
 
-/// <reference path="lib/TangleWebBluetoothConnector.js" />
+/// <reference path="lib/tangle-js/TangleWebBluetoothConnector.js" />
 /// <reference path="blockly/blockly_compressed.js" />
-/// <reference path="lib/TangleParser.js" />
-/// <reference path="lib/TimeTrack.js" />
+/// <reference path="lib/tangle-js/TangleParser.js" />
+/// <reference path="lib/tangle-js/TimeTrack.js" />
 
 "use strict";
 
