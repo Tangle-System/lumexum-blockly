@@ -58,6 +58,36 @@ Code.device.addEventListener("disconnected", event => {
   icon.classList.add("connect");
 });
 
+Code.device.addEventListener("ota_status", status => {
+  const container = document.getElementById("otaProgress");
+  const bar = document.getElementById("otaProgressBar");
+
+  switch (status) {
+    case "begin":
+      container.style.display = "block";
+      bar.style.width = "0%";
+      bar.style.backgroundColor = "#008000";
+      break;
+
+    case "success":
+      bar.style.width = "100%";
+      bar.style.backgroundColor = "#00a000";
+      alert("OTA update was successful");
+      break;
+
+    case "fail":
+      bar.style.backgroundColor = "#a00000";
+      alert("OTA update failed");
+    default:
+      break;
+  }
+});
+
+Code.device.addEventListener("ota_progress", percentage => {
+  const bar = document.getElementById("otaProgressBar");
+  bar.style.width = percentage + "%";
+});
+
 function toggleUIConnected(connected) {
   if (connected) {
     //$("#connectSerialButton img").attr("class", "disconnect icon21");
@@ -684,7 +714,9 @@ Code.init = function () {
       .arrayBuffer()
       .then(function (firmware) {
         console.log(firmware);
-        return Code.device.updateDeviceFirmware(new Uint8Array(firmware));
+        return Code.device.updateDeviceFirmware(new Uint8Array(firmware)).catch(e => {
+          console.error(e);
+        });
       })
       .catch(function (err) {
         console.warn("Something went wrong.", err);
@@ -696,7 +728,9 @@ Code.init = function () {
       .arrayBuffer()
       .then(function (firmware) {
         console.log(firmware);
-        return Code.device.updateNetworkFirmware(new Uint8Array(firmware));
+        return Code.device.updateNetworkFirmware(new Uint8Array(firmware)).catch(e => {
+          console.error(e);
+        });
       })
       .catch(function (err) {
         console.warn("Something went wrong.", err);
@@ -721,7 +755,9 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateDeviceConfig(new Uint8Array(config));
+            return Code.device.updateDeviceConfig(new Uint8Array(config)).catch(e => {
+              console.error(e);
+            });
           });
         })
         .catch(function (err) {
@@ -746,7 +782,9 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateNetworkConfig(new Uint8Array(config));
+            return Code.device.updateNetworkConfig(new Uint8Array(config)).catch(e => {
+              console.error(e);
+            });
           });
         })
         .catch(function (err) {
