@@ -8,7 +8,7 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2
     - name: Get latest submodule from remote repo
-      run: git submodule update --init --recursive --remote
+      run: git submodule update --init --recursive
       
     # maybe minify code here ?
 
