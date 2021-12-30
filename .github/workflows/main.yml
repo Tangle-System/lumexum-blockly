@@ -7,10 +7,9 @@ jobs:
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Check Tangle-js
-      run: rm -r lib/tangle-js/.git
+    - name: Get latest submodule from remote repo
+      run: git submodule update --init --recursive --remote
+      
     # maybe minify code here ?
 
     - name: get correct branch
