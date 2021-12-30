@@ -228,3 +228,15 @@ audio { width: 100%; }
 /* .openned #timeline_toggle {
   transform: rotate(180deg);
 } */
+
+#otaProgress {
+  width: 100%;
+  background-color: lightgrey;
+  display: none;
+}
+
+#otaProgressBar {
+  width: 0%;
+  height: 5px;
+  background-color: #008000;
+}
