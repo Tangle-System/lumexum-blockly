@@ -997,13 +997,20 @@ Code.connectBluetooth = function () {
   //   }
   // });
   // }
-  if (!Code.device.connected()) {
-    console.log("Connecting device...");
-    Code.device.connect();
-  } else {
-    console.log("Disconnecting device...");
-    Code.device.disconnect();
-  }
+
+  Code.device.connected().then(connected => {
+    if (!connected) {
+      console.log("Connecting device...");
+      Code.device.connect().catch(e => {
+        console.error(e);
+      });
+    } else {
+      console.log("Disconnecting device...");
+      Code.device.disconnect().catch(e => {
+        console.error(e);
+      });
+    }
+  });
 };
 
 Code.connectSerial = function () {
