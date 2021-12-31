@@ -12,6 +12,8 @@ window.onload = function () {
   const control_color_value = document.querySelector("#control_color_value");
   const control_color_picker = document.querySelector("#control_color_picker");
 
+  const control_connector_select = document.querySelector("#control_connector_select");
+
   // CONTROL TYPE HANDLER
   let currentControlType = "percentage_control";
   document.querySelector("#control_type").onchange = e => {
@@ -34,6 +36,11 @@ window.onload = function () {
 
   control_color_value.oninput = e => {
     control_color_picker.value = getHexColor(control_color_value.value);
+  };
+
+  control_connector_select.onchange = e => {
+    console.log(`Asigning ${control_connector_select.value} connector to the device`);
+    Code.device.assignConnector(control_connector_select.value);
   };
 
   // const timeline_toggle = document.querySelector("#timeline_toggle");
