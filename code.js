@@ -40,7 +40,7 @@ var Code = {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Code.device = new TangleDevice();
+Code.device = new TangleDevice("tangleconnect");
 
 Code.device.addEventListener("connected", event => {
   console.log("Bluetooth Device connected");
@@ -1163,15 +1163,15 @@ function attachSinkId(element, sinkId) {
   }
 }
 
-window.onbeforeunload = function (e) {
-  if (!e) e = window.event;
+// window.onbeforeunload = function (e) {
+//   if (!e) e = window.event;
 
-  let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
+//   let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
 
-  if (window.localStorage.getItem("blocks") !== xml_code) {
-    e.preventDefault();
-    e.cancelBubble = true;
-    e.returnValue = "Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.";
-    window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
-  }
-};
+//   if (window.localStorage.getItem("blocks") !== xml_code) {
+//     e.preventDefault();
+//     e.cancelBubble = true;
+//     e.returnValue = "Opravdu chcete opustit stránku, vaše rozpracovaná práce bude ztracena.";
+//     window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
+//   }
+// };
