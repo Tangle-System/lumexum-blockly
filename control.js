@@ -304,7 +304,10 @@ function setupOwnership() {
     const hash = await crypto.subtle.digest("SHA-1", data);
 
     owner_signature.value = uint8ArrayToHexString(hash).slice(0, 32);
+    Code.device.assignOwnerSignature(owner_signature.value);
+  };
 
+  owner_signature.onchange = async e => {
     Code.device.assignOwnerSignature(owner_signature.value);
   };
 

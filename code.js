@@ -1108,6 +1108,7 @@ function enumerateDevices() {
 
 function gotDevices(deviceInfos) {
   const masterOutputSelector = document.createElement("select");
+  masterOutputSelector.style.width = "25%";
 
   for (let i = 0; i !== deviceInfos.length; ++i) {
     const deviceInfo = deviceInfos[i];

@@ -24,6 +24,7 @@
   <script src="blockly/tngl/tngl_validators.js"></script>
   <script src="blockly/tngl/tngl_mutators.js"></script>
   <script src="msg/cs.js"></script>
+  <script src="msg/js/cs.js"></script>
 
   <!-- <script src="lib/functions.js"></script>
   <script src="lib/TimeTrack.js"></script>
@@ -70,8 +71,8 @@
       <td>
         <div>
           <span>Music</span>
-          <input type="file" id="music">
-          <select id="musicOutputSelect"></select>
+          <input type="file" id="music" style="width: 90px;">
+          <select id="musicOutputSelect" style="width: 25%;"></select>
         </div>
         <!-- <div>
           <span>Metrn</span>
@@ -127,8 +128,8 @@
                 <img src="blockly/media/1x1.gif" class="connect icon21">
               </button>
 
-              <span id="revTime">00:00</span>
-              <button id="saveButton" class=" primary" title="...">
+              <span id="revTime">0:00:00</span>
+              <button id="saveButton" class="primary" title="...">
                   SAVE
               </button>
               <button id="uploadButton" class="notext primary" title="...">
@@ -195,10 +196,12 @@
           OWNER <input style="width: 60%;" type="text" id="owner_identifier" value="matty">
         </div>
         <div>
-          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="-" disabled="true">
+          <!-- OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="a06cd5c4d5741b61fee69422f2590926"> -->
+          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="00000000000000000000000000000000">
         </div>
         <div>
-          OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="bfd39c89ccc2869f240508e9a0609420">
+          <!-- OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="bfd39c89ccc2869f240508e9a0609420"> -->
+          OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="00000000000000000000000000000000">
         </div>
       </div>
 
@@ -222,6 +225,8 @@
 
       <div>
         <span>
+
+          <button onclick="javascript:location.reload()">Reload</button>
 
           <button id="rebootButton">
             Network Reboot
