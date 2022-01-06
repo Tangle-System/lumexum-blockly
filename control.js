@@ -295,27 +295,42 @@ function setupOwnership() {
   const owner_signature = /** @type {HTMLInputElement} */ (document.querySelector("#owner_signature"));
   const owner_key = /** @type {HTMLInputElement} */ (document.querySelector("#owner_key"));
 
-  console.log("owner identifier:", owner_identifier.value);
-  console.log("owner key:", owner_key.value);
-
   owner_identifier.onchange = async e => {
     const encoder = new TextEncoder();
     const data = encoder.encode(owner_identifier.value);
     const hash = await crypto.subtle.digest("SHA-1", data);
 
     owner_signature.value = uint8ArrayToHexString(hash).slice(0, 32);
-    Code.device.assignOwnerSignature(owner_signature.value
+    owner_signature.onchange(null);
   };
 
   owner_signature.onchange = e => {
-    Code.device.assignOwnerSignature(owner_signature.value);
+    try {
+      Code.device.setOwnerSignature(owner_signature.value);
+
+      // if event is not null, then the owner_signature was changed from the html input.
+      // then erase owner_identifier
+      if (e !== null) {
+        owner_identifier.value = "";
+      }
+    } catch {
+      owner_signature.value = Code.device.getOwnerSignature();
+    }
+
+    console.log(`owner_signature: ${owner_signature.value}`);
   };
 
   owner_key.onchange = e => {
-    Code.device.assignOwnerKey(owner_key.value);
+    try {
+      Code.device.setOwnerKey(owner_key.value);
+    } catch {
+      owner_key.value = Code.device.getOwnerKey();
+    }
+
+    console.log(`owner_key: ${owner_key.value}`);
   };
 
-  owner_signature.onchange(null);
+  owner_identifier.onchange(null);
   owner_key.onchange(null);
 }
 
