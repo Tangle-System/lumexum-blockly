@@ -1021,6 +1021,9 @@ document.getElementById("music").addEventListener("change", function () {
   window.blockly_music = this.files[0];
   Code.music.setAttribute("src", url);
   window.wavesurfer.load(url);
+  Code.timeline.pause();
+  Code.timeline.setMillis(0);
+  Code.device.setTime();
 });
 
 document.getElementById("metronome").addEventListener("change", function () {

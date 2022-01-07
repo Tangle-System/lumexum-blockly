@@ -82,7 +82,12 @@ loadFile.onclick = (_) => {
 
       if (zip.file("music.mp3")) {
         window.blockly_music = await zip.file("music.mp3").async("blob");
-        Code.music.setAttribute("src", URL.createObjectURL(window.blockly_music));
+        const url = URL.createObjectURL(window.blockly_music);
+        Code.music.setAttribute("src", url);
+        window.wavesurfer.load(url);
+        Code.timeline.pause();
+        Code.timeline.setMillis(0);
+        Code.device.setTime();
       }
 
       console.log("Loading metronome...");
@@ -125,7 +130,7 @@ loadFile.onclick = (_) => {
 window.onload = function () {
   window.wavesurfer = WaveSurfer.create({
     container: "#waveform",
-    height: 60,
+    height: 90,
     plugins: [
       WaveSurfer.regions.create({
         // regions: [
@@ -143,6 +148,7 @@ window.onload = function () {
       }),
       WaveSurfer.timeline.create({
         container: "#timeline",
+        height: 10,
       }),
       WaveSurfer.cursor.create({
         showTime: true,
