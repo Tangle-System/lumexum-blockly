@@ -236,7 +236,7 @@ Code.debug.setVisible = function (enable) {
   }
 };
 
-Code.music = document.getElementById("timeline");
+Code.music = new Audio();
 Code.metronome = new Audio();
 
 Code.timeline = new TimeTrack();
@@ -256,6 +256,14 @@ function sleep(ms) {
 var offset = 0;
 
 Code.music.addEventListener("timeupdate", async () => {
+
+  const dur = window.wavesurfer.getDuration();
+  const pos = dur ? Code.music.currentTime / window.wavesurfer.getDuration() : 0;
+
+  window.wavesurfer.setDisabledEventEmissions(['seek'])
+  window.wavesurfer.seekAndCenter(pos >= 1.0 ? 1.0 : pos);
+  window.wavesurfer.setDisabledEventEmissions([])
+
   if (Code.metronome.src) {
     let paused = Code.music.paused;
     let delta = Code.music.currentTime - Code.metronome.currentTime;
@@ -1012,6 +1020,7 @@ document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
   window.blockly_music = this.files[0];
   Code.music.setAttribute("src", url);
+  window.wavesurfer.load(url);
 });
 
 document.getElementById("metronome").addEventListener("change", function () {

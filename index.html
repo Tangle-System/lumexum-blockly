@@ -27,6 +27,15 @@
   <script src="lib/TangleParser.js"></script>
   <script src="lib/TimeTrack.js"></script>
 
+  <script src="lib/other/wavesurfer/wavesurfer.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.cursor.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.markers.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.mediasession.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.playhead.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.timeline.js" ></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.regions.js" ></script>
+
+
   <link rel="shortcut icon" href="#">
 </head>
 
@@ -137,7 +146,15 @@
       </td>
     </tr>
     <tr>
-      <td colspan="2"> <audio id="timeline" title="timeline" controls></audio> </td>
+      <td colspan="2" id="timeline_container" style="height: 80px;">
+        <div class="" style="display: inline-block;width: 100%;">
+          <div class="player"></div>
+          <div  id="waveform_container" >
+            <div id="waveform" style="width: 100%; height: 60px;"></div>
+            <div id="timeline" style="width: 100%; height: 20px;"></div>
+          </div>
+        </div>
+      </td>
     </tr>
 
   </table>

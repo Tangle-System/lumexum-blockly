@@ -120,3 +120,45 @@ loadFile.onclick = (_) => {
   }
   selectFile.click();
 };
+
+
+window.onload = function () {
+  window.wavesurfer = WaveSurfer.create({
+    container: "#waveform",
+    height: 60,
+    plugins: [
+      WaveSurfer.regions.create({
+        // regions: [
+        //   {
+        //     start: 0,
+        //     end: 5,
+        //     color: 'hsla(400, 100%, 30%, 0.1)'
+        //   },
+        //   {
+        //     start: 10,
+        //     end: 20,
+        //     color: 'hsla(200, 50%, 70%, 0.1)'
+        //   }
+        // ]
+      }),
+      WaveSurfer.timeline.create({
+        container: "#timeline",
+      }),
+      WaveSurfer.cursor.create({
+        showTime: true,
+        opacity: 1,
+        customShowTimeStyle: {
+          "background-color": "#000",
+          color: "#fff",
+          padding: "2px",
+          "font-size": "10px",
+        },
+      }),
+    ],
+  });
+
+  window.wavesurfer.on("seek", () => {
+    Code.music.currentTime = window.wavesurfer.getCurrentTime();
+  });
+};
+
