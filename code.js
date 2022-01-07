@@ -41,13 +41,13 @@ Code.device = {};
 
 Code.device.bluetoothDevice = new TangleBluetoothDevice();
 
-Code.device.bluetoothDevice.addEventListener("connected", (event)=>{
+Code.device.bluetoothDevice.addEventListener("connected", (event) => {
   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
   icon.classList.remove("connect");
   icon.classList.add("disconnect");
 });
 
-Code.device.bluetoothDevice.addEventListener("disconnected", (event)=>{
+Code.device.bluetoothDevice.addEventListener("disconnected", (event) => {
   const icon = document.getElementById("connectBluetoothButton").childNodes[1];
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
@@ -55,14 +55,13 @@ Code.device.bluetoothDevice.addEventListener("disconnected", (event)=>{
 
 Code.device.serialDevice = new TangleSerialDevice();
 
-Code.device.serialDevice.addEventListener("connected", (event)=>{
+Code.device.serialDevice.addEventListener("connected", (event) => {
   const icon = document.getElementById("connectSerialButton").childNodes[1];
   icon.classList.remove("connect");
   icon.classList.add("disconnect");
-
 });
 
-Code.device.serialDevice.addEventListener("disconnected", (event)=>{
+Code.device.serialDevice.addEventListener("disconnected", (event) => {
   const icon = document.getElementById("connectSerialButton").childNodes[1];
   icon.classList.remove("disconnect");
   icon.classList.add("connect");
@@ -254,31 +253,85 @@ function sleep(ms) {
 
 // Code.device = new TangleSerialDevice();
 
-Code.music.addEventListener("timeupdate", () => {
+var offset = 0;
+
+Code.music.addEventListener("timeupdate", async () => {
+  if (Code.metronome.src) {
+    let paused = Code.music.paused;
+    let delta = Code.music.currentTime - Code.metronome.currentTime;
+
+    //console.log("delta:", delta);
+
+    if (delta > 0.02 || delta < -0.02) {
+      if (paused) {
+        let timestamp = Code.music.currentTime;
+
+        Code.metronome.currentTime = timestamp + offset;
+        Code.music.currentTime = timestamp;
+      }
+
+      if (!paused) {
+        console.warn("Large music track delta: ", delta);
+        console.log("Synchronizing music tracks...");
+
+        let timestamp = Code.music.currentTime;
+
+        Code.metronome.load();
+        Code.music.load();
+
+        Code.metronome.currentTime = timestamp + offset;
+        Code.music.currentTime = timestamp;
+
+        Code.metronome.play();
+        Code.music.play();
+      }
+
+      console.log("Synced delta:", Code.metronome.currentTime - Code.music.currentTime);
+     } 
+    //else {
+    //   offset = delta;
+
+    //   if (offset > 1) {
+    //     offset = 1;
+    //   }
+    //   if (offset < -1) {
+    //     offset = -1;
+    //   }
+    // }
+  }
+
   Code.timeline.setMillis(Code.music.currentTime * 1000);
 
   Code.device.syncTime();
 });
 
 Code.music.addEventListener("play", () => {
+  if (Code.metronome.src && Code.metronome.paused) {
+    let timestamp = Code.music.currentTime;
+
+    Code.metronome.load();
+    Code.music.load();
+
+    Code.metronome.currentTime = timestamp + offset;
+    Code.music.currentTime = timestamp;
+
+    Code.metronome.play();
+    Code.music.play();
+  }
+
   Code.timeline.unpause();
   Code.timeline.setMillis(Code.music.currentTime * 1000);
-
-  if (Code.metronome.src) {
-    Code.metronome.currentTime = Code.music.currentTime;
-    Code.metronome.play();
-  }
 
   Code.device.setTime();
 });
 
 Code.music.addEventListener("pause", () => {
-  Code.timeline.pause();
-  Code.timeline.setMillis(Code.music.currentTime * 1000);
-
   if (Code.metronome.src) {
     Code.metronome.pause();
   }
+
+  Code.timeline.pause();
+  Code.timeline.setMillis(Code.music.currentTime * 1000);
 
   Code.device.setTime();
 });
@@ -288,10 +341,21 @@ Code.play = async function () {
   console.log("Play");
 
   if (Code.music.src) {
-    Code.music.play();
-  }
-  if (Code.metronome.src) {
-    Code.metronome.play();
+    if (Code.metronome.src) {
+
+      let timestamp = Code.music.currentTime;
+
+      Code.metronome.load();
+      Code.music.load();
+
+      Code.metronome.currentTime = timestamp + offset;
+      Code.music.currentTime = timestamp;
+
+      Code.metronome.play();
+      Code.music.play();
+    } else {
+      Code.music.play();
+    }
   }
 
   Code.device.setTime();
@@ -725,32 +789,25 @@ Code.init = function () {
   //     BlocklyStorage.backupOnUnload(Code.workspace);
   //   }
 
-  Code.otaUpdate = function () {
+  Code.simplify = function () {
+    let blocks_xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
 
-    let fw_url = prompt("Insert FW url:", "firmware.enc");
-    
-    if (fw_url == null || fw_url == "") {
-      console.warn("Invalid FW url")
-      return;
-    } 
+    //console.log(blocks_xml);
+    blocks_xml = blocks_xml.replace(/<shadow [^\n]*><\/shadow>/g, "");
+    //console.log(blocks_xml);
 
-    fetch(fw_url)
-      .then(function (response) {
-        return response.arrayBuffer();
-      })
-      .then(function (firmware) {
-        console.log(firmware);
-        return Code.device.bluetoothDevice.update(new Uint8Array(firmware));
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+    //Code.discard();
+    Code.workspace.clear();
+    var xml = Blockly.Xml.textToDom(blocks_xml);
+    Blockly.Xml.domToWorkspace(xml, Code.workspace);
+
+    //Code.renderContent();
   };
 
-  Code.bindClick("otaUpdate", Code.otaUpdate);
 
   Code.tabClick(Code.selected);
 
+  Code.bindClick("simplifyButton", Code.simplify);
   Code.bindClick("connectSerialButton", Code.connectSerial);
   Code.bindClick("connectBluetoothButton", Code.connectBluetooth);
   Code.bindClick("uploadButton", Code.upload);
@@ -776,6 +833,7 @@ Code.init = function () {
   // } else if (linkButton) {
   //   linkButton.className = 'disabled';
   // }
+
 
   for (var i = 0; i < Code.TABS_.length; i++) {
     var name = Code.TABS_[i];
@@ -894,24 +952,24 @@ Code.discard = function () {
 
 Code.connectBluetooth = function () {
   Code.device.bluetoothDevice.connect();
-    // .then(() => {
-    // setInterval(async function () {
-    //   Code.device.syncClock();
-    //   await sleep(100);
-    //   Code.device.syncTime();
-    // }, 1000);
-    // });
+  // .then(() => {
+  // setInterval(async function () {
+  //   Code.device.syncClock();
+  //   await sleep(100);
+  //   Code.device.syncTime();
+  // }, 1000);
+  // });
 };
 
 Code.connectSerial = function () {
   Code.device.serialDevice.connect();
-    // .then(() => {
-    // setInterval(async function () {
-    //   Code.device.syncClock();
-    //   await sleep(100);
-    //   Code.device.syncTime();
-    // }, 1000);
-    // });
+  // .then(() => {
+  // setInterval(async function () {
+  //   Code.device.syncClock();
+  //   await sleep(100);
+  //   Code.device.syncTime();
+  // }, 1000);
+  // });
 };
 
 Code.onKeyPress = function (e) {
@@ -952,11 +1010,13 @@ setInterval(function () {
 
 document.getElementById("music").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
+  window.blockly_music = this.files[0];
   Code.music.setAttribute("src", url);
 });
 
 document.getElementById("metronome").addEventListener("change", function () {
   var url = URL.createObjectURL(this.files[0]);
+  window.blockly_metronome = this.files[0];
   Code.metronome.setAttribute("src", url);
 });
 

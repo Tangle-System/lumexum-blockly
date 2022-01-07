@@ -46,7 +46,7 @@
       <td>
         <img src="tangle.png" alt="Tangle" style="width:80px;height:40px;">
       </td>
-      <td>
+      <td class="">
         <div>
           <span>Music</span>
           <input type="file" id="music">
@@ -58,6 +58,14 @@
           <select id="metronomeOutputSelect"></select>
         </div>
       </td>
+
+      <div class="" style="position: absolute;right: 10px;display: flex; margin-top: 10px;">
+        <input type="text" id="filename" value="show1">
+        <button id="saveFile">Save File</button>
+        <br>
+        <button id="loadFile">Load File</button>
+      </div>
+
     </tr>
     <tr>
       <td colspan="2">
@@ -85,7 +93,9 @@
                   <img src='../blockly/media/1x1.gif' class="run icon21">
               </button> -->
 
-              
+              <button id="simplifyButton">
+                Simplify
+              </button>
 
               <span>USB</span>
               <button id="connectSerialButton" class="notext" title="...">
@@ -94,10 +104,6 @@
               <span>BLE</span>
               <button id="connectBluetoothButton" class="notext" title="...">
                 <img src="blockly/media/1x1.gif" class="connect icon21">
-              </button>
-
-              <button id="otaUpdate">
-                BLE OTA
               </button>
 
               <span id="revTime">00:00</span>
@@ -788,6 +794,8 @@
 
 </body>
 
+<script src="jszip.min.js"></script>
 <script src="code.js"></script>
+<script src="control.js"></script>
 
 </html>

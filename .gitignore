@@ -1,3 +1,6 @@
 firmware.enc
 firmware.bin
 blockly.zip
+
+lib/tangle-js
+lib/tangle-js/*
