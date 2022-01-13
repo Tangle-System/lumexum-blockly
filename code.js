@@ -957,7 +957,9 @@ Code.adoptBluetooth = function () {
 
   console.log('Adopting device as "' + name + '" id: ' + id);
 
-  Code.device.adopt(name, id);
+  Code.device.adopt(name, id).then(device => {
+    console.log("Device Adopted:", device);
+  });
 };
 
 Code.connectBluetooth = function () {
@@ -1002,7 +1004,9 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect().catch(e => {
+      Code.device.connect().then(device => {
+        console.log("Device Connected:", device);
+      }).catch(e => {
         console.error(e);
       });
     } else {
