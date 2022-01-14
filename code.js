@@ -1004,7 +1004,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect([{name: "Device"}, {namePrefix: "Test"}, {name: "Amazfit GTS"}]).then(device => {
+      Code.device.connect([{name: "Device"}, {namePrefix: "Test"}, {name: "LE_WH-1000XM4"}]).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);
