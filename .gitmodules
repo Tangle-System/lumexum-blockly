@@ -1,3 +1,6 @@
 [submodule "lib/tangle-js"]
 	path = lib/tangle-js
 	url = https://github.com/Tangle-System/tangle-js.git
+[submodule "lib/webcomponents"]
+	path = lib/webcomponents
+	url = https://github.com/Tangle-System/webcomponents
