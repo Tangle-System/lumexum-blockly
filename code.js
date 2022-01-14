@@ -16,6 +16,7 @@
 
 "use strict";
 
+
 if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
@@ -710,36 +711,36 @@ Code.init = function () {
     Code.device.reboot();
   };
 
-  document.getElementById("otaFirmware").addEventListener("change", function () {
-    window.ota_firmware = this.files[0];
+  document.getElementById("otaFirmware").addEventListener("change", async function () {
+    window.ota_uploadFrom = "file";
+    window.ota_firmware = await this.files[0].arrayBuffer()
+      .then(function (firmware) {
+        return firmware
+      }).catch(function (err) {
+        console.warn("Something went wrong.", err);
+      });
   });
 
-  Code.otaUpdateDeviceFirmware = function () {
-    window.ota_firmware
-      .arrayBuffer()
-      .then(function (firmware) {
-        console.log(firmware);
-        return Code.device.updateDeviceFirmware(new Uint8Array(firmware)).catch(e => {
-          console.error(e);
-        });
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+  Code.otaUpdateDeviceFirmware = async function () {
+    if (window.ota_uploadFrom === "cloud") {
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+      window.ota_firmware = await downloadSelectedFW()
+    }
+    console.log(window.ota_firmware);
+    return Code.device.updateDeviceFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
+      console.error(e);
+    });
   };
 
-  Code.otaUpdateNetworkFirmware = function () {
-    window.ota_firmware
-      .arrayBuffer()
-      .then(function (firmware) {
-        console.log(firmware);
-        return Code.device.updateNetworkFirmware(new Uint8Array(firmware)).catch(e => {
-          console.error(e);
-        });
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+  Code.otaUpdateNetworkFirmware = async function () {
+    if (window.ota_uploadFrom === "cloud") {
+      window.ota_firmware = await downloadSelectedFW()
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+    }
+    console.log(window.ota_firmware);
+    return Code.device.updateNetworkFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
+      console.error(e);
+    });
   };
 
   document.getElementById("otaConfig").addEventListener("change", function () {
@@ -1179,3 +1180,59 @@ function attachSinkId(element, sinkId) {
 //     window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
 //   }
 // };
+
+
+function fetchStableFWVersions() {
+  return fetch('https://updates.tangle.cz/subdom/updates/firmware/list.php').then(v => v.json()).then(v => v.files)
+}
+
+function fetchDailyFWVersions() {
+  return fetch('https://updates.tangle.cz/subdom/updates/firmware/daily/list.php').then(v => v.json()).then(v => v.files)
+}
+
+const fw_version_listDOM = document.querySelector('#fw_version_list');
+
+async function loadFWVersions() {
+
+  function displayOptionsInGroup(selectDOM, versions, title) {
+    const versionsGroup = document.createElement('optgroup');
+    versionsGroup.label = title;
+
+    versions.forEach(({ file }) => {
+
+      const option = document.createElement('option')
+      option.value = file
+      option.innerText = file.replace('.enc', '')
+      versionsGroup.appendChild(option)
+    })
+
+    selectDOM.appendChild(versionsGroup)
+  }
+
+  const stableVersions = await fetchStableFWVersions()
+  displayOptionsInGroup(fw_version_listDOM, stableVersions, 'Stable versions')
+
+  const dailyVersions = await fetchDailyFWVersions()
+  displayOptionsInGroup(fw_version_listDOM, dailyVersions, 'Daily builds')
+}
+
+
+loadFWVersions()
+
+function downloadSelectedFW() {
+  const version = fw_version_listDOM.value;
+  const groupLabel = document.querySelector('select#fw_version_list option:checked').parentElement.label;
+  let url;
+
+  if (groupLabel.includes('Daily')) {
+    url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
+  } else {
+    url = "https://updates.tangle.cz/subdom/updates/firmware/";
+  }
+
+  return fetch(url + version).then(res => res.arrayBuffer())
+}
+
+fw_version_listDOM.onchange = function () {
+  window.ota_uploadFrom = "cloud";
+}

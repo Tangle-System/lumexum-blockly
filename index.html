@@ -41,13 +41,13 @@
 
   <script src="lib/webcomponents/dialog-component.js"></script>
   <script src="lib/other/jszip.min.js" defer></script>
-  <script src="lib/other/wavesurfer/wavesurfer.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.cursor.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.markers.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.mediasession.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.playhead.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.timeline.js" ></script>
-  <script src="lib/other/wavesurfer/plugins/wavesurfer.regions.js" ></script>
+  <script src="lib/other/wavesurfer/wavesurfer.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.cursor.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.markers.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.mediasession.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.playhead.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.timeline.js"></script>
+  <script src="lib/other/wavesurfer/plugins/wavesurfer.regions.js"></script>
 
   <link rel="shortcut icon" href="#">
 </head>
@@ -130,7 +130,7 @@
 
               <span id="revTime">0:00:00</span>
               <button id="saveButton" class="primary" title="...">
-                  SAVE
+                SAVE
               </button>
               <button id="uploadButton" class="notext primary" title="...">
                 <img src="blockly/media/1x1.gif" class="upload icon21">
@@ -166,11 +166,11 @@
         <button id="timeline_toggle" style="width: 2%; position: absolute; right: 0; z-index: 10; text-align: center; padding: 0;">^</button> -->
         <!-- <button id="playPause" style="width: 5%;">Play</button> -->
         <div class="" style="display: inline-block;width: 100%;">
-        <div class="player"></div>
-        <div  id="waveform_container" >
-          <div id="waveform" style="width: 100%; height: 60px;"></div>
-          <div id="timeline" style="width: 100%; height: 20px;"></div>
-        </div>
+          <div class="player"></div>
+          <div id="waveform_container">
+            <div id="waveform" style="width: 100%; height: 60px;"></div>
+            <div id="timeline" style="width: 100%; height: 20px;"></div>
+          </div>
 
         </div>
 
@@ -196,7 +196,8 @@
           OWNER <input style="width: 60%;" type="text" id="owner_identifier" value="matty">
         </div>
         <div>
-          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="a06cd5c4d5741b61fee69422f2590926">
+          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature"
+            value="a06cd5c4d5741b61fee69422f2590926">
           <!-- OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="00000000000000000000000000000000"> -->
         </div>
         <div>
@@ -210,7 +211,7 @@
       </div>
 
       <div>
-        CONNECTOR 
+        CONNECTOR
         <select name="connectors" id="control_connector_select">
           <option value="default">Default</option>
           <option value="webbluetooth">Web Bluetooth</option>
@@ -220,9 +221,9 @@
         </select>
       </div>
 
-    <div>
-      &nbsp;
-    </div>
+      <div>
+        &nbsp;
+      </div>
 
       <div>
         <span>
@@ -249,6 +250,11 @@
         <div>
           <div>
             <input type="file" id="otaFirmware">
+            <select id="fw_version_list">
+            </select>
+            <br>
+            <br>
+            <div style="width: 253px;display: inline-block;"></div>
             <button id="otaUpdateDeviceFirmware">
               OTA update device
             </button>
@@ -256,6 +262,7 @@
               OTA update network
             </button>
           </div>
+          <br>
 
           <div id="otaProgress">
             <div id="otaProgressBar"></div>
@@ -278,26 +285,29 @@
 
       <div>
         🕹️ LABEL <input style="width: 10%;" type="text" id="control_label" value="evt1">
-        Event Type 
+        Event Type
         <select id="control_type" style="width: 30%;">
-            <option value="percentage_control">Percentage</option>
-            <option value="color_control">Color</option>
-            <option value="timestamp_control">Timestamp</option>
+          <option value="percentage_control">Percentage</option>
+          <option value="color_control">Color</option>
+          <option value="timestamp_control">Timestamp</option>
         </select>
       </div>
 
       <div id="percentage_control">
-        🕹️ PERCENTAGE <input style="width: 10%;" type="number" id="control_percentage_value" min="0" max="100" value="0"> %
-        -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0" step="10"> 100%
+        🕹️ PERCENTAGE <input style="width: 10%;" type="number" id="control_percentage_value" min="0" max="100"
+          value="0"> %
+        -100% <input style="width: 55%;" type="range" id="control_percentage_range" min="-100" max="100" value="0"
+          step="10"> 100%
       </div>
 
       <div id="color_control" style="display: none;">
         🕹️ COLOR <input style="width: 10%;" type="text" id="control_color_value" value="#ff0000">
-         <input style="border:0" type="color" id="control_color_picker" value="#ff0000">
+        <input style="border:0" type="color" id="control_color_picker" value="#ff0000">
       </div>
 
       <div id="timestamp_control" style="display: none;">
-        🕹️ TIMESTAMP <input style="width: 10%;" type="number" id="control_timestamp_value" min="0" max="2147483647" value="1000"> ms
+        🕹️ TIMESTAMP <input style="width: 10%;" type="number" id="control_timestamp_value" min="0" max="2147483647"
+          value="1000"> ms
       </div>
 
       <div>
@@ -362,16 +372,16 @@
             <field name="COMMENT">1) Přetáhni bloky do pracovního prostoru</field>
             <next>
               <block type="commentary_line" disabled="true">
-                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [  ⬆  ]</field>
+                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [ ⬆ ]</field>
                 <next>
                   <block type="commentary_line" disabled="true">
-                    <field name="COMMENT">3) Tlačítkem PLAY [   ▷  ] se animace spustí</field>
+                    <field name="COMMENT">3) Tlačítkem PLAY [ ▷ ] se animace spustí</field>
                     <next>
                       <block type="commentary_line" disabled="true">
-                        <field name="COMMENT">4) Tlačítkem PAUZA [   ||   ] se animace pozastaví</field>
+                        <field name="COMMENT">4) Tlačítkem PAUZA [ || ] se animace pozastaví</field>
                         <next>
                           <block type="commentary_line" disabled="true">
-                            <field name="COMMENT">5) Tlačítkem STOP [   ■   ] se animace zruší</field>
+                            <field name="COMMENT">5) Tlačítkem STOP [ ■ ] se animace zruší</field>
                           </block>
                         </next>
                       </block>

@@ -450,3 +450,5 @@ document.querySelector("#filename").ondrop = handleFileDrop;
 document.querySelector("#loadFile").ondrop = handleFileDrop;
 document.querySelector("#saveFile").ondrop = handleFileDrop;
 //document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
+
+
