@@ -310,7 +310,7 @@ function setupOwnership() {
 
       // if event is not null, then the owner_signature was changed from the html input.
       // then erase owner_identifier
-      if (e !== null) {
+      if (e != null) {
         owner_identifier.value = "";
       }
     } catch {
