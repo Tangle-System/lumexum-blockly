@@ -1,5 +1,12 @@
+import TangleMsgBox from "./lib/webcomponents/dialog-component.js";
+
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
+
+  window.alert = TangleMsgBox.alert;
+  window.confirm = TangleMsgBox.confirm;
+  window.prompt = TangleMsgBox.prompt;
+
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");

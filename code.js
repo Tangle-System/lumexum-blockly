@@ -956,12 +956,7 @@ Code.discard = function () {
 // var port;
 
 Code.adoptBluetooth = function () {
-  const name = document.getElementById("adoptName").value;
-  const id = document.getElementById("adoptId").value;
-
-  console.log('Adopting device as "' + name + '" id: ' + id);
-
-  Code.device.adopt(name, id).then(device => {
+  Code.device.adopt().then(device => {
     console.log("Device Adopted:", device);
   });
 };
