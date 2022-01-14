@@ -59,6 +59,10 @@ Code.device.addEventListener("disconnected", event => {
   icon.classList.add("connect");
 });
 
+Code.device.addEventListener("version", ver => {
+  alert("Detected version: " + ver);
+});
+
 Code.device.addEventListener("ota_status", status => {
   const container = document.getElementById("otaProgress");
   const bar = document.getElementById("otaProgressBar");
@@ -1004,7 +1008,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect([{name: "Device"}, {namePrefix: "Test"}, {name: "LE_WH-1000XM4"}]).then(device => {
+      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);
