@@ -958,7 +958,7 @@ Code.discard = function () {
 
 Code.adoptBluetooth = function () {
   Code.device.adopt().then(device => {
-    console.log("Device Adopted:", device);
+    console.log("Adopted Device:", device);
   });
 };
 
