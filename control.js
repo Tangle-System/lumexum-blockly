@@ -16,7 +16,7 @@ window.onload = function () {
   const control_label = document.querySelector("#control_label");
   const control_percentage_value = document.querySelector("#control_percentage_value");
   const control_timestamp_value = document.querySelector("#control_timestamp_value");
-  const control_color_value = document.querySelector("#control_color_value");
+  const control_color_value = /** @type {HTMLInputElement} */ document.querySelector("#control_color_value");
   const control_color_picker = document.querySelector("#control_color_picker");
 
   const control_connector_select = document.querySelector("#control_connector_select");
@@ -39,10 +39,16 @@ window.onload = function () {
 
   control_color_picker.oninput = e => {
     control_color_value.value = control_color_picker.value;
+
+    control_color_value.style.backgroundColor = control_color_value.value;
+    control_color_value.style.color = lum(control_color_value.value);
   };
 
   control_color_value.oninput = e => {
     control_color_picker.value = getHexColor(control_color_value.value);
+
+    control_color_value.style.backgroundColor = control_color_value.value;
+    control_color_value.style.color = lum(control_color_value.value);
   };
 
   control_connector_select.onchange = e => {
@@ -432,6 +438,23 @@ function getHexColor(colorStr) {
     });
   document.body.removeChild(a);
   return colors.length >= 3 ? "#" + ((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1) : false;
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0, 0];
+}
+
+function lum(hex) {
+  var rgb = hexToRgb(hex)
+ 
+  console.log(rgb);
+
+  if ((rgb[0] > 200 && rgb[1] > 200 && rgb[2] > 200) || (rgb[0] > 140 && rgb[1] > 215 && rgb[2] > 140) || (rgb[1] > 220 && (rgb[0] > 120 || rgb[2] > 120))) {
+    return "#000000";
+  }
+  
+  return "#ffffff";
 }
 
 document.body.ondrop = function (e) {
