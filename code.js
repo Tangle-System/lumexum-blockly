@@ -958,7 +958,7 @@ Code.discard = function () {
 
 Code.adoptBluetooth = function () {
   Code.device.adopt().then(device => {
-    console.log("Device Adopted:", device);
+    console.log("Adopted Device:", device);
   });
 };
 
@@ -1004,7 +1004,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */).then(device => {
+      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */ null, false).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);

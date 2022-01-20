@@ -206,31 +206,31 @@ window.onload = function () {
     if (currentControlType === "percentage_control") {
       if (value === null) {
         log_value = control_percentage_value.value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value).then(() => {
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), [control_destination.value]).then(() => {
           console.log("Sent!");
         });
       } else {
         log_value = value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value);
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), [control_destination.value]);
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
       log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
-      Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
+      Code.device.emitColorEvent(control_label.value, hexColor, [control_destination.value]);
 
       // } else {
-      // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);
+      // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, [control_destination.value]);
       // }
     } else if (currentControlType === "timestamp_control") {
       log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
-      Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, control_destination.value);
+      Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, [control_destination.value]);
     }
 
     const logmessageDOM = document.createElement("li");
     // TODO edit this message accordingly to each control type
-    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${control_destination.value}`;
+    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${[control_destination.value]}`;
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
   }
