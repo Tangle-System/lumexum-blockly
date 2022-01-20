@@ -447,8 +447,6 @@ function hexToRgb(hex) {
 
 function lum(hex) {
   var rgb = hexToRgb(hex)
- 
-  console.log(rgb);
 
   if ((rgb[0] > 200 && rgb[1] > 200 && rgb[2] > 200) || (rgb[0] > 140 && rgb[1] > 215 && rgb[2] > 140) || (rgb[1] > 220 && (rgb[0] > 120 || rgb[2] > 120))) {
     return "#000000";
