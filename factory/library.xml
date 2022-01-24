@@ -5541,7 +5541,7 @@
         <field name="ALIGN">LEFT</field>
         <statement name="FIELDS">
           <block type="field_static" id="wHq%]YfL|mE-%uvLQW9l">
-            <field name="TEXT">přidejte sensor</field>
+            <field name="TEXT">přidejte input</field>
           </block>
         </statement>
       </block>

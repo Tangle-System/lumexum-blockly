@@ -45,6 +45,13 @@ var Code = {};
 
 Code.device = new TangleDevice("default");
 
+setInterval(async () => {
+  const connected = await Code.device.connected();
+  if(!connected) {
+    await Code.device.connect();
+  }
+}, 5000);
+
 Code.device.addEventListener("connected", event => {
   console.log("Bluetooth Device connected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));

@@ -958,6 +958,13 @@ Blockly.Tngl["commentary_line"] = function (block) {
   return code;
 };
 
+Blockly.Tngl["commentary_inline"] = function (block) {
+  // var text_comment = block.getFieldValue("COMMENT");
+  var value_block = Blockly.Tngl.valueToCode(block, "BLOCK", Blockly.Tngl.ORDER_NONE);
+  var code = value_block;
+  return [code, Blockly.Tngl.ORDER_NONE];
+};
+
 Blockly.Tngl["commentary_spacer"] = function (block) {
   var code = "\n";
   return code;
@@ -975,7 +982,7 @@ Blockly.Tngl["device_4ports"] = function (block) {
   var text_port_c_length = block.getFieldValue('PORT_C_LENGTH');
   var checkbox_tangle_d = block.getFieldValue('TANGLE_D') == 'TRUE';
   var text_port_d_length = block.getFieldValue('PORT_D_LENGTH');
-  var statements_sensors = Blockly.Tngl.statementToCode(block, 'SENSORS');
+  var statements_sensors = Blockly.Tngl.statementToCode(block, 'INPUTS');
 
   var portmask = 0x00;
 
@@ -1130,6 +1137,16 @@ Blockly.Tngl["variable_create"] = function (block) {
   var code = "defVariable(" + formatLabel(text_label) + ", " + value_source + ");\n";
   return code;
 };
+
+// Blockly.Tngl["variable_modify"] = function (block) {
+//   var text_label = block.getFieldValue("LABEL");
+//   var value_source = Blockly.Tngl.valueToCode(block, "SOURCE", Blockly.Tngl.ORDER_NONE);
+//   // $var = 0xff;
+//   // var code = "$" + text_label + " = " + value_source + ";\n";
+//   // variable($var, 0xff);
+//   var code = "modVariable(" + formatLabel(text_label) + ", " + value_source + ");\n";
+//   return code;
+// };
 
 Blockly.Tngl["value_dummy"] = function (block) {
   var code = "0%";
