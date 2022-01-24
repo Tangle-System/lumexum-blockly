@@ -13,8 +13,10 @@
 /// <reference path="blockly/blockly_compressed.js" />
 /// <reference path="lib/tangle-js/TangleParser.js" />
 /// <reference path="lib/tangle-js/TimeTrack.js" />
+/// <reference path="lib/tangle-js/functions.js" />
 
 "use strict";
+
 
 if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
@@ -706,40 +708,101 @@ Code.init = function () {
     //Code.renderContent();
   };
 
+  Code.removeOwner = function () {
+    Code.device
+      .removeOwner()
+      .then(() => {
+        window.alert("Owner removed.");
+      })
+      .catch(e => {
+        window.alert(e, "Failed to remove owner from the device.");
+      });
+  };
+
+  Code.fwVersion = function () {
+    Code.device
+      .getFwVersion()
+      .then(version => {
+        window.alert(version);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get FW version");
+      });
+  };
+
+  Code.syncTngl = function () {
+    Code.device
+      .syncTngl(Blockly.Tngl.workspaceToCode(Code.workspace))
+      .then(() => {
+        window.alert("Tngl synchronized on the connected device");
+      })
+      .catch(e => {
+        window.alert(e, "Failed to sync tngl");
+      });
+  };
+
+  Code.deviceFingerprint = function () {
+    Code.device
+      .getTnglFingerprint()
+      .then(fingerprint => {
+        let digest = btoa(String.fromCharCode(...new Uint8Array(fingerprint)));
+        console.log(digest);
+        window.alert(digest);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get TNGL fingerprint");
+      });
+  };
+
+  Code.blocklyFingerprint = function () {
+
+    var tngl_code = Blockly.Tngl.workspaceToCode(Code.workspace);
+
+    return computeTnglFingerprint(new TnglCodeParser().parseTnglCode(tngl_code), "fingerprint")
+      .then(fingerprint => {
+        let digest = btoa(String.fromCharCode(...new Uint8Array(fingerprint)));
+        console.log(digest);
+        window.alert(digest);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get Blockly TNGL fingerprint");
+      });
+  };
+
   Code.rebootDevice = function () {
     Code.device.reboot();
   };
 
-  document.getElementById("otaFirmware").addEventListener("change", function () {
-    window.ota_firmware = this.files[0];
+  document.getElementById("otaFirmware").addEventListener("change", async function () {
+    window.ota_uploadFrom = "file";
+    window.ota_firmware = await this.files[0].arrayBuffer()
+      .then(function (firmware) {
+        return firmware
+      }).catch(function (err) {
+        console.warn("Something went wrong.", err);
+      });
   });
 
-  Code.otaUpdateDeviceFirmware = function () {
-    window.ota_firmware
-      .arrayBuffer()
-      .then(function (firmware) {
-        console.log(firmware);
-        return Code.device.updateDeviceFirmware(new Uint8Array(firmware)).catch(e => {
-          console.error(e);
-        });
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+  Code.otaUpdateDeviceFirmware = async function () {
+    if (window.ota_uploadFrom === "cloud") {
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+      window.ota_firmware = await downloadSelectedFW()
+    }
+    console.log(window.ota_firmware);
+    return Code.device.updateDeviceFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
+      console.error(e);
+    });
   };
 
-  Code.otaUpdateNetworkFirmware = function () {
-    window.ota_firmware
-      .arrayBuffer()
-      .then(function (firmware) {
-        console.log(firmware);
-        return Code.device.updateNetworkFirmware(new Uint8Array(firmware)).catch(e => {
-          console.error(e);
-        });
-      })
-      .catch(function (err) {
-        console.warn("Something went wrong.", err);
-      });
+  Code.otaUpdateNetworkFirmware = async function () {
+    if (window.ota_uploadFrom === "cloud") {
+      window.ota_firmware = await downloadSelectedFW()
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+    }
+    console.log(window.ota_firmware);
+    return Code.device.updateNetworkFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
+      console.error(e);
+    });
   };
 
   document.getElementById("otaConfig").addEventListener("change", function () {
@@ -760,7 +823,14 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateDeviceConfig(new Uint8Array(config)).catch(e => {
+            return Code.device.updateDeviceConfig(new Uint8Array(config)).
+            
+            then(()=>{
+              window.alert("Config write SUCCESS");
+            })
+            
+            .catch(e => {
+              window.alert("Config write FAILED");
               console.error(e);
             });
           });
@@ -804,6 +874,11 @@ Code.init = function () {
 
   Code.bindClick("simplifyButton", Code.simplify);
   Code.bindClick("rebootButton", Code.rebootDevice);
+  Code.bindClick("removeOwnerButton", Code.removeOwner);
+  Code.bindClick("fwVersionButton", Code.fwVersion);
+  Code.bindClick("syncTnglButton", Code.syncTngl);
+  Code.bindClick("deviceFingerprintButton", Code.deviceFingerprint);  
+  Code.bindClick("blocklyFingerprintButton", Code.blocklyFingerprint);
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
   Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
@@ -957,7 +1032,7 @@ Code.discard = function () {
 
 Code.adoptBluetooth = function () {
   Code.device.adopt().then(device => {
-    console.log("Device Adopted:", device);
+    console.log("Adopted Device:", device);
   });
 };
 
@@ -1003,7 +1078,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */).then(device => {
+      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */ null, false).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);
@@ -1179,3 +1254,59 @@ function attachSinkId(element, sinkId) {
 //     window.confirm("Opravdu chcete opustit tuto stránku? Ztratíte svou rozdělanou práci.");
 //   }
 // };
+
+
+function fetchStableFWVersions() {
+  return fetch('https://updates.tangle.cz/subdom/updates/firmware/list.php').then(v => v.json()).then(v => v.files)
+}
+
+function fetchDailyFWVersions() {
+  return fetch('https://updates.tangle.cz/subdom/updates/firmware/daily/list.php').then(v => v.json()).then(v => v.files)
+}
+
+const fw_version_listDOM = document.querySelector('#fw_version_list');
+
+async function loadFWVersions() {
+
+  function displayOptionsInGroup(selectDOM, versions, title) {
+    const versionsGroup = document.createElement('optgroup');
+    versionsGroup.label = title;
+
+    versions.forEach(({ file }) => {
+
+      const option = document.createElement('option')
+      option.value = file
+      option.innerText = file.replace('.enc', '')
+      versionsGroup.appendChild(option)
+    })
+
+    selectDOM.appendChild(versionsGroup)
+  }
+
+  const stableVersions = await fetchStableFWVersions()
+  displayOptionsInGroup(fw_version_listDOM, stableVersions, 'Stable versions')
+
+  const dailyVersions = await fetchDailyFWVersions()
+  displayOptionsInGroup(fw_version_listDOM, dailyVersions, 'Daily builds')
+}
+
+
+loadFWVersions()
+
+function downloadSelectedFW() {
+  const version = fw_version_listDOM.value;
+  const groupLabel = document.querySelector('select#fw_version_list option:checked').parentElement.label;
+  let url;
+
+  if (groupLabel.includes('Daily')) {
+    url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
+  } else {
+    url = "https://updates.tangle.cz/subdom/updates/firmware/";
+  }
+
+  return fetch(url + version).then(res => res.arrayBuffer())
+}
+
+fw_version_listDOM.onchange = function () {
+  window.ota_uploadFrom = "cloud";
+}
