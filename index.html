@@ -218,7 +218,7 @@
           <option value="tangleconnect">Tangle Connect</option>
           <option value="webserial">Web Serial</option>
           <option value="dummy">Dummy</option>
-          <option value="chandelier">Chandelier</option>
+          <option value="websockets">Remote Controler</option>
         </select>
       </div>
 
@@ -262,6 +262,11 @@
           <button id="syncTnglButton">
             Sync TNGL
           </button>
+
+          <button onclick="javascript:Code.device.connectRemoteControl()">Connect Remote Controller</button>
+          <button onclick="javascript:Code.device.disconnectRemoteControl()">Disonnect Remote Controller</button>
+          <button onclick="javascript:Code.device.syncClock()">Force Clock Sync</button>
+
 
         </span>
 
