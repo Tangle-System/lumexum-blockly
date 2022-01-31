@@ -16,7 +16,7 @@ window.onload = function () {
   const control_label = document.querySelector("#control_label");
   const control_percentage_value = document.querySelector("#control_percentage_value");
   const control_timestamp_value = document.querySelector("#control_timestamp_value");
-  const control_color_value = document.querySelector("#control_color_value");
+  const control_color_value = /** @type {HTMLInputElement} */ document.querySelector("#control_color_value");
   const control_color_picker = document.querySelector("#control_color_picker");
 
   const control_connector_select = document.querySelector("#control_connector_select");
@@ -39,10 +39,16 @@ window.onload = function () {
 
   control_color_picker.oninput = e => {
     control_color_value.value = control_color_picker.value;
+
+    control_color_value.style.backgroundColor = control_color_value.value;
+    control_color_value.style.color = lum(control_color_value.value);
   };
 
   control_color_value.oninput = e => {
     control_color_picker.value = getHexColor(control_color_value.value);
+
+    control_color_value.style.backgroundColor = control_color_value.value;
+    control_color_value.style.color = lum(control_color_value.value);
   };
 
   control_connector_select.onchange = e => {
@@ -206,31 +212,31 @@ window.onload = function () {
     if (currentControlType === "percentage_control") {
       if (value === null) {
         log_value = control_percentage_value.value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), control_destination.value).then(() => {
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(control_percentage_value.value), [control_destination.value]).then(() => {
           console.log("Sent!");
         });
       } else {
         log_value = value + "%";
-        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), control_destination.value);
+        Code.device.emitPercentageEvent(control_label.value, parseFloat(value), [control_destination.value]);
       }
     } else if (currentControlType === "color_control") {
       // if (!value) {
       const hexColor = getHexColor(document.querySelector("#control_color_value").value);
       log_value = `<span style="color:${hexColor}">` + hexColor + `</span>`;
-      Code.device.emitColorEvent(control_label.value, hexColor, control_destination.value);
+      Code.device.emitColorEvent(control_label.value, hexColor, [control_destination.value]);
 
       // } else {
-      // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, control_destination.value);
+      // Code.device.bluetoothDevice.emitColorEvent(control_label.value, value, [control_destination.value]);
       // }
     } else if (currentControlType === "timestamp_control") {
       log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
-      Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, control_destination.value);
+      Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, [control_destination.value]);
     }
 
     const logmessageDOM = document.createElement("li");
     // TODO edit this message accordingly to each control type
-    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${control_destination.value}`;
+    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${[control_destination.value]}`;
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
   }
@@ -432,6 +438,21 @@ function getHexColor(colorStr) {
     });
   document.body.removeChild(a);
   return colors.length >= 3 ? "#" + ((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1) : false;
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0, 0];
+}
+
+function lum(hex) {
+  var rgb = hexToRgb(hex)
+
+  if ((rgb[0] > 200 && rgb[1] > 200 && rgb[2] > 200) || (rgb[0] > 140 && rgb[1] > 215 && rgb[2] > 140) || (rgb[1] > 220 && (rgb[0] > 120 || rgb[2] > 120))) {
+    return "#000000";
+  }
+  
+  return "#ffffff";
 }
 
 document.body.ondrop = function (e) {

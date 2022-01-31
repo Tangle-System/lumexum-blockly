@@ -13,6 +13,7 @@
 /// <reference path="blockly/blockly_compressed.js" />
 /// <reference path="lib/tangle-js/TangleParser.js" />
 /// <reference path="lib/tangle-js/TimeTrack.js" />
+/// <reference path="lib/tangle-js/functions.js" />
 
 "use strict";
 
@@ -707,6 +708,67 @@ Code.init = function () {
     //Code.renderContent();
   };
 
+  Code.removeOwner = function () {
+    Code.device
+      .removeOwner()
+      .then(() => {
+        window.alert("Owner removed.");
+      })
+      .catch(e => {
+        window.alert(e, "Failed to remove owner from the device.");
+      });
+  };
+
+  Code.fwVersion = function () {
+    Code.device
+      .getFwVersion()
+      .then(version => {
+        window.alert(version);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get FW version");
+      });
+  };
+
+  Code.syncTngl = function () {
+    Code.device
+      .syncTngl(Blockly.Tngl.workspaceToCode(Code.workspace))
+      .then(() => {
+        window.alert("Tngl synchronized on the connected device");
+      })
+      .catch(e => {
+        window.alert(e, "Failed to sync tngl");
+      });
+  };
+
+  Code.deviceFingerprint = function () {
+    Code.device
+      .getTnglFingerprint()
+      .then(fingerprint => {
+        let digest = btoa(String.fromCharCode(...new Uint8Array(fingerprint)));
+        console.log(digest);
+        window.alert(digest);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get TNGL fingerprint");
+      });
+  };
+
+  Code.blocklyFingerprint = function () {
+
+    var tngl_code = Blockly.Tngl.workspaceToCode(Code.workspace);
+
+    return computeTnglFingerprint(new TnglCodeParser().parseTnglCode(tngl_code), "fingerprint")
+      .then(fingerprint => {
+        let digest = btoa(String.fromCharCode(...new Uint8Array(fingerprint)));
+        console.log(digest);
+        window.alert(digest);
+      })
+      .catch(e => {
+        window.alert(e, "Failed get Blockly TNGL fingerprint");
+      });
+  };
+
   Code.rebootDevice = function () {
     Code.device.reboot();
   };
@@ -761,7 +823,14 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateDeviceConfig(new Uint8Array(config)).catch(e => {
+            return Code.device.updateDeviceConfig(new Uint8Array(config)).
+            
+            then(()=>{
+              window.alert("Config write SUCCESS");
+            })
+            
+            .catch(e => {
+              window.alert("Config write FAILED");
               console.error(e);
             });
           });
@@ -805,6 +874,11 @@ Code.init = function () {
 
   Code.bindClick("simplifyButton", Code.simplify);
   Code.bindClick("rebootButton", Code.rebootDevice);
+  Code.bindClick("removeOwnerButton", Code.removeOwner);
+  Code.bindClick("fwVersionButton", Code.fwVersion);
+  Code.bindClick("syncTnglButton", Code.syncTngl);
+  Code.bindClick("deviceFingerprintButton", Code.deviceFingerprint);  
+  Code.bindClick("blocklyFingerprintButton", Code.blocklyFingerprint);
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
   Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
@@ -958,7 +1032,7 @@ Code.discard = function () {
 
 Code.adoptBluetooth = function () {
   Code.device.adopt().then(device => {
-    console.log("Device Adopted:", device);
+    console.log("Adopted Device:", device);
   });
 };
 
@@ -1004,7 +1078,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */).then(device => {
+      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */ null, false).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);
