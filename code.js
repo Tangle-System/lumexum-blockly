@@ -770,7 +770,11 @@ Code.init = function () {
   };
 
   Code.rebootDevice = function () {
-    Code.device.reboot();
+    Code.device.rebootDevice();
+  };
+
+  Code.rebootNetwork = function () {
+    Code.device.rebootNetwork();
   };
 
   document.getElementById("otaFirmware").addEventListener("change", async function () {
@@ -873,7 +877,8 @@ Code.init = function () {
   Code.tabClick(Code.selected);
 
   Code.bindClick("simplifyButton", Code.simplify);
-  Code.bindClick("rebootButton", Code.rebootDevice);
+  Code.bindClick("rebootDevice", Code.rebootDevice);
+  Code.bindClick("rebootNetwork", Code.rebootNetwork);
   Code.bindClick("removeOwnerButton", Code.removeOwner);
   Code.bindClick("fwVersionButton", Code.fwVersion);
   Code.bindClick("syncTnglButton", Code.syncTngl);
