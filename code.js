@@ -711,9 +711,9 @@ Code.init = function () {
   Code.removeOwner = function () {
     Code.device
       .removeOwner()
-      .then(mac => {
+      .then(device => {
         // @ts-ignore
-        window.alert("Mac " + mac.toString() + "removed", "Owner removed.");
+        window.alert("Mac " + device.mac + " removed", "Owner removed.");
       })
       .catch(e => {
         // @ts-ignore
@@ -1085,7 +1085,7 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect( /*[{name: "NARA Alpha"}, {name: "DEV KIT"}, {name: "LE_WH-1000XM4"}] */ null, false).then(device => {
+      Code.device.connect( /* [{name: "Manka"}] */ null, false).then(device => {
         console.log("Device Connected:", device);
       }).catch(e => {
         console.error(e);
