@@ -711,10 +711,12 @@ Code.init = function () {
   Code.removeOwner = function () {
     Code.device
       .removeOwner()
-      .then(() => {
-        window.alert("Owner removed.");
+      .then(mac => {
+        // @ts-ignore
+        window.alert("Mac " + mac.toString() + "removed", "Owner removed.");
       })
       .catch(e => {
+        // @ts-ignore
         window.alert(e, "Failed to remove owner from the device.");
       });
   };
