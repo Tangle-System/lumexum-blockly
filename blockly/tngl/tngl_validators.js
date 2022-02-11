@@ -466,6 +466,11 @@ Blockly.Blocks["commentary_line"].setValidators = function () {
   this.setColour("#cdcdcd");
 };
 
+Blockly.Blocks["commentary_inline"].setValidators = function () {
+  this.setColour("#cdcdcd");
+};
+
+
 Blockly.Blocks["commentary_spacer"].setValidators = function () {
   this.setColour("#cdcdcd");
 };
@@ -495,6 +500,10 @@ Blockly.Blocks["device_8ports"].setValidators = function () {
 Blockly.Blocks["variable_create"].setValidators = function () {
   this.getField("LABEL").setValidator(validator_LE);
 };
+
+// Blockly.Blocks["variable_modify"].setValidators = function () {
+//   this.getField("LABEL").setValidator(validator_LE);
+// };
 
 Blockly.Blocks["value_dummy"].setValidators = function () {};
 

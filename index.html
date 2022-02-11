@@ -218,6 +218,7 @@
           <option value="tangleconnect">Tangle Connect</option>
           <option value="webserial">Web Serial</option>
           <option value="dummy">Dummy</option>
+          <option value="websockets">Remote Controler</option>
         </select>
       </div>
 
@@ -234,8 +235,12 @@
 
           <button onclick="javascript:location.reload(true)">Reload</button>
 
-          <button id="rebootButton">
+          <button id="rebootNetwork">
             Network Reboot
+          </button>
+
+          <button id="rebootDevice">
+            Device Reboot
           </button>
 
           <button id="simplifyButton">
@@ -261,6 +266,11 @@
           <button id="syncTnglButton">
             Sync TNGL
           </button>
+
+          <button onclick="javascript:Code.device.connectRemoteControl()">Connect Remote Controller</button>
+          <button onclick="javascript:Code.device.disconnectRemoteControl()">Disonnect Remote Controller</button>
+          <button onclick="javascript:Code.device.syncClock()">Force Clock Sync</button>
+
 
         </span>
 
@@ -924,6 +934,12 @@
           <shadow type="value_dummy"></shadow>
         </value>
       </block>
+      <!-- <block type="variable_modify">
+        <field name="LABEL">$var1</field>
+        <value name="SOURCE">
+          <shadow type="value_dummy"></shadow>
+        </value>
+      </block> -->
       <block type="value_read_variable">
         <field name="VARIABLE_LABEL">$var1</field>
       </block>
@@ -1183,6 +1199,9 @@
         <field name="COMMENT">This is a comment</field>
       </block>
       <block type="commentary_line">
+        <field name="COMMENT">This is a comment</field>
+      </block>
+      <block type="commentary_inline">
         <field name="COMMENT">This is a comment</field>
       </block>
       <block type="commentary_spacer"></block>

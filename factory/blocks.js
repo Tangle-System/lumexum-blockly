@@ -839,6 +839,17 @@ Blockly.Blocks["commentary_line"] = {
   },
 };
 
+Blockly.Blocks["commentary_inline"] = {
+  init: function () {
+    this.appendValueInput("BLOCK").appendField(new Blockly.FieldTextInput("This is a comment"), "COMMENT");
+    this.setOutput(true, null);
+    this.setColour(255);
+    this.setTooltip("");
+    this.setHelpUrl("");
+    this.setValidators();
+  },
+};
+
 Blockly.Blocks["commentary_spacer"] = {
   init: function () {
     this.appendDummyInput();
@@ -891,7 +902,7 @@ Blockly.Blocks["device_8ports"] = {
 
 Blockly.Blocks["variable_create"] = {
   init: function () {
-    this.appendValueInput("SOURCE").setCheck("value").appendField("WRITE 📦").appendField(new Blockly.FieldTextInput("$var1"), "LABEL");
+    this.appendValueInput("SOURCE").setCheck("value").appendField("CREATE 📦").appendField(new Blockly.FieldTextInput("$var1"), "LABEL");
     this.setPreviousStatement(true, "construct");
     this.setNextStatement(true, "construct");
     this.setColour(270);
@@ -899,6 +910,17 @@ Blockly.Blocks["variable_create"] = {
     this.setHelpUrl("");
   },
 };
+
+// Blockly.Blocks["variable_modify"] = {
+//   init: function () {
+//     this.appendValueInput("SOURCE").setCheck("value").appendField("CAHNGE 📦").appendField(new Blockly.FieldTextInput("$var1"), "LABEL");
+//     this.setPreviousStatement(true, "construct");
+//     this.setNextStatement(true, "construct");
+//     this.setColour(270);
+//     this.setTooltip("");
+//     this.setHelpUrl("");
+//   },
+// };
 
 Blockly.Blocks["value_dummy"] = {
   init: function () {
@@ -1106,7 +1128,7 @@ Blockly.Blocks["sensor_button"] = {
 
 Blockly.Blocks["sensor_dummy"] = {
   init: function () {
-    this.appendDummyInput().appendField("přidejte sensor");
+    this.appendDummyInput().appendField("přidejte input");
     this.setPreviousStatement(true, "sensor");
     this.setNextStatement(true, "sensor");
     this.setColour(105);

@@ -528,6 +528,13 @@ Blockly.JavaScript["commentary_line"] = function (block) {
   return code;
 };
 
+Blockly.JavaScript["commentary_inline"] = function (block) {
+  var text_comment = block.getFieldValue("COMMENT");
+  // TODO: Assemble JavaScript into code variable.
+  var code = "...;\n";
+  return code;
+};
+
 Blockly.JavaScript["commentary_spacer"] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = "...;\n";
@@ -585,6 +592,14 @@ Blockly.JavaScript["variable_create"] = function (block) {
   var code = "...;\n";
   return code;
 };
+
+// Blockly.JavaScript["variable_modify"] = function (block) {
+//   var text_label = block.getFieldValue("LABEL");
+//   var value_source = Blockly.JavaScript.valueToCode(block, "SOURCE", Blockly.JavaScript.ORDER_ATOMIC);
+//   // TODO: Assemble JavaScript into code variable.
+//   var code = "...;\n";
+//   return code;
+// };
 
 Blockly.JavaScript["value_dummy"] = function (block) {
   // TODO: Assemble JavaScript into code variable.

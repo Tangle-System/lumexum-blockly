@@ -563,6 +563,12 @@
         <shadow type="value_dummy"></shadow>
       </value>
     </block>
+    <!-- <block type="variable_modify">
+      <field name="LABEL">$var1</field>
+      <value name="SOURCE">
+        <shadow type="value_dummy"></shadow>
+      </value>
+    </block> -->
     <block type="value_read_variable">
       <field name="VARIABLE_LABEL">$var1</field>
     </block>
@@ -822,6 +828,9 @@
       <field name="COMMENT">This is a comment</field>
     </block>
     <block type="commentary_line">
+      <field name="COMMENT">This is a comment</field>
+    </block>
+    <block type="commentary_inline">
       <field name="COMMENT">This is a comment</field>
     </block>
     <block type="commentary_spacer"></block>
