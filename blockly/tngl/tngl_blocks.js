@@ -54,7 +54,7 @@ Blockly.Blocks["drawing"] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, "construct");
     this.setNextStatement(true, "construct");
-    this.setColour(240);
+    // this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
     this.setValidators();

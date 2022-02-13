@@ -654,6 +654,8 @@ Code.init = function () {
   });
   var toolboxXml = Blockly.Xml.textToDom(toolboxText);
 
+  
+
   Code.workspace = Blockly.inject("content_blocks", {
     media: "blockly/media/",
     rtl: rtl,
@@ -676,7 +678,8 @@ Code.init = function () {
     toolboxPosition: "start",
     css: true,
     scrollbars: true,
-    sounds: false
+    sounds: false,
+    theme: localStorage.getItem('darkmode') && THEME_DARKMODE(),
     //oneBasedIndex: false
   });
 
