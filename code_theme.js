@@ -28,6 +28,9 @@ const THEME_DARKMODE = () => {
       #content_control {
         background: #333 !important;
       }
+      body > table > tbody > tr:nth-child(1) > td:nth-child(1) > img {
+        filter: invert();
+      }
     `;
     document.head.appendChild(style);
   }, 0)
@@ -63,3 +66,5 @@ document.querySelector("body > table > tbody > tr:nth-child(1) > td:nth-child(1)
   window.location.reload()
 
 }
+
+// disable eventListeners
