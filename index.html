@@ -7,6 +7,30 @@
   <meta name="google" value="notranslate">
   <title>Tangle Terminal</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+    // immediate function to create scope
+    // keep a reference to the original method
+    const orig_addEventListener = Element.prototype.addEventListener;
+
+    Element.prototype.addEventListener = function (type, listener, useCapture) {
+      // console.log('Hello my listener I am going to execute you',type,listener)
+        // your code here
+        //...
+        // call the original method
+        if(window.disabledListeners){
+          return orig_addEventListener.call(this, type, listener, useCapture);  
+        }
+    };
+
+    function enableListeners() {
+      window.disabledListeners = false;
+    }
+
+    function disableListeners() {
+      window.disabledListeners = true;
+    }
+
+  </script>
 
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 
