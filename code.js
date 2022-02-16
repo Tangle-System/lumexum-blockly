@@ -1028,9 +1028,9 @@ document.querySelector("#saveButton").onclick = _ => {
 /**
  * Discard all blocks from the workspace.
  */
-Code.discard = function () {
+Code.discard = async function () {
   var count = Code.workspace.getAllBlocks(false).length;
-  if (count < 2 || window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count))) {
+  if (count < 2 || await window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count))) {
     Code.workspace.clear();
     if (window.location.hash) {
       window.location.hash = "";
