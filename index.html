@@ -218,6 +218,7 @@
           <option value="tangleconnect">Tangle Connect</option>
           <option value="webserial">Web Serial</option>
           <option value="dummy">Dummy</option>
+          <option value="edummy">Dummy With Errors</option>
           <option value="websockets">Remote Controler</option>
         </select>
       </div>
@@ -270,6 +271,9 @@
           <button onclick="javascript:Code.device.connectRemoteControl()">Connect Remote Controller</button>
           <button onclick="javascript:Code.device.disconnectRemoteControl()">Disonnect Remote Controller</button>
           <button onclick="javascript:Code.device.syncClock()">Force Clock Sync</button>
+          <button onclick="javascript:Code.revealConsole()">Reveal Console</button>
+          <button onclick="javascript:Code.hideConsole()">Hide Console</button>
+
 
 
         </span>

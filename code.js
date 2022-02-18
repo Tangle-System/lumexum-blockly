@@ -39,6 +39,14 @@ if (!navigator.bluetooth) {
  */
 var Code = {};
 
+Code.revealConsole = function() {
+  enableDebugMode();
+}
+
+Code.hideConsole = function() {
+  deactivateDebugMode();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,6 +662,8 @@ Code.init = function () {
   });
   var toolboxXml = Blockly.Xml.textToDom(toolboxText);
 
+  
+
   Code.workspace = Blockly.inject("content_blocks", {
     media: "blockly/media/",
     rtl: rtl,
@@ -676,7 +686,8 @@ Code.init = function () {
     toolboxPosition: "start",
     css: true,
     scrollbars: true,
-    sounds: false
+    sounds: false,
+    theme: localStorage.getItem('darkmode') && THEME_DARKMODE(),
     //oneBasedIndex: false
   });
 
@@ -1025,9 +1036,9 @@ document.querySelector("#saveButton").onclick = _ => {
 /**
  * Discard all blocks from the workspace.
  */
-Code.discard = function () {
+Code.discard = async function () {
   var count = Code.workspace.getAllBlocks(false).length;
-  if (count < 2 || window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count))) {
+  if (count < 2 || await window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count))) {
     Code.workspace.clear();
     if (window.location.hash) {
       window.location.hash = "";
