@@ -54,7 +54,7 @@ Code.hideConsole = function() {
 Code.device = new TangleDevice("default");
 
 Code.device.addEventListener("connected", event => {
-  console.log("Bluetooth Device connected");
+  console.log("Tangle Device connected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
   icon.classList.remove("connect");
@@ -62,7 +62,7 @@ Code.device.addEventListener("connected", event => {
 });
 
 Code.device.addEventListener("disconnected", event => {
-  console.log("Bluetooth Device disconnected");
+  console.log("Tangle Device disconnected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
   icon.classList.remove("disconnect");
