@@ -17,7 +17,6 @@
 
 "use strict";
 
-
 if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
@@ -39,13 +38,13 @@ if (!navigator.bluetooth) {
  */
 var Code = {};
 
-Code.revealConsole = function() {
+Code.revealConsole = function () {
   enableDebugMode();
-}
+};
 
-Code.hideConsole = function() {
+Code.hideConsole = function () {
   deactivateDebugMode();
-}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +182,7 @@ Code.LANGUAGE_NAME = {
   uk: "Українська",
   vi: "Tiếng Việt",
   "zh-hans": "简体中文",
-  "zh-hant": "正體中文"
+  "zh-hant": "正體中文",
 };
 
 /**
@@ -210,8 +209,12 @@ Code.debug.setVisible = function (enable) {
   }
 };
 
+Code.device.on("receive", (message)=>{
+  Code.debug.textarea.textContent += message.payload;
+})
+
 Code.control = {
-  div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control"))
+  div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control")),
 };
 
 Code.control.setVisible = function (enable) {
@@ -447,7 +450,7 @@ Code.getBBox_ = function (element) {
     height: height,
     width: width,
     x: x,
-    y: y
+    y: y,
   };
 };
 
@@ -474,7 +477,7 @@ Code.TABS_DISPLAY_ = [
   "Tngl",
   "XML",
   "Debug",
-  "Control"
+  "Control",
 ];
 
 Code.selected = "blocks";
@@ -662,8 +665,6 @@ Code.init = function () {
   });
   var toolboxXml = Blockly.Xml.textToDom(toolboxText);
 
-  
-
   Code.workspace = Blockly.inject("content_blocks", {
     media: "blockly/media/",
     rtl: rtl,
@@ -674,7 +675,7 @@ Code.init = function () {
       startScale: 1,
       maxScale: 3,
       minScale: 0.3,
-      scaleSpeed: 1.2
+      scaleSpeed: 1.2,
     },
 
     collapse: true,
@@ -687,7 +688,7 @@ Code.init = function () {
     css: true,
     scrollbars: true,
     sounds: false,
-    theme: localStorage.getItem('darkmode') && THEME_DARKMODE(),
+    theme: localStorage.getItem("darkmode") && THEME_DARKMODE(),
     //oneBasedIndex: false
   });
 
@@ -768,7 +769,6 @@ Code.init = function () {
   };
 
   Code.blocklyFingerprint = function () {
-
     var tngl_code = Blockly.Tngl.workspaceToCode(Code.workspace);
 
     return computeTnglFingerprint(new TnglCodeParser().parseTnglCode(tngl_code), "fingerprint")
@@ -792,18 +792,20 @@ Code.init = function () {
 
   document.getElementById("otaFirmware").addEventListener("change", async function () {
     window.ota_uploadFrom = "file";
-    window.ota_firmware = await this.files[0].arrayBuffer()
+    window.ota_firmware = await this.files[0]
+      .arrayBuffer()
       .then(function (firmware) {
-        return firmware
-      }).catch(function (err) {
+        return firmware;
+      })
+      .catch(function (err) {
         console.warn("Something went wrong.", err);
       });
   });
 
   Code.otaUpdateDeviceFirmware = async function () {
     if (window.ota_uploadFrom === "cloud") {
-      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
-      window.ota_firmware = await downloadSelectedFW()
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace(".enc", "")}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+      window.ota_firmware = await downloadSelectedFW();
     }
     console.log(window.ota_firmware);
     return Code.device.updateDeviceFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
@@ -813,8 +815,8 @@ Code.init = function () {
 
   Code.otaUpdateNetworkFirmware = async function () {
     if (window.ota_uploadFrom === "cloud") {
-      window.ota_firmware = await downloadSelectedFW()
-      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace('.enc', '')}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
+      window.ota_firmware = await downloadSelectedFW();
+      TangleMsgBox.alert(`Verze: ${fw_version_listDOM.value.replace(".enc", "")}`, "Probíhá stahování FW, uploadování se spustí po stažení FW.");
     }
     console.log(window.ota_firmware);
     return Code.device.updateNetworkFirmware(new Uint8Array(window.ota_firmware)).catch(e => {
@@ -840,16 +842,16 @@ Code.init = function () {
         .then(() => {
           window.ota_config.arrayBuffer().then(function (config) {
             console.log(config);
-            return Code.device.updateDeviceConfig(new Uint8Array(config)).
-            
-            then(()=>{
-              window.alert("Config write SUCCESS");
-            })
-            
-            .catch(e => {
-              window.alert("Config write FAILED");
-              console.error(e);
-            });
+            return Code.device
+              .updateDeviceConfig(new Uint8Array(config))
+              .then(() => {
+                window.alert("Config write SUCCESS");
+              })
+
+              .catch(e => {
+                window.alert("Config write FAILED");
+                console.error(e);
+              });
           });
         })
         .catch(function (err) {
@@ -895,7 +897,7 @@ Code.init = function () {
   Code.bindClick("removeOwnerButton", Code.removeOwner);
   Code.bindClick("fwVersionButton", Code.fwVersion);
   Code.bindClick("syncTnglButton", Code.syncTngl);
-  Code.bindClick("deviceFingerprintButton", Code.deviceFingerprint);  
+  Code.bindClick("deviceFingerprintButton", Code.deviceFingerprint);
   Code.bindClick("blocklyFingerprintButton", Code.blocklyFingerprint);
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
@@ -936,7 +938,7 @@ Code.init = function () {
         return function () {
           Code.tabClick(name_);
         };
-      })(name)
+      })(name),
     );
   }
 
@@ -1038,7 +1040,7 @@ document.querySelector("#saveButton").onclick = _ => {
  */
 Code.discard = async function () {
   var count = Code.workspace.getAllBlocks(false).length;
-  if (count < 2 || await window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count))) {
+  if (count < 2 || (await window.confirm(Blockly.Msg["DELETE_ALL_BLOCKS"].replace("%1", count)))) {
     Code.workspace.clear();
     if (window.location.hash) {
       window.location.hash = "";
@@ -1096,11 +1098,14 @@ Code.connectBluetooth = function () {
   Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device.connect( /* [{name: "Manka"}] */ null, false).then(device => {
-        console.log("Device Connected:", device);
-      }).catch(e => {
-        console.error(e);
-      });
+      Code.device
+        .connect(/* [{name: "Manka"}] */ null, false)
+        .then(device => {
+          console.log("Device Connected:", device);
+        })
+        .catch(e => {
+          console.error(e);
+        });
     } else {
       console.log("Disconnecting device...");
       Code.device.disconnect().catch(e => {
@@ -1273,58 +1278,64 @@ function attachSinkId(element, sinkId) {
 //   }
 // };
 
-
 function fetchStableFWVersions() {
-  return fetch('https://updates.tangle.cz/subdom/updates/firmware/list.php').then(v => v.json()).then(v => v.files)
+  return fetch("https://updates.tangle.cz/subdom/updates/firmware/list.php")
+    .then(v => v.json())
+    .then(v => v.files)
+    .catch(() => {
+      console.error("Failed to fetch stable FW versions");
+    });
 }
 
 function fetchDailyFWVersions() {
-  return fetch('https://updates.tangle.cz/subdom/updates/firmware/daily/list.php').then(v => v.json()).then(v => v.files)
+  return fetch("https://updates.tangle.cz/subdom/updates/firmware/daily/list.php")
+    .then(v => v.json())
+    .then(v => v.files)
+    .catch(() => {
+      console.error("Failed to fetch daily FW versions");
+    });
 }
 
-const fw_version_listDOM = document.querySelector('#fw_version_list');
+const fw_version_listDOM = document.querySelector("#fw_version_list");
 
 async function loadFWVersions() {
-
   function displayOptionsInGroup(selectDOM, versions, title) {
-    const versionsGroup = document.createElement('optgroup');
+    const versionsGroup = document.createElement("optgroup");
     versionsGroup.label = title;
 
     versions.forEach(({ file }) => {
+      const option = document.createElement("option");
+      option.value = file;
+      option.innerText = file.replace(".enc", "");
+      versionsGroup.appendChild(option);
+    });
 
-      const option = document.createElement('option')
-      option.value = file
-      option.innerText = file.replace('.enc', '')
-      versionsGroup.appendChild(option)
-    })
-
-    selectDOM.appendChild(versionsGroup)
+    selectDOM.appendChild(versionsGroup);
   }
 
-  const stableVersions = await fetchStableFWVersions()
-  displayOptionsInGroup(fw_version_listDOM, stableVersions, 'Stable versions')
+  const stableVersions = await fetchStableFWVersions();
+  displayOptionsInGroup(fw_version_listDOM, stableVersions, "Stable versions");
 
-  const dailyVersions = await fetchDailyFWVersions()
-  displayOptionsInGroup(fw_version_listDOM, dailyVersions, 'Daily builds')
+  const dailyVersions = await fetchDailyFWVersions();
+  displayOptionsInGroup(fw_version_listDOM, dailyVersions, "Daily builds");
 }
 
-
-loadFWVersions()
+loadFWVersions();
 
 function downloadSelectedFW() {
   const version = fw_version_listDOM.value;
-  const groupLabel = document.querySelector('select#fw_version_list option:checked').parentElement.label;
+  const groupLabel = document.querySelector("select#fw_version_list option:checked").parentElement.label;
   let url;
 
-  if (groupLabel.includes('Daily')) {
+  if (groupLabel.includes("Daily")) {
     url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
   } else {
     url = "https://updates.tangle.cz/subdom/updates/firmware/";
   }
 
-  return fetch(url + version).then(res => res.arrayBuffer())
+  return fetch(url + version).then(res => res.arrayBuffer());
 }
 
 fw_version_listDOM.onchange = function () {
   window.ota_uploadFrom = "cloud";
-}
+};
