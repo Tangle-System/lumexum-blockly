@@ -52,7 +52,7 @@ window.onload = function () {
   };
 
   control_connector_select.onchange = e => {
-    console.log(`Asigning ${control_connector_select.value} connector to the device`);
+    console.log(`Assigning ${control_connector_select.value} connector to the device`);
     Code.device.assignConnector(control_connector_select.value);
   };
 
