@@ -56,6 +56,24 @@ window.onload = function () {
     Code.device.assignConnector(control_connector_select.value);
   };
 
+  Code.device.on("event", (event)=>{
+      control_label.value = event.label;
+
+      control_destination.value = event.id;
+      
+      if(event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
+        control_color_value.value = event.value;
+        control_color_picker.value = event.value;
+      }
+
+      else if(event.value <= 100 && event.value >= -100) {
+        control_percentage_value.value = event.value;
+        control_percentage_range.value = event.value;
+      }
+     
+  
+  })
+
   // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
   const wavesurfer_container = document.querySelector("#waveform_container");
@@ -326,9 +344,10 @@ function setupOwnership() {
       if (e != null) {
         owner_identifier.value = "";
       }
-    } catch {
+    } catch{}
+
       owner_signature.value = Code.device.getOwnerSignature();
-    }
+    
 
     console.log(`owner_signature: ${owner_signature.value}`);
   };
@@ -337,8 +356,10 @@ function setupOwnership() {
     try {
       Code.device.setOwnerKey(owner_key.value);
     } catch {
-      owner_key.value = Code.device.getOwnerKey();
+     
     }
+
+    owner_key.value = Code.device.getOwnerKey();
 
     console.log(`owner_key: ${owner_key.value}`);
   };

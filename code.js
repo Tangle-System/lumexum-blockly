@@ -213,6 +213,10 @@ Code.device.on("receive", (message)=>{
   Code.debug.textarea.textContent += message.payload;
 })
 
+Code.device.on("event", (event)=>{
+  console.warn(event);
+})
+
 Code.control = {
   div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control")),
 };
