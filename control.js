@@ -66,10 +66,18 @@ window.onload = function () {
         control_color_picker.value = event.value;
       }
 
-      else if(event.value <= 100 && event.value >= -100) {
+      else {
+      
+      if(event.value <= 100.0 && event.value >= -100.0) {
         control_percentage_value.value = event.value;
         control_percentage_range.value = event.value;
-      }
+      } 
+
+    }
+
+      control_percentage_value.value = event.value;
+      control_percentage_range.value = event.value;
+
      
   
   })
