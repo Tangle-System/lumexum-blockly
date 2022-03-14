@@ -1343,3 +1343,12 @@ function downloadSelectedFW() {
 fw_version_listDOM.onchange = function () {
   window.ota_uploadFrom = "cloud";
 };
+
+
+Code.readDsparxBattery = function () {
+  Code.device.readPinVoltage(34).then(voltage => {
+    let percentage = (voltage - 1000) / 380 * 100;
+    //@ts-ignore
+    window.alert(`${percentage}%`, "Battery voltage measurement");
+  });
+};
