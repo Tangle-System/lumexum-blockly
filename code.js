@@ -214,7 +214,7 @@ Code.device.on("receive", (message)=>{
 })
 
 Code.device.on("event", (event)=>{
-  console.warn(event);
+  console.log("Catched event:", event);
 })
 
 Code.control = {
