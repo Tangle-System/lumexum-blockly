@@ -828,68 +828,70 @@ Code.init = function () {
     });
   };
 
-  document.getElementById("otaConfig").addEventListener("change", function () {
-    window.ota_config = this.files[0];
-  });
+  const config_textarea = document.querySelector("#config_textarea");
+
+  Code.otaReadDeviceConfig = function () {
+    Code.device
+      .readDeviceConfig()
+      .then(config => {
+        try {
+          const obj = JSON.parse(config);
+          const consif_pretty = JSON.stringify(obj, null, 2);
+          config_textarea.value = consif_pretty;
+        } catch {
+          config_textarea.value = config;
+        }
+      })
+      .then(() => {
+        window.alert("Config read SUCCESS");
+      })
+      .catch(e => {
+        //@ts-ignore
+        window.alert("Config read FAILED", e);
+        console.error(e);
+      });
+  };
 
   Code.otaUpdateDeviceConfig = function () {
     try {
-      if (!window.ota_config) throw "No config file selected";
-
-      window.ota_config
-        .text()
-        .then(data => {
-          JSON.parse(data);
-          // TODO - validate also json fields and it's datatypes
-          console.log(data);
-        })
+      const raw_config = config_textarea.value.replace(/\\"/g, '"');
+      console.log(raw_config);
+      const config_obj = JSON.parse(raw_config); // TODO - validate also json fields and it's datatypes
+      const config = JSON.stringify(config_obj);
+      return Code.device
+        .updateDeviceConfig(config)
         .then(() => {
-          window.ota_config.arrayBuffer().then(function (config) {
-            console.log(config);
-            return Code.device
-              .updateDeviceConfig(new Uint8Array(config))
-              .then(() => {
-                window.alert("Config write SUCCESS");
-              })
-
-              .catch(e => {
-                window.alert("Config write FAILED");
-                console.error(e);
-              });
-          });
+          window.alert("Config write SUCCESS");
         })
-        .catch(function (err) {
-          console.warn("Something went wrong.", err);
+        .catch(e => {
+          //@ts-ignore
+          window.alert("Config write FAILED", e);
+          console.error(e);
         });
     } catch (err) {
-      alert(err);
+      //@ts-ignore
+      window.alert("Something went wrong.", err);
     }
   };
 
   Code.otaUpdateNetworkConfig = function () {
     try {
-      if (!window.ota_config) throw "No config file selected";
-
-      window.ota_config
-        .text()
-        .then(data => {
-          JSON.parse(data);
-          // TODO - validate also json fields and it's datatypes
-          console.log(data);
-        })
+      const raw_config = config_textarea.value.replace(/\\"/g, '"');
+      console.log(raw_config);
+      const config_obj = JSON.parse(raw_config); // TODO - validate also json fields and it's datatypes
+      const config = JSON.stringify(config_obj);
+      return Code.device
+        .updateNetworkConfig(config)
         .then(() => {
-          window.ota_config.arrayBuffer().then(function (config) {
-            console.log(config);
-            return Code.device.updateNetworkConfig(new Uint8Array(config)).catch(e => {
-              console.error(e);
-            });
-          });
+          window.alert("Config write SUCCESS");
         })
-        .catch(function (err) {
-          console.warn("Something went wrong.", err);
+        .catch(e => {
+          window.alert("Config write FAILED");
+          console.error(e);
         });
     } catch (err) {
-      alert(err);
+      //@ts-ignore
+      window.alert("Something went wrong.", err);
     }
   };
 
@@ -905,6 +907,7 @@ Code.init = function () {
   Code.bindClick("blocklyFingerprintButton", Code.blocklyFingerprint);
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
+  Code.bindClick("otaReadDeviceConfig", Code.otaReadDeviceConfig);
   Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
   Code.bindClick("otaUpdateNetworkConfig", Code.otaUpdateNetworkConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);

@@ -294,9 +294,9 @@
             <select id="fw_version_list">
               <option disabled selected value> -- Vyberte verzi -- </option>
             </select>
-            <br>
-            <br>
-            <div style="width: 253px;display: inline-block;"></div>
+            <!-- <br>
+            <br> -->
+            <!-- <div style="width: 253px;display: inline-block;"></div> -->
             <button id="otaUpdateDeviceFirmware">
               OTA update device
             </button>
@@ -304,20 +304,44 @@
               OTA update network
             </button>
           </div>
+          
           <br>
 
           <div id="otaProgress">
             <div id="otaProgressBar"></div>
           </div>
 
+          <br>
+
           <div>
-            <input type="file" id="otaConfig">
-            <button id="otaUpdateDeviceConfig">
-              Write device config
-            </button>
-            <button id="otaUpdateNetworkConfig">
-              Write network config
-            </button>
+
+            <table>
+              <tr>
+                <th>
+                  <textarea id="config_textarea">{}</textarea>
+                </th>
+                
+                <th>
+                  <div>
+                    <button id="otaReadDeviceConfig">
+                      Read device config
+                    </button>
+                  </div>
+                  <div>
+                    <button id="otaUpdateDeviceConfig">
+                      Write device config
+                    </button>
+                    <button id="otaUpdateNetworkConfig">
+                      Write network config
+                    </button>
+                  </div>
+
+                </th>
+               
+              </tr>
+            
+            </table>
+          
           </div>
 
         </div>
