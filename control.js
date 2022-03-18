@@ -2,7 +2,6 @@ import TangleMsgBox from "./lib/webcomponents/dialog-component.js";
 
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
-
   window.alert = TangleMsgBox.alert;
   window.confirm = TangleMsgBox.confirm;
   window.prompt = TangleMsgBox.prompt;
@@ -56,31 +55,29 @@ window.onload = function () {
     Code.device.assignConnector(control_connector_select.value);
   };
 
-  Code.device.on("event", (event)=>{
-      control_label.value = event.label;
+  Code.device.on("event", event => {
+    control_label.value = event.label;
+    control_destination.value = event.id;
 
-      control_destination.value = event.id;
-      
-      if(event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
-        control_color_value.value = event.value;
-        control_color_picker.value = event.value;
-      }
-
-      else {
-      
-      if(event.value <= 100.0 && event.value >= -100.0) {
-        control_percentage_value.value = event.value;
-        control_percentage_range.value = event.value;
-      } 
-
+    if (!event.value) {
+      return;
     }
 
-      control_percentage_value.value = event.value;
-      control_percentage_range.value = event.value;
+    if (event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
+      control_color_value.value = event.value;
+      control_color_picker.value = event.value;
+    } else {
+      if (event.value <= 100.0 && event.value >= -100.0) {
+        control_percentage_value.value = event.value;
+        control_percentage_range.value = event.value;
+        control_timestamp_value.value = event.value;
+      }
 
-     
-  
-  })
+      if (event.value <= 2147483647 && event.value >= -2147483648) {
+        control_timestamp_value.value = event.value;
+      }
+    }
+  });
 
   // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
@@ -114,7 +111,7 @@ window.onload = function () {
         // ]
       }),
       WaveSurfer.timeline.create({
-        container: "#timeline"
+        container: "#timeline",
       }),
       WaveSurfer.cursor.create({
         showTime: true,
@@ -123,10 +120,10 @@ window.onload = function () {
           "background-color": "#000",
           color: "#fff",
           padding: "2px",
-          "font-size": "10px"
-        }
-      })
-    ]
+          "font-size": "10px",
+        },
+      }),
+    ],
   });
 
   // wavesurfer.setMute(true);
@@ -352,10 +349,9 @@ function setupOwnership() {
       if (e != null) {
         owner_identifier.value = "";
       }
-    } catch{}
+    } catch {}
 
-      owner_signature.value = Code.device.getOwnerSignature();
-    
+    owner_signature.value = Code.device.getOwnerSignature();
 
     console.log(`owner_signature: ${owner_signature.value}`);
   };
@@ -363,9 +359,7 @@ function setupOwnership() {
   owner_key.onchange = e => {
     try {
       Code.device.setOwnerKey(owner_key.value);
-    } catch {
-     
-    }
+    } catch {}
 
     owner_key.value = Code.device.getOwnerKey();
 
@@ -475,12 +469,12 @@ function hexToRgb(hex) {
 }
 
 function lum(hex) {
-  var rgb = hexToRgb(hex)
+  var rgb = hexToRgb(hex);
 
   if ((rgb[0] > 200 && rgb[1] > 200 && rgb[2] > 200) || (rgb[0] > 140 && rgb[1] > 215 && rgb[2] > 140) || (rgb[1] > 220 && (rgb[0] > 120 || rgb[2] > 120))) {
     return "#000000";
   }
-  
+
   return "#ffffff";
 }
 
@@ -500,5 +494,3 @@ document.querySelector("#filename").ondrop = handleFileDrop;
 document.querySelector("#loadFile").ondrop = handleFileDrop;
 document.querySelector("#saveFile").ondrop = handleFileDrop;
 //document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
-
-
