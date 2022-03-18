@@ -279,6 +279,9 @@
           <button onclick="javascript:Code.device.readRomPhyVdd33()">Read rom_phy_vdd33</button>
           <button onclick="javascript:Code.device.readPinVoltage(34)">Read pin 34</button>
           <button onclick="javascript:Code.readDsparxBattery()">Read DSparX Battery</button>
+          <button onclick="javascript:Code.device.hideHomeButton(true)">Hide Home Button</button>
+          <button onclick="javascript:Code.device.goHome()">Go home</button>
+          <button onclick="javascript:Code.device.setRotation(1)">Set Rotation 1</button>
 
         </span>
 
@@ -317,27 +320,20 @@
 
             <table>
               <tr>
-                <th>
-                  <textarea id="config_textarea">{}</textarea>
-                </th>
-                
-                <th>
-                  <div>
-                    <button id="otaReadDeviceConfig">
-                      Read device config
-                    </button>
-                  </div>
-                  <div>
-                    <button id="otaUpdateDeviceConfig">
-                      Write device config
-                    </button>
-                    <button id="otaUpdateNetworkConfig">
-                      Write network config
-                    </button>
-                  </div>
-
-                </th>
-               
+                <textarea id="config_textarea" style="width: 100%; resize: vertical;">{}</textarea>
+              </tr>
+              <tr>
+                <div>
+                  <button id="otaReadDeviceConfig">
+                    Read device config
+                  </button>
+                  <button id="otaUpdateDeviceConfig">
+                    Write device config
+                  </button>
+                  <button id="otaUpdateNetworkConfig">
+                    Write network config
+                  </button>
+                </div>
               </tr>
             
             </table>
