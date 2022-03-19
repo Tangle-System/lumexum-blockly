@@ -59,7 +59,7 @@ window.onload = function () {
     control_label.value = event.label;
     control_destination.value = event.id;
 
-    if (!event.value) {
+    if (event.value === null) {
       return;
     }
 
@@ -67,13 +67,13 @@ window.onload = function () {
       control_color_value.value = event.value;
       control_color_picker.value = event.value;
     } else {
-      if (event.value <= 100.0 && event.value >= -100.0) {
+      if (event.value >= -100.0 && event.value <= 100.0) {
         control_percentage_value.value = event.value;
         control_percentage_range.value = event.value;
         control_timestamp_value.value = event.value;
       }
 
-      if (event.value <= 2147483647 && event.value >= -2147483648) {
+      if (event.value >= -2147483648 && event.value <= 2147483647) {
         control_timestamp_value.value = event.value;
       }
     }
