@@ -52,6 +52,8 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default");
 
+Code.device.setDebugLevel(5);
+
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
