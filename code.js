@@ -52,7 +52,7 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default");
 
-Code.device.setDebugLevel(5);
+Code.device.setDebugLevel(4);
 
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
@@ -77,12 +77,14 @@ Code.device.addEventListener("version", ver => {
 Code.device.addEventListener("ota_status", status => {
   const container = document.getElementById("otaProgress");
   const bar = document.getElementById("otaProgressBar");
+  const timeleft = document.getElementById("otaTimeLeft");
 
   switch (status) {
     case "begin":
       container.style.display = "block";
       bar.style.width = "0%";
       bar.style.backgroundColor = "#008000";
+      timeleft.style.display = "block";
       break;
 
     case "success":
@@ -98,6 +100,24 @@ Code.device.addEventListener("ota_status", status => {
       break;
   }
 });
+
+Code.device.addEventListener("ota_timeleft", timeleft => {
+
+  let min = Math.floor(timeleft / 60000);
+  timeleft %= 60000;
+  let sec = Math.floor(timeleft / 1000);
+
+  const pad = (number, size) => {
+    var s = String(number);
+    while (s.length < (size || 2)) {
+      s = "0" + s;
+    }
+    return s;
+  };
+
+  document.getElementById("otaTimeLeft").innerHTML = "Time left: " + min + ":" + pad(sec, 2);
+});
+
 
 Code.device.addEventListener("ota_progress", percentage => {
   const bar = document.getElementById("otaProgressBar");
