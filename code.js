@@ -1346,8 +1346,39 @@ fw_version_listDOM.onchange = function () {
 
 Code.readDsparxBattery = function () {
   Code.device.readPinVoltage(34).then(voltage => {
-    let percentage = (voltage - 1000) / 380 * 100;
+    let percentage = ((voltage - 1000) / 380) * 100;
     //@ts-ignore
     window.alert(`${percentage}%`, "Battery voltage measurement");
   });
+};
+
+Code.testFlutterPing = async function () {
+  var promise = null;
+  
+  // @ts-ignore
+  window.tangleConnect = {};
+
+  await window.confirm("Starting flutter ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    console.log("Sending ping...");
+    // @ts-ignore
+    window.flutter_inappwebview.callHandler("ping");
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
 };
