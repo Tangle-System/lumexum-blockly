@@ -1355,8 +1355,10 @@ Code.readDsparxBattery = function () {
 Code.testFlutterPing = async function () {
   var promise = null;
   
-  // @ts-ignore
-  window.tangleConnect = {};
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
 
   await window.confirm("Starting flutter ping demo");
 
@@ -1385,9 +1387,11 @@ Code.testFlutterPing = async function () {
 
 Code.testJavaPing = async function () {
   var promise = null;
-  
-  // @ts-ignore
-  window.tangleConnect = {};
+
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
 
   await window.confirm("Starting java ping demo");
 
@@ -1416,10 +1420,12 @@ Code.testJavaPing = async function () {
 
 Code.testDummyPing = async function () {
   var promise = null;
-  
-  // @ts-ignore
-  window.tangleConnect = {};
-  
+
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
+
   await window.confirm("Starting dummy ping demo");
 
   const start = new Date().getTime();
