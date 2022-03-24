@@ -1370,9 +1370,71 @@ Code.testFlutterPing = async function () {
       window.tangleConnect.reject = reject;
     });
 
-    console.log("Sending ping...");
+    // console.log("Sending ping...");
     // @ts-ignore
     window.flutter_inappwebview.callHandler("ping");
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
+};
+
+Code.testJavaPing = async function () {
+  var promise = null;
+  
+  // @ts-ignore
+  window.tangleConnect = {};
+
+  await window.confirm("Starting java ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.tangleConnect.ping();
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
+};
+
+Code.testDummyPing = async function () {
+  var promise = null;
+  
+  // @ts-ignore
+  window.tangleConnect = {};
+  
+  await window.confirm("Starting dummy ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.tangleConnect.resolve();
 
     await promise;
   }
