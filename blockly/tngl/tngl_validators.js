@@ -45,12 +45,12 @@ var validator_S = function (value) {
 // validator for TIMESTAMP
 var validator_T = function (value) {
   if (!value) {
-    return [0, "0s"][1];
+    return null;
   }
 
   // if the value is a number
-  if (!isNaN(value)) {
-    value += "s";
+  if (typeof value == "number") {
+    value = value.toString();
   }
 
   value = value.trim();
@@ -61,6 +61,11 @@ var validator_T = function (value) {
 
   if (value == "-inf" || value == "-Inf" || value == "-infinity" || value == "-Infinity") {
     return [-2147483648, "-Infinity"][1];
+  }
+
+  // if the string value is a number
+  if (!isNaN(value)) {
+    value += "s";
   }
 
   let days = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*d/gi);
@@ -115,18 +120,12 @@ var validator_T = function (value) {
 
   if (total >= 2147483647) {
     return [2147483647, "Infinity"][1];
-  } 
-  
-  else if (total <= -2147483648) {
+  } else if (total <= -2147483648) {
     return [-2147483648, "-Infinity"][1];
-  } 
-  
-  else if (result === "") {
-    return [0, "0s"][1];
-  } 
-  
-  else {
-    return [total, result.trim()][1];
+  } else if (result === "") {
+    return null;
+  } else {
+    return result.trim();
   }
 };
 
@@ -484,7 +483,6 @@ Blockly.Blocks["commentary_inline"].setValidators = function () {
   this.setColour("#cdcdcd");
 };
 
-
 Blockly.Blocks["commentary_spacer"].setValidators = function () {
   this.setColour("#cdcdcd");
 };
@@ -524,7 +522,6 @@ Blockly.Blocks["value_dummy"].setValidators = function () {};
 Blockly.Blocks["value_math"].setValidators = function () {};
 
 Blockly.Blocks["value_map"].setValidators = function () {};
-
 
 Blockly.Blocks["value_read_variable"].setValidators = function () {
   this.getField("VARIABLE_LABEL").setValidator(validator_LE);
