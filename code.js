@@ -1149,15 +1149,15 @@ Code.onKeyPress = function (e) {
   let keys = ["Q", "W", "E", "R", "A", "S", "D", "F", "Y", "X", "C", "V", "Z", "T"];
 
   if (keys.includes(e.key) /*&& e.shiftKey*/) {
-    console.log("Keypress trigger");
-    Code.device.emitEvent(e.key.charCodeAt(0), e.altKey ? 255 : 0);
+    console.log("Keypress " + e.key + " trigger");
+    Code.device.emitEvent(e.key.charCodeAt(0), 255);
   }
 };
 
 // Load the Code demo's language strings.
-document.write('<script src="msg/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="msg/' + Code.LANG + '.js"></script>\n');
 // Load Blockly's language strings.
-document.write('<script src="blockly/msg/js/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="blockly/msg/js/' + Code.LANG + '.js"></script>\n');
 
 window.addEventListener("load", Code.init);
 
