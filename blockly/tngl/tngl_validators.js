@@ -45,17 +45,7 @@ var validator_S = function (value) {
 // validator for TIMESTAMP
 var validator_T = function (value) {
   if (!value) {
-    return null;
-  }
-
-  value = value.trim();
-
-  if (value == "inf" || value == "Inf" || value == "infinity" || value == "Infinity") {
-    return "Infinity";
-  }
-
-  if (value == "-inf" || value == "-Inf" || value == "-infinity" || value == "-Infinity") {
-    return "-Infinity";
+    return [0, "0s"][1];
   }
 
   // if the value is a number
@@ -63,57 +53,81 @@ var validator_T = function (value) {
     value += "s";
   }
 
-  // let days = value.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*d/);
-  // let hours = value.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*h/);
-  // let minutes = value.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*m/);
-  // let secs = value.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*s/);
-  // let msecs = value.match(/([+-]?([0-9]+([.][0-9]*)?|[.][0-9]+))\s*t/);
+  value = value.trim();
 
-  let days = value.match(/([+-]?[0-9]+[.]?[0-9]*|[.][0-9]+)\s*d/);
-  let hours = value.match(/([+-]?[0-9]+[.]?[0-9]*|[.][0-9]+)\s*h/);
-  let minutes = value.match(/([+-]?[0-9]+[.]?[0-9]*|[.][0-9]+)\s*m/);
-  let secs = value.match(/([+-]?[0-9]+[.]?[0-9]*|[.][0-9]+)\s*s/);
-  let msecs = value.match(/([+-]?[0-9]+[.]?[0-9]*|[.][0-9]+)\s*t/);
+  if (value == "inf" || value == "Inf" || value == "infinity" || value == "Infinity") {
+    return [2147483647, "Infinity"][1];
+  }
+
+  if (value == "-inf" || value == "-Inf" || value == "-infinity" || value == "-Infinity") {
+    return [-2147483648, "-Infinity"][1];
+  }
+
+  let days = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*d/gi);
+  let hours = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*h/gi);
+  let minutes = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*m(?!s)/gi);
+  let secs = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*s/gi);
+  let msecs = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*(t|ms)/gi);
 
   let result = "";
   let total = 0;
 
-  if (days) {
-    let d = parseFloat(days[1]);
+  // logging.verbose(days);
+  // logging.verbose(hours);
+  // logging.verbose(minutes);
+  // logging.verbose(secs);
+  // logging.verbose(msecs);
+
+  while (days && days.length) {
+    let d = parseFloat(days[0].replace(/\s/, ""));
     result += d + "d ";
     total += d * 86400000;
-  }
-  if (hours) {
-    let h = parseFloat(hours[1]);
-    result += h + "h ";
-    total += h * 3600000;
-  }
-  if (minutes) {
-    let m = parseFloat(minutes[1]);
-    result += m + "m ";
-    total += m * 60000;
-  }
-  if (secs) {
-    let s = parseFloat(secs[1]);
-    result += s + "s ";
-    total += s * 1000;
+    days.shift();
   }
 
-  if (msecs) {
-    let ms = parseFloat(msecs[1]);
-    result += ms + "t ";
+  while (hours && hours.length) {
+    let h = parseFloat(hours[0].replace(/\s/, ""));
+    result += h + "h ";
+    total += h * 3600000;
+    hours.shift();
+  }
+
+  while (minutes && minutes.length) {
+    let m = parseFloat(minutes[0].replace(/\s/, ""));
+    result += m + "m ";
+    total += m * 60000;
+    minutes.shift();
+  }
+
+  while (secs && secs.length) {
+    let s = parseFloat(secs[0].replace(/\s/, ""));
+    result += s + "s ";
+    total += s * 1000;
+    secs.shift();
+  }
+
+  while (msecs && msecs.length) {
+    let ms = parseFloat(msecs[0].replace(/\s/, ""));
+    result += ms + "ms ";
     total += ms;
+    msecs.shift();
   }
 
   if (total >= 2147483647) {
-    return "Infinity";
+    return [2147483647, "Infinity"][1];
+  } 
+  
+  else if (total <= -2147483648) {
+    return [-2147483648, "-Infinity"][1];
+  } 
+  
+  else if (result === "") {
+    return [0, "0s"][1];
+  } 
+  
+  else {
+    return [total, result.trim()][1];
   }
-
-  if (total <= -2147483648) {
-    return "-Infinity";
-  }
-
-  return result == "" ? null : result.trim();
 };
 
 // validator for LABEL
