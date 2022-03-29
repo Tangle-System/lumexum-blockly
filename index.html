@@ -219,6 +219,7 @@
           <option value="webserial">Web Serial</option>
           <option value="dummy">Dummy</option>
           <option value="edummy">Dummy With Errors</option>
+          <option value="vdummy">Dummy With Version</option>
           <option value="websockets">Remote Controler</option>
         </select>
       </div>
@@ -276,6 +277,17 @@
           <button onclick="javascript:Code.device.setNetworkDatarate(2000000)">Set Fast Datarate</button>
           <button onclick="javascript:Code.device.setNetworkDatarate(500000)">Set Normal Datarate</button>
 
+          <button onclick="javascript:Code.device.readRomPhyVdd33()">Read rom_phy_vdd33</button>
+          <button onclick="javascript:Code.device.readPinVoltage(34)">Read pin 34</button>
+          <button onclick="javascript:Code.readDsparxBattery()">Read DSparX Battery</button>
+          <button onclick="javascript:Code.device.hideHomeButton(true)">Hide Home Button</button>
+          <button onclick="javascript:Code.device.goHome()">Go home</button>
+          <button onclick="javascript:Code.device.setRotation(1)">Set Rotation 1</button>
+          <button onclick="javascript:Code.testFlutterPing()">Test Flutter Ping</button>
+          <button onclick="javascript:Code.testJavaPing()">Test Java Ping</button>
+          <button onclick="javascript:Code.testDummyPing()">Test Dummy Ping</button>
+
+
         </span>
 
         <div>
@@ -290,9 +302,9 @@
             <select id="fw_version_list">
               <option disabled selected value> -- Vyberte verzi -- </option>
             </select>
-            <br>
-            <br>
-            <div style="width: 253px;display: inline-block;"></div>
+            <!-- <br>
+            <br> -->
+            <!-- <div style="width: 253px;display: inline-block;"></div> -->
             <button id="otaUpdateDeviceFirmware">
               OTA update device
             </button>
@@ -300,20 +312,39 @@
               OTA update network
             </button>
           </div>
+          
           <br>
 
           <div id="otaProgress">
             <div id="otaProgressBar"></div>
           </div>
 
+          <span id="otaTimeLeft">0:00</span>
+
+          <br>
+
           <div>
-            <input type="file" id="otaConfig">
-            <button id="otaUpdateDeviceConfig">
-              Write device config
-            </button>
-            <button id="otaUpdateNetworkConfig">
-              Write network config
-            </button>
+
+            <table>
+              <tr>
+                <textarea id="config_textarea" style="width: 100%; resize: vertical; height: 200px;">{}</textarea>
+              </tr>
+              <tr>
+                <div>
+                  <button id="otaReadDeviceConfig">
+                    Read device config
+                  </button>
+                  <button id="otaUpdateDeviceConfig">
+                    Write device config
+                  </button>
+                  <button id="otaUpdateNetworkConfig">
+                    Write network config
+                  </button>
+                </div>
+              </tr>
+            
+            </table>
+          
           </div>
 
         </div>
@@ -820,7 +851,7 @@
           <shadow type="modifier_dummy_add"></shadow>
         </value>
       </block>
-      <block type="modifier_fade" disabled="true">
+      <block type="modifier_fade" disabled="false">
         <field name="FADE_TYPE">FADE_IN</field>
         <field name="DURATION">0s</field>
         <value name="MODIFIER">
@@ -1215,7 +1246,7 @@
       <block type="code_inline"></block>
     </category>
   </xml>
-  <script src="./lib/tangle-js/vanillaInit.js" type="module"></script>
+  <script src="./vanillaInit.js" type="module"></script>
 
 </body>
 

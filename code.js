@@ -21,9 +21,9 @@ if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-if (!navigator.bluetooth) {
-  alert("Oops, bluetooth doesn't work here.");
-}
+// if (!navigator.bluetooth) {
+//   alert("Oops, bluetooth doesn't work here.");
+// }
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   // butConnect.addEventListener("click", clickConnect);
@@ -52,6 +52,8 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default");
 
+Code.device.setDebugLevel(4);
+
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
@@ -75,12 +77,14 @@ Code.device.addEventListener("version", ver => {
 Code.device.addEventListener("ota_status", status => {
   const container = document.getElementById("otaProgress");
   const bar = document.getElementById("otaProgressBar");
+  const timeleft = document.getElementById("otaTimeLeft");
 
   switch (status) {
     case "begin":
       container.style.display = "block";
       bar.style.width = "0%";
       bar.style.backgroundColor = "#008000";
+      timeleft.style.display = "block";
       break;
 
     case "success":
@@ -96,6 +100,24 @@ Code.device.addEventListener("ota_status", status => {
       break;
   }
 });
+
+Code.device.addEventListener("ota_timeleft", timeleft => {
+
+  let min = Math.floor(timeleft / 60000);
+  timeleft %= 60000;
+  let sec = Math.floor(timeleft / 1000);
+
+  const pad = (number, size) => {
+    var s = String(number);
+    while (s.length < (size || 2)) {
+      s = "0" + s;
+    }
+    return s;
+  };
+
+  document.getElementById("otaTimeLeft").innerHTML = "Time left: " + min + ":" + pad(sec, 2);
+});
+
 
 Code.device.addEventListener("ota_progress", percentage => {
   const bar = document.getElementById("otaProgressBar");
@@ -211,6 +233,10 @@ Code.debug.setVisible = function (enable) {
 
 Code.device.on("receive", (message)=>{
   Code.debug.textarea.textContent += message.payload;
+})
+
+Code.device.on("event", (event)=>{
+  console.log("Catched event:", event);
 })
 
 Code.control = {
@@ -824,68 +850,70 @@ Code.init = function () {
     });
   };
 
-  document.getElementById("otaConfig").addEventListener("change", function () {
-    window.ota_config = this.files[0];
-  });
+  const config_textarea = document.querySelector("#config_textarea");
+
+  Code.otaReadDeviceConfig = function () {
+    Code.device
+      .readDeviceConfig()
+      .then(config => {
+        try {
+          const obj = JSON.parse(config);
+          const consif_pretty = JSON.stringify(obj, null, 2);
+          config_textarea.value = consif_pretty;
+        } catch {
+          config_textarea.value = config;
+        }
+      })
+      .then(() => {
+        window.alert("Config read SUCCESS");
+      })
+      .catch(e => {
+        //@ts-ignore
+        window.alert("Config read FAILED", e);
+        console.error(e);
+      });
+  };
 
   Code.otaUpdateDeviceConfig = function () {
     try {
-      if (!window.ota_config) throw "No config file selected";
-
-      window.ota_config
-        .text()
-        .then(data => {
-          JSON.parse(data);
-          // TODO - validate also json fields and it's datatypes
-          console.log(data);
-        })
+      const raw_config = config_textarea.value.replace(/\\"/g, '"');
+      console.log(raw_config);
+      const config_obj = JSON.parse(raw_config); // TODO - validate also json fields and it's datatypes
+      const config = JSON.stringify(config_obj);
+      return Code.device
+        .updateDeviceConfig(config)
         .then(() => {
-          window.ota_config.arrayBuffer().then(function (config) {
-            console.log(config);
-            return Code.device
-              .updateDeviceConfig(new Uint8Array(config))
-              .then(() => {
-                window.alert("Config write SUCCESS");
-              })
-
-              .catch(e => {
-                window.alert("Config write FAILED");
-                console.error(e);
-              });
-          });
+          window.alert("Config write SUCCESS");
         })
-        .catch(function (err) {
-          console.warn("Something went wrong.", err);
+        .catch(e => {
+          //@ts-ignore
+          window.alert("Config write FAILED", e);
+          console.error(e);
         });
     } catch (err) {
-      alert(err);
+      //@ts-ignore
+      window.alert("Something went wrong.", err);
     }
   };
 
   Code.otaUpdateNetworkConfig = function () {
     try {
-      if (!window.ota_config) throw "No config file selected";
-
-      window.ota_config
-        .text()
-        .then(data => {
-          JSON.parse(data);
-          // TODO - validate also json fields and it's datatypes
-          console.log(data);
-        })
+      const raw_config = config_textarea.value.replace(/\\"/g, '"');
+      console.log(raw_config);
+      const config_obj = JSON.parse(raw_config); // TODO - validate also json fields and it's datatypes
+      const config = JSON.stringify(config_obj);
+      return Code.device
+        .updateNetworkConfig(config)
         .then(() => {
-          window.ota_config.arrayBuffer().then(function (config) {
-            console.log(config);
-            return Code.device.updateNetworkConfig(new Uint8Array(config)).catch(e => {
-              console.error(e);
-            });
-          });
+          window.alert("Config write SUCCESS");
         })
-        .catch(function (err) {
-          console.warn("Something went wrong.", err);
+        .catch(e => {
+          window.alert("Config write FAILED");
+          console.error(e);
         });
     } catch (err) {
-      alert(err);
+      //@ts-ignore
+      window.alert("Something went wrong.", err);
     }
   };
 
@@ -901,6 +929,7 @@ Code.init = function () {
   Code.bindClick("blocklyFingerprintButton", Code.blocklyFingerprint);
   Code.bindClick("otaUpdateDeviceFirmware", Code.otaUpdateDeviceFirmware);
   Code.bindClick("otaUpdateNetworkFirmware", Code.otaUpdateNetworkFirmware);
+  Code.bindClick("otaReadDeviceConfig", Code.otaReadDeviceConfig);
   Code.bindClick("otaUpdateDeviceConfig", Code.otaUpdateDeviceConfig);
   Code.bindClick("otaUpdateNetworkConfig", Code.otaUpdateNetworkConfig);
   Code.bindClick("connectSerialButton", Code.connectSerial);
@@ -1099,7 +1128,7 @@ Code.connectBluetooth = function () {
     if (!connected) {
       console.log("Connecting device...");
       Code.device
-        .connect(/* [{name: "Manka"}] */ null, false)
+        .connect(/* [{name: "Manka"}] */ null, false, null, null, true)
         .then(device => {
           console.log("Device Connected:", device);
         })
@@ -1115,46 +1144,20 @@ Code.connectBluetooth = function () {
   });
 };
 
-Code.connectSerial = function () {
-  // if (Code.device.variant != "webserial") {
-  //   Code.device.assignConnector("webserial");
-  //   Code.device.addEventListener("connected", (event) => {
-  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
-  //     icon.classList.remove("connect");
-  //     icon.classList.add("disconnect");
-  //   });
-  //   Code.device.addEventListener("disconnected", (event) => {
-  //     const icon = document.getElementById("connectSerialButton").childNodes[1];
-  //     icon.classList.remove("disconnect");
-  //     icon.classList.add("connect");
-  //   });
-  //   Code.device.addEventListener("receive", (event) => {
-  //     const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-  //     const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
-  //     const textarea = document.getElementById("content_debug");
-  //     textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
-  //     while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-  //       textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-  //     }
-  //   });
-  // }
-  // Code.device.connect();
-};
-
 Code.onKeyPress = function (e) {
   // let codes = ['KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyY', 'KeyX', 'KeyC', 'KeyV', 'KeyZ'];
   let keys = ["Q", "W", "E", "R", "A", "S", "D", "F", "Y", "X", "C", "V", "Z", "T"];
 
   if (keys.includes(e.key) /*&& e.shiftKey*/) {
-    console.log("Keypress trigger");
-    Code.device.emitEvent(e.key.charCodeAt(0), e.altKey ? 255 : 0);
+    console.log("Keypress " + e.key + " trigger");
+    Code.device.emitEvent(e.key.charCodeAt(0), 255);
   }
 };
 
 // Load the Code demo's language strings.
-document.write('<script src="msg/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="msg/' + Code.LANG + '.js"></script>\n');
 // Load Blockly's language strings.
-document.write('<script src="blockly/msg/js/' + Code.LANG + '.js"></script>\n');
+// document.write('<script src="blockly/msg/js/' + Code.LANG + '.js"></script>\n');
 
 window.addEventListener("load", Code.init);
 
@@ -1201,7 +1204,7 @@ setInterval(function () {
 try {
   navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(enumerateDevices).then(gotDevices).catch(handleError);
 } catch (err) {
-  alert("Please enable media if you want to access different audio outputs.");
+  // alert("Please enable media if you want to access different audio outputs.");
 }
 
 function enumerateDevices() {
@@ -1338,4 +1341,112 @@ function downloadSelectedFW() {
 
 fw_version_listDOM.onchange = function () {
   window.ota_uploadFrom = "cloud";
+};
+
+
+Code.readDsparxBattery = function () {
+  Code.device.readPinVoltage(34).then(voltage => {
+    let percentage = ((voltage - 1000) / 380) * 100;
+    //@ts-ignore
+    window.alert(`${percentage}%`, "Battery voltage measurement");
+  });
+};
+
+Code.testFlutterPing = async function () {
+  var promise = null;
+  
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
+
+  await window.confirm("Starting flutter ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.flutter_inappwebview.callHandler("ping");
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
+};
+
+Code.testJavaPing = async function () {
+  var promise = null;
+
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
+
+  await window.confirm("Starting java ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.tangleConnect.ping();
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
+};
+
+Code.testDummyPing = async function () {
+  var promise = null;
+
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
+
+  await window.confirm("Starting dummy ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.tangleConnect.resolve();
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
 };
