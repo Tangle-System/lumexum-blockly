@@ -85,63 +85,89 @@ function decodeExtendDeviceValue(value_next) {
 }
 
 function getDuration(from, to) {
-  function getTimestamp(timestamp) {
-    timestamp.replace(/_/g, ""); // replaces all '_' with nothing
-
-    let total_tics = 0;
-
-    while (timestamp) {
-      let reg = timestamp.match(/([+-]?[0-9]*[.]?[0-9]+)([dhmst])/); // for example gets "-1.4d" from "-1.4d23.2m1s"
-
-      if (!reg) {
-        // if the regex match failes, then the algorithm is done
-        if (timestamp != "") {
-          console.error("Error while parsing timestamp");
-          console.log("Leftover string:", timestamp);
-        }
-        break;
-      }
-
-      let value = reg[0]; // gets "-1.4d" from "-1.4d"
-      let unit = reg[2]; // gets "d" from "-1.4d"
-      let number = parseFloat(reg[1]); // gets "-1.4" from "-1.4d"
-
-      // console.log("value:", value);
-      // console.log("unit:", unit);
-      // console.log("number:", number);
-
-      switch (unit) {
-        case "d":
-          total_tics += number * 86400000;
-          break;
-
-        case "h":
-          total_tics += number * 3600000;
-          break;
-
-        case "m":
-          total_tics += number * 60000;
-          break;
-
-        case "s":
-          total_tics += number * 1000;
-          break;
-
-        case "t":
-          total_tics += number;
-          break;
-
-        default:
-          console.error("Error while parsing timestamp");
-          break;
-      }
-
-      timestamp = timestamp.replace(value, ""); // removes one value from the string
+  function validateTimestamp(value) {
+    if (!value) {
+      return [0, "0s"];
     }
-
-    // console.log("total_tics:", total_tics);
-
-    return total_tics;
+  
+    if (typeof value == "number") {
+      value = value.toString();
+    }
+  
+    value = value.trim();
+  
+    if (value == "inf" || value == "Inf" || value == "infinity" || value == "Infinity") {
+      return [2147483647, "Infinity"];
+    }
+  
+    if (value == "-inf" || value == "-Inf" || value == "-infinity" || value == "-Infinity") {
+      return [-2147483648, "-Infinity"];
+    }
+  
+    // if the string value is a number
+    if (!isNaN(value)) {
+      value += "s";
+    }
+  
+    let days = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*d/gi);
+    let hours = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*h/gi);
+    let minutes = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*m(?!s)/gi);
+    let secs = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*s/gi);
+    let msecs = value.match(/([+-]? *[0-9]+[.]?[0-9]*|[.][0-9]+)\s*(t|ms)/gi);
+  
+    let result = "";
+    let total = 0;
+  
+    // logging.verbose(days);
+    // logging.verbose(hours);
+    // logging.verbose(minutes);
+    // logging.verbose(secs);
+    // logging.verbose(msecs);
+  
+    while (days && days.length) {
+      let d = parseFloat(days[0].replace(/\s/, ""));
+      result += d + "d ";
+      total += d * 86400000;
+      days.shift();
+    }
+  
+    while (hours && hours.length) {
+      let h = parseFloat(hours[0].replace(/\s/, ""));
+      result += h + "h ";
+      total += h * 3600000;
+      hours.shift();
+    }
+  
+    while (minutes && minutes.length) {
+      let m = parseFloat(minutes[0].replace(/\s/, ""));
+      result += m + "m ";
+      total += m * 60000;
+      minutes.shift();
+    }
+  
+    while (secs && secs.length) {
+      let s = parseFloat(secs[0].replace(/\s/, ""));
+      result += s + "s ";
+      total += s * 1000;
+      secs.shift();
+    }
+  
+    while (msecs && msecs.length) {
+      let ms = parseFloat(msecs[0].replace(/\s/, ""));
+      result += ms + "ms ";
+      total += ms;
+      msecs.shift();
+    }
+  
+    if (total >= 2147483647) {
+      return [2147483647, "Infinity"];
+    } else if (total <= -2147483648) {
+      return [-2147483648, "-Infinity"];
+    } else if (result === "") {
+      return [0, "0s"];
+    } else {
+      return [total, result.trim()];
+    }
   }
 
   if (from == "Infinity") {
@@ -153,7 +179,7 @@ function getDuration(from, to) {
   } else if (to == "Infinity") {
     return "Infinity";
   } else {
-    return getTimestamp(to) - getTimestamp(from) + "t";
+    return validateTimestamp(to)[0] - validateTimestamp(from)[0] + "t";
   }
 }
 
