@@ -102,7 +102,6 @@ Code.device.addEventListener("ota_status", status => {
 });
 
 Code.device.addEventListener("ota_timeleft", timeleft => {
-
   let min = Math.floor(timeleft / 60000);
   timeleft %= 60000;
   let sec = Math.floor(timeleft / 1000);
@@ -117,7 +116,6 @@ Code.device.addEventListener("ota_timeleft", timeleft => {
 
   document.getElementById("otaTimeLeft").innerHTML = "Time left: " + min + ":" + pad(sec, 2);
 });
-
 
 Code.device.addEventListener("ota_progress", percentage => {
   const bar = document.getElementById("otaProgressBar");
@@ -231,13 +229,35 @@ Code.debug.setVisible = function (enable) {
   }
 };
 
-Code.device.on("receive", (message)=>{
+Code.device.on("receive", message => {
   Code.debug.textarea.textContent += message.payload;
-})
+});
 
-Code.device.on("event", (event)=>{
+Code.device.on("event", event => {
   console.log("Catched event:", event);
-})
+});
+
+Code.rssi = {};
+
+Code.device.on("rssi_data", event => {
+  Code.rssi[event.device_mac] = event.rssi;
+
+  // console.log(Code.rssi);
+
+  let array = [];
+
+  for (let key in Code.rssi) {
+    // console.log(key, Code.rssi[key]);
+
+    let item = {};
+
+    item.device_mac = key;
+    item.rssi = Code.rssi[key];
+    array.push(item);
+  }
+
+  console.log(array);
+});
 
 Code.control = {
   div: /** @type {HTMLDivElement} */ (document.querySelector("#content_control")),
@@ -1343,7 +1363,6 @@ fw_version_listDOM.onchange = function () {
   window.ota_uploadFrom = "cloud";
 };
 
-
 Code.readDsparxBattery = function () {
   Code.device.readPinVoltage(34).then(voltage => {
     let percentage = ((voltage - 1000) / 380) * 100;
@@ -1354,7 +1373,7 @@ Code.readDsparxBattery = function () {
 
 Code.testFlutterPing = async function () {
   var promise = null;
-  
+
   if (!("tangleConnect" in window)) {
     // @ts-ignore
     window.tangleConnect = {};
