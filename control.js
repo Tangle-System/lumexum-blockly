@@ -270,8 +270,11 @@ window.onload = function () {
   function handleControlSound() {
     if(microphoneRunning){
       microphoneRunning = false;
+      control_sound.textContent ="Sound OFF";
     } else{
       microphoneRunning = true;
+      control_sound.textContent = "Sound ON";
+
     }
 
     var webaudio_tooling_obj = function () {
