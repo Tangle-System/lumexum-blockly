@@ -342,7 +342,7 @@ window.onload = function () {
 
           // Mapování efektivní hodnoty signálu na rozmezí 0-255 pro vhodný přenos dat.
           // Zde je zejmána nutné dobře nastavit mapovací prahy. Spodní pro odstranění šumu okolí a horní nám udává výslednou dynamiku.
-          var out =  mapValue(rms_loudness_spectrum, 0.00001, 0.9, -100, 100)
+          var out =  mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
                   
           console.log("spectrum avarge loudnes: "+ out);
           // console.log("spectrum avarge loudnes: "+ avarge_loudness_spectrum);
