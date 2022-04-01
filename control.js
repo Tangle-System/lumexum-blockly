@@ -327,7 +327,6 @@ window.onload = function () {
           
           var samples = e.inputBuffer.getChannelData(0);
           var rms_loudness_spectrum = 0;
-d
           fft.forward(samples); //Vyypočtení fft ze vzorků.
           var spectrum = fft.spectrum; // Získání spektra o délce bufeer/2 v našem případě 1024 harmonických.
           
