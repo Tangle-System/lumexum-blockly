@@ -263,6 +263,11 @@ window.onload = function () {
     logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${[control_destination.value]}`;
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
+
+    if(event_logs.childElementCount > 100){
+      event_logs.removeChild(event_logs.firstChild)
+    }
+    
   }
 
   let microphoneRunning = false;
