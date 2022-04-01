@@ -265,7 +265,15 @@ window.onload = function () {
     event_logs.scrollTop = -999999999;
   }
 
-  function handleControlSound(value = null) {
+  let microphoneRunning = false;
+
+  function handleControlSound() {
+    if(microphoneRunning){
+      microphoneRunning = false;
+    } else{
+      microphoneRunning = true;
+    }
+
     var webaudio_tooling_obj = function () {
     
       // Uává velikost bloků ze kterých bude vypočítávána průměrná hlasitos.
@@ -304,7 +312,7 @@ window.onload = function () {
 
       // Funkce pro zahajující naslouchání mikrofonu
       function start_microphone(stream){
-
+      
         gain_node = audioContext.createGain();
         gain_node.connect( audioContext.destination );
 
@@ -344,10 +352,12 @@ window.onload = function () {
           // Zde je zejmána nutné dobře nastavit mapovací prahy. Spodní pro odstranění šumu okolí a horní nám udává výslednou dynamiku.
           var out =  mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
                   
-          console.log("spectrum avarge loudnes: "+ out);
-          // console.log("spectrum avarge loudnes: "+ avarge_loudness_spectrum);
+          // console.log("spectrum avarge loudnes: "+ out);
           handleControlSend(out);
-
+          if(!microphoneRunning){
+            microphone_stream.disconnect();
+            gain_node.disconnect(); 
+          }
 
           // if (bufferCount >= 5){
           //     bufferCount = 0;
