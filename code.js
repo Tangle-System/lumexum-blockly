@@ -1371,7 +1371,7 @@ Code.readDsparxBattery = function () {
   });
 };
 
-Code.testFlutterPing = async function () {
+Code.testReactNativePing = async function () {
   var promise = null;
 
   if (!("tangleConnect" in window)) {
@@ -1379,7 +1379,7 @@ Code.testFlutterPing = async function () {
     window.tangleConnect = {};
   }
 
-  await window.confirm("Starting flutter ping demo");
+  await window.confirm("Starting ReactNative ping demo");
 
   const start = new Date().getTime();
 
@@ -1393,7 +1393,41 @@ Code.testFlutterPing = async function () {
 
     // console.log("Sending ping...");
     // @ts-ignore
-    window.flutter_inappwebview.callHandler("ping");
+    window.ReactNativeWebView.postMessage("ping");
+
+    await promise;
+  }
+
+  const stop = new Date().getTime();
+  const average = (stop - start) / 1000;
+
+  window.alert("Average turnaroud time: " + average + " ms");
+}
+
+Code.testFlutterPing = async function () {
+  var promise = null;
+
+  if (!("tangleConnect" in window)) {
+    // @ts-ignore
+    window.tangleConnect = {};
+  }
+
+  await window.confirm("Starting Flutter ping demo");
+
+  const start = new Date().getTime();
+
+  for (let i = 0; i < 1000; i++) {
+    promise = new Promise((resolve, reject) => {
+      // @ts-ignore
+      window.tangleConnect.resolve = resolve;
+      // @ts-ignore
+      window.tangleConnect.reject = reject;
+    });
+
+    // console.log("Sending ping...");
+    // @ts-ignore
+    window.ReactNativeWebView.postMessage("ping")
+    // window.flutter_inappwebview.callHandler("ping");
 
     await promise;
   }
