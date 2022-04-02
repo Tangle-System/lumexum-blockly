@@ -1426,8 +1426,7 @@ Code.testFlutterPing = async function () {
 
     // console.log("Sending ping...");
     // @ts-ignore
-    window.ReactNativeWebView.postMessage("ping")
-    // window.flutter_inappwebview.callHandler("ping");
+    window.flutter_inappwebview.callHandler("ping");
 
     await promise;
   }

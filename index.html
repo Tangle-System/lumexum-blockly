@@ -38,6 +38,18 @@
 
   <!-- <script src="lib/TangleSerialConnection.js"></script>
   <script src="lib/TangleSerialDevice.js"></script> -->
+  <script>
+    (function () {
+      var src = "//cdn.jsdelivr.net/npm/eruda";
+      if (
+        !/debug=true/.test(window.location) &&
+        localStorage.getItem("active-eruda") != "true"
+      )
+        return;
+      document.write("<scr" + 'ipt src="' + src + '"></scr' + "ipt>");
+      document.write("<scr" + "ipt>eruda.init();</scr" + "ipt>");
+    })();
+  </script>
 
   <script src="lib/webcomponents/dialog-component.js"></script>
   <script src="lib/other/jszip.min.js" defer></script>
