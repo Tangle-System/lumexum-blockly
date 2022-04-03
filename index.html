@@ -38,6 +38,18 @@
 
   <!-- <script src="lib/TangleSerialConnection.js"></script>
   <script src="lib/TangleSerialDevice.js"></script> -->
+  <script>
+    (function () {
+      var src = "//cdn.jsdelivr.net/npm/eruda";
+      if (
+        !/debug=true/.test(window.location) &&
+        localStorage.getItem("active-eruda") != "true"
+      )
+        return;
+      document.write("<scr" + 'ipt src="' + src + '"></scr' + "ipt>");
+      document.write("<scr" + "ipt>eruda.init();</scr" + "ipt>");
+    })();
+  </script>
 
   <script src="lib/webcomponents/dialog-component.js"></script>
   <script src="lib/other/jszip.min.js" defer></script>
@@ -285,6 +297,7 @@
           <button onclick="javascript:Code.device.setRotation(1)">Set Rotation 1</button>
           <button onclick="javascript:Code.testFlutterPing()">Test Flutter Ping</button>
           <button onclick="javascript:Code.testJavaPing()">Test Java Ping</button>
+          <button onclick="javascript:Code.testReactNativePing()">Test ReactNative Ping</button>
           <button onclick="javascript:Code.testDummyPing()">Test Dummy Ping</button>
 
 
@@ -394,6 +407,12 @@
       style="list-style: none;max-height: 50vh;overflow: auto; display: flex; flex-direction: column-reverse;max-width: 500px;margin:auto;margin-top: 40px;"
       id="event_logs">
     </ul>
+    
+    <iframe height="500" style="width: 100%;" scrolling="no" title="Night Train #codevember CSS drawing + animation" src="https://codepen.io/thelittleblacksmith/embed/jVLdEz?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/thelittleblacksmith/pen/jVLdEz">
+  Night Train #codevember CSS drawing + animation</a> by Eina O (<a href="https://codepen.io/thelittleblacksmith">@thelittleblacksmith</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
 
   </div>
 
