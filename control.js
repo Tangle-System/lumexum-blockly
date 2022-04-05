@@ -346,12 +346,21 @@ window.onload = function () {
           fft.forward(samples); //Vyypočtení fft ze vzorků.
           var spectrum = fft.spectrum; // Získání spektra o délce bufeer/2 v našem případě 1024 harmonických.
           
-          
+          //--- Výpočet frekvence ---//
+          //
+          //    ((BufferSize/2)* Fvz)/BufferSize = Fmax
+          //    Fmax / (BufferSize/2) = Frekvence jednoho vzorku
+          // 
+          //------------------------//
 
           // Zde se postupně sečte druhá mocnina všech 1024 vzorků.
           spectrum.forEach(element =>{
             rms_loudness_spectrum += Math.pow(element,2);
           });
+
+          // for (let i = 30; i < 50; i++) {
+          //   rms_loudness_spectrum += Math.pow(spectrum[i],2);
+          // }
 
           // Odmocnina součtu druhých mocnin nám dá efektivní hodnotu signálu "RMS"
           rms_loudness_spectrum = Math.sqrt(rms_loudness_spectrum);
