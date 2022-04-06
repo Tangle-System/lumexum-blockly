@@ -204,18 +204,29 @@
       </div>
 
       <div>
-        <div>
-          OWNER <input style="width: 60%;" type="text" id="owner_identifier" value="matty">
-        </div>
-        <div>
-          OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature"
-            value="a06cd5c4d5741b61fee69422f2590926">
-          <!-- OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="00000000000000000000000000000000"> -->
-        </div>
-        <div>
-          OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="bfd39c89ccc2869f240508e9a0609420">
-          <!-- OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="00000000000000000000000000000000"> -->
-        </div>
+        <table>
+          <tr style="width: 100%">
+            <td style="width: 100%">
+              <div>
+                OWNER <input style="width: 60%;" type="text" id="owner_identifier" value="matty">
+              </div>
+              <div>
+                OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature"
+                  value="a06cd5c4d5741b61fee69422f2590926">
+                <!-- OWNER SIGNATURE <input style="width: 60%;" type="text" id="owner_signature" value="00000000000000000000000000000000"> -->
+              </div>
+              <div>
+                OWNER KEY <input style="width: 60%;" type="text" id="owner_key"
+                  value="bfd39c89ccc2869f240508e9a0609420">
+                <!-- OWNER KEY <input style="width: 60%;" type="text" id="owner_key" value="00000000000000000000000000000000"> -->
+              </div>
+            </td>
+            <td>
+              <textarea id="devices_textarea"
+                style="width: 150px; resize: vertical; height: 50px;">00:00:00:00:00:00</textarea>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <div>
@@ -273,6 +284,9 @@
             Remove Owner
           </button>
 
+          <button onclick="javascript:Code.device.removeNetworkOwner()">Remove Network Owner</button>
+
+
           <button id="fwVersionButton">
             FW Version
           </button>
@@ -325,7 +339,7 @@
               OTA update network
             </button>
           </div>
-          
+
           <br>
 
           <div id="otaProgress">
@@ -355,9 +369,9 @@
                   </button>
                 </div>
               </tr>
-            
+
             </table>
-          
+
           </div>
 
         </div>
@@ -407,12 +421,15 @@
       style="list-style: none;max-height: 50vh;overflow: auto; display: flex; flex-direction: column-reverse;max-width: 500px;margin:auto;margin-top: 40px;"
       id="event_logs">
     </ul>
-    
-    <iframe height="500" style="width: 100%;" scrolling="no" title="Night Train #codevember CSS drawing + animation" src="https://codepen.io/thelittleblacksmith/embed/jVLdEz?default-tab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
-  See the Pen <a href="https://codepen.io/thelittleblacksmith/pen/jVLdEz">
-  Night Train #codevember CSS drawing + animation</a> by Eina O (<a href="https://codepen.io/thelittleblacksmith">@thelittleblacksmith</a>)
-  on <a href="https://codepen.io">CodePen</a>.
-</iframe>
+
+    <iframe height="500" style="width: 100%;" scrolling="no" title="Night Train #codevember CSS drawing + animation"
+      src="https://codepen.io/thelittleblacksmith/embed/jVLdEz?default-tab=html%2Cresult" frameborder="no"
+      loading="lazy" allowtransparency="true" allowfullscreen="true">
+      See the Pen <a href="https://codepen.io/thelittleblacksmith/pen/jVLdEz">
+        Night Train #codevember CSS drawing + animation</a> by Eina O (<a
+        href="https://codepen.io/thelittleblacksmith">@thelittleblacksmith</a>)
+      on <a href="https://codepen.io">CodePen</a>.
+    </iframe>
 
   </div>
 

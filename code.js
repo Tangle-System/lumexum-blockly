@@ -54,8 +54,28 @@ Code.device = new TangleDevice("default");
 
 Code.device.setDebugLevel(4);
 
+const devices_textarea = document.querySelector("#devices_textarea");
+
+Code.device.on("peer_connected", peer => {
+  var re = new RegExp(peer + "\\n", "g");
+  devices_textarea.value = devices_textarea.value.replace(re, "");
+
+  devices_textarea.value += peer + "\n";
+});
+
+Code.device.on("peer_disconnected", peer => {
+  var re = new RegExp(peer + "\\n", "g");
+  devices_textarea.value = devices_textarea.value.replace(re, "");
+});
+
+
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
+
+  Code.device.getConnectedPeersInfo().then(peers => {
+    devices_textarea.value = peers.join("\n") + "\n";
+  });
+
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
   icon.classList.remove("connect");
@@ -779,6 +799,8 @@ Code.init = function () {
       });
   };
 
+  
+
   Code.fwVersion = function () {
     Code.device
       .getFwVersion()
@@ -1100,64 +1122,25 @@ Code.discard = async function () {
 // var port;
 
 Code.adoptBluetooth = function () {
-  Code.device.adopt().then(device => {
+  return Code.device.adopt().then(device => {
     console.log("Adopted Device:", device);
   });
 };
 
+
+
 Code.connectBluetooth = function () {
-  // if (Code.device.variant != "webbluetooth") {
-  //   Code.device.assignConnector("webbluetooth");
-
-  // Code.device.addEventListener("connected", (event) => {
-  //   return event.target
-  //     .requestTimeline()
-  //     .then(() => {
-  //       console.log("Bluetooth Device connected");
-
-  //       const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
-  //       icon.classList.remove("connect");
-  //       icon.classList.add("disconnect");
-  //     })
-  //     .catch((error) => {
-  //       console.warn(error);
-  //       //event.target.connect();
-  //     });
-  // });
-
-  // Code.device.addEventListener("disconnected", (event) => {
-  //   const icon = /** @type {Element} */ (document.getElementById("connectBluetoothButton").childNodes[1]);
-  //   icon.classList.remove("disconnect");
-  //   icon.classList.add("connect");
-  // });
-
-  // Code.device.addEventListener("receive", (event) => {
-  //   const MAX_TEXTAREA_CHARACTERS = 1024 * 1024;
-  //   const OVERLOAD_REMOVE_CHARACTERS = 1024 * 16;
-
-  //   const textarea = document.getElementById("content_debug");
-  //   textarea.value += new Date().toLocaleTimeString() + " : " + event.payload;
-
-  //   while (textarea.value.length > MAX_TEXTAREA_CHARACTERS) {
-  //     textarea.value = textarea.value.slice(textarea.value.length - (MAX_TEXTAREA_CHARACTERS - OVERLOAD_REMOVE_CHARACTERS), textarea.value.length);
-  //   }
-  // });
-  // }
-
-  Code.device.connected().then(connected => {
+  return Code.device.connected().then(connected => {
     if (!connected) {
       console.log("Connecting device...");
-      Code.device
+      return Code.device
         .connect(/* [{name: "Manka"}] */ null, false, null, null, true)
-        .then(device => {
-          console.log("Device Connected:", device);
-        })
         .catch(e => {
           console.error(e);
         });
     } else {
       console.log("Disconnecting device...");
-      Code.device.disconnect().catch(e => {
+      return Code.device.disconnect().catch(e => {
         console.error(e);
       });
     }
