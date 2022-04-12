@@ -57,23 +57,30 @@ Code.device.setDebugLevel(4);
 const devices_textarea = document.querySelector("#devices_textarea");
 
 Code.device.on("peer_connected", peer => {
-  var re = new RegExp(peer + "\\n", "g");
+  console.log("Peer connected", peer);
+
+  var re = new RegExp(peer + "✅\\n", "gi");
   devices_textarea.value = devices_textarea.value.replace(re, "");
 
-  devices_textarea.value += peer + "\n";
+  devices_textarea.value += peer + "✅\n";
 });
 
 Code.device.on("peer_disconnected", peer => {
-  var re = new RegExp(peer + "\\n", "g");
+  console.log("Peer disconnected", peer);
+
+  var re = new RegExp(peer + "✅\\n", "gi");
   devices_textarea.value = devices_textarea.value.replace(re, "");
 });
-
 
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
 
   Code.device.getConnectedPeersInfo().then(peers => {
-    devices_textarea.value = peers.join("\n") + "\n";
+    devices_textarea.value = "";
+
+    for (let i = 0; i < peers.length; i++) {
+      devices_textarea.value += peers[i].mac + "✅\n";
+    }
   });
 
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
