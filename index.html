@@ -253,7 +253,13 @@
       </div>
 
       <div>
+        <div>
+          <button onclick="javascript:Code.device.connectCSOBAsMaster()">Connect CSOB Controller</button>
+          <button onclick="javascript:Code.device.resetCSOBAppState()">Reset CSOB app state</button>
+        </div>
+        <br>
         <span>
+          
 
           <button id="adoptBluetoothButton">
             Adopt device
@@ -295,6 +301,9 @@
           <button id="syncTnglButton">
             Sync TNGL
           </button>
+
+          
+
 
           <button onclick="javascript:Code.device.connectRemoteControl()">Connect Remote Controller</button>
           <button onclick="javascript:Code.device.disconnectRemoteControl()">Disonnect Remote Controller</button>
