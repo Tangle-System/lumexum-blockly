@@ -322,17 +322,18 @@ window.onload = function () {
       function start_microphone(stream){
       
         gain_node = audioContext.createGain();
-        gain_node.connect( audioContext.destination );
-
+        gain_node.gain.setValueAtTime(1,audioContext.currentTime);
         microphone_stream = audioContext.createMediaStreamSource(stream);
-
         script_processor_get_audio_samples = audioContext.createScriptProcessor(BUFF_SIZE, 1, 1);
-        script_processor_get_audio_samples.connect(gain_node);
+
+        gain_node.connect( script_processor_get_audio_samples );
+        script_processor_get_audio_samples.connect(audioContext.destination);
+        microphone_stream.connect(gain_node);
+
         
         console.log("Sample rate of soundcard: " + audioContext.sampleRate);
         var fft = new FFT(BUFF_SIZE, audioContext.sampleRate);
 
-        microphone_stream.connect(script_processor_get_audio_samples);
 
         // var bufferCount = 0;
 
@@ -374,6 +375,7 @@ window.onload = function () {
           if(!microphoneRunning){
             microphone_stream.disconnect();
             gain_node.disconnect(); 
+            script_processor_get_audio_samples.disconnect();
           }
 
           // if (bufferCount >= 5){
