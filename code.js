@@ -1253,9 +1253,9 @@ function handleError(error) {
 
 function changeMusicDestination(event) {
   // throw "NOT IMPLEMENTED";
-  // const deviceId = event.target.value;
+  const deviceId = event.target.value;
   // const element = Code.music;
-  attachSinkId(element, deviceId);
+  attachSinkId(null, deviceId);
 }
 
 // function changeMetronomeDestination(event) {
