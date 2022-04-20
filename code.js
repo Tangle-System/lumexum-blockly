@@ -1252,10 +1252,10 @@ function handleError(error) {
 }
 
 function changeMusicDestination(event) {
-  throw "NOT IMPLEMENTED";
-  // const deviceId = event.target.value;
+  // throw "NOT IMPLEMENTED";
+  const deviceId = event.target.value;
   // const element = Code.music;
-  // attachSinkId(element, deviceId);
+  attachSinkId(null, deviceId);
 }
 
 // function changeMetronomeDestination(event) {
@@ -1267,12 +1267,17 @@ function changeMusicDestination(event) {
 // Attach audio output device to the provided media element using the deviceId.
 function attachSinkId(element, sinkId) {
   if (typeof element.sinkId !== "undefined") {
-    element
-      .setSinkId(sinkId)
-      .then(() => {
-        console.log(`Success, audio output device attached: ${sinkId} to element with ${element.title} as source.`);
-      })
-      .catch(handleError);
+    wavesurfer.setSinkId(sinkId).then(() => {
+      console.log(`Success, audio output device attached: ${sinkId} to element with ${element.title} as source.`);
+    })
+    .catch(handleError);
+
+    // element
+    //   .setSinkId(sinkId)
+    //   .then(() => {
+    //     console.log(`Success, audio output device attached: ${sinkId} to element with ${element.title} as source.`);
+    //   })
+    //   .catch(handleError);
   } else {
     console.warn("Browser does not support output device selection.");
   }
