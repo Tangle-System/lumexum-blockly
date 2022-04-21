@@ -340,7 +340,7 @@ window.onload = function () {
           type: 'line'
         }]);
 
-        let cnt;
+        let cnt = 0;
 
         // Tato funkce se provede pokaždé když dojde k naplnění bufferu o velikosti 2048 vzorků.
         // Při vzorkovacím kmitočku 48 kHz se tedy zavolá jednou za cca 42 ms.
@@ -372,9 +372,9 @@ window.onload = function () {
           var out = mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
 
           handleControlSend(out);
-          Plotly.extendTraces(CHART, { y: [[out]] }, [0]);
 
-          if(cnt > 500) {
+          Plotly.extendTraces(CHART, { y: [[out]] }, [0]);
+          if(cnt++ > 500) {
             Plotly.relayout(CHART,{
                  xaxis: {
                            range: [cnt-500,cnt]
