@@ -50,36 +50,136 @@ Code.hideConsole = function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Code.device = new TangleDevice("default");
+Code.device = new TangleDevice("default", 0);
 
 Code.device.setDebugLevel(3);
 
 const devices_textarea = document.querySelector("#devices_textarea");
 
+let devices_list = [
+  ["CONTROLLER", "7c:9e:bd:30:1d:00", "0", false],
+  ["CSOB", "0c:b8:15:c4:bb:d0", "1", false],
+  ["INNO", "0c:b8:15:d8:bd:54", "1", false],
+  ["CROSS", "0c:b8:15:d5:1f:70", "2", false],
+  ["PATH_OD", "0c:b8:15:c4:a9:d8", "2", false],
+  ["PATH_KW", "0c:b8:15:d8:cb:fc", "2", false],
+  ["PATH_BB", "0c:b8:15:d8:ab:94", "2", false],
+  ["PATH_RB", "0c:b8:15:d8:b3:60", "2", false],
+  ["KATE", "0c:b8:15:c3:32:e4", "3", false],
+  ["RESPON", "4c:75:25:a1:8c:5c", "100", false],
+  ["BEHAV", "4c:75:25:a1:8c:b0", "100", false],
+  ["2314709", "4c:75:25:c1:e7:a4", "101", false],
+  ["HEART", "4c:75:25:c1:e7:4c", "102", false],
+  ["HelpUkr", "4c:75:25:c1:e7:50", "103", false],
+  ["Filip", "4c:75:25:c1:e7:2c", "103", false],
+  ["CSOB4GC", "4c:75:25:c1:e6:f4", "103", false],
+  ["Mallpay", "4c:75:25:a1:8c:4c", "103", false],
+  ["InDisCo", "4c:75:25:c1:e7:18", "103", false],
+  ["CSOB4DV", "4c:75:25:c1:e7:40", "103", false],
+  ["StartIt", "4c:75:25:c1:e7:c8", "103", false],
+  ["SItStul", "4c:75:25:a1:8b:20" ,"103", false],
+  ["RBS", "0c:b8:15:d7:fa:c8", "104", false],
+  ["BEYOND", "4c:75:25:a1:8d:20", "110", false],
+  ["BANKING", "4c:75:25:a1:8c:e0", "110", false],
+  ["Bus", "4c:75:25:a1:8c:40", "111", false],
+  ["Parking", "4c:75:25:a1:8c:20", "112", false],
+  ["COOP", "08:3a:f2:7d:d7:c4", "113", false],
+  ["BankID", "4c:75:25:c1:e7:a0", "114", false],
+  ["IGLUU", "0c:b8:15:d6:0e:2c", "115 ", false],
+  ["IGLUU2", "0c:b8:15:d8:bb:34", "115 ", false],
+  ["IGLUU3", "0c:b8:15:d8:ae:c4", "115 ", false],
+  ["Igluu", "4c:75:25:c1:e7:54", "116", false],
+  ["BBS", "0c:b8:15:d8:cb:f8", "117", false],
+  ["KATE", "30:83:98:da:96:00", "120", false],
+  ["WORLD", "4c:75:25:a1:8c:c4", "120", false],
+  ["Neuron", "0c:b8:15:d7:e4:cc", "121", false],
+  ["InPrAu", "4c:75:25:c1:e7:cc", "123", false],
+  ["Kat4Emp", "4c:75:25:c1:e7:0c", "126", false],
+  ["Kat4Bus", "4c:75:25:c1:e7:00", "127", false],
+  ["KatAda", "4c:75:25:c1:e7:14", "128", false],
+  ["Kat4Ret", "4c:75:25:c1:e7:30", "129", false],
+  ["KVS", "0c:b8:15:d7:e8:9c", "124", false],
+  ["DISTRI", "4c:75:25:a1:8c:10", "130", false],
+  ["ONE", "4c:75:25:a1:8d:34", "130", false],
+  ["Tablet", "78:e3:6d:0a:06:0c", "131", false],
+  ["ODS", "0c:b8:15:c4:a9:a0", "132", false],
+  ["ODS", "4c:75:25:c1:e6:e8", "133", false],
+];
+
+devices_textarea.value = "";
+
+for (let i = 0; i < devices_list.length; i++) {
+  devices_textarea.value += devices_list[i][0] + "[" + devices_list[i][2] + "]" + (devices_list[i][3] ? "✅" : "❌") + "\n";
+}
+
 Code.device.on("peer_connected", peer => {
   console.log("Peer connected", peer);
 
-  var re = new RegExp(peer + "✅\\n", "gi");
-  devices_textarea.value = devices_textarea.value.replace(re, "");
+  const index = devices_list.findIndex(element => {
+    return element[1] == peer;
+  });
 
-  devices_textarea.value += peer + "✅\n";
+  if (index == -1) {
+    devices_list.push([peer, peer, "?", true]);
+  } else {
+    devices_list[index][3] = true;
+  }
+
+  devices_textarea.value = "";
+
+  for (let i = 0; i < devices_list.length; i++) {
+    devices_textarea.value += devices_list[i][0] + "[" + devices_list[i][2] + "]" + (devices_list[i][3] ? "✅" : "❌") + "\n";
+  }
 });
 
 Code.device.on("peer_disconnected", peer => {
   console.log("Peer disconnected", peer);
 
-  var re = new RegExp(peer + "✅\\n", "gi");
-  devices_textarea.value = devices_textarea.value.replace(re, "");
+  const index = devices_list.findIndex(element => {
+    return element[1] == peer;
+  });
+
+  if (index == -1) {
+    devices_list.push([peer, peer, "?", false]);
+  } else {
+    devices_list[index][3] = false;
+  }
+
+  devices_textarea.value = "";
+
+  for (let i = 0; i < devices_list.length; i++) {
+    devices_textarea.value += devices_list[i][0] + "[" + devices_list[i][2] + "]" + (devices_list[i][3] ? "✅" : "❌") + "\n";
+  }
 });
 
 Code.device.addEventListener("connected", event => {
   console.log("Tangle Device connected");
 
+  for (let i = 0; i < devices_list.length; i++) {
+    devices_list[i][3] = false;
+  }
+
   Code.device.getConnectedPeersInfo().then(peers => {
+    for (let i = 0; i < peers.length; i++) {
+      const peer = peers[i].mac;
+
+      console.log(peer);
+
+      const index = devices_list.findIndex(element => {
+        return element[1] == peer;
+      });
+
+      if (index == -1) {
+        devices_list.push([peer, peer, "?", true]);
+      } else {
+        devices_list[index][3] = true;
+      }
+    }
+
     devices_textarea.value = "";
 
-    for (let i = 0; i < peers.length; i++) {
-      devices_textarea.value += peers[i].mac + "✅\n";
+    for (let i = 0; i < devices_list.length; i++) {
+      devices_textarea.value += devices_list[i][0] + "[" + devices_list[i][2] + "]" + (devices_list[i][3] ? "✅" : "❌") + "\n";
     }
   });
 
@@ -1155,13 +1255,13 @@ Code.connectBluetooth = function () {
 };
 
 Code.onKeyPress = function (e) {
-  // let codes = ['KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyY', 'KeyX', 'KeyC', 'KeyV', 'KeyZ'];
-  let keys = ["Q", "W", "E", "R", "A", "S", "D", "F", "Y", "X", "C", "V", "Z", "T"];
+  // // let codes = ['KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyY', 'KeyX', 'KeyC', 'KeyV', 'KeyZ'];
+  // let keys = ["Q", "W", "E", "R", "A", "S", "D", "F", "Y", "X", "C", "V", "Z", "T"];
 
-  if (keys.includes(e.key) /*&& e.shiftKey*/) {
-    console.log("Keypress " + e.key + " trigger");
-    Code.device.emitEvent(e.key.charCodeAt(0), 255);
-  }
+  // if (keys.includes(e.key) /*&& e.shiftKey*/) {
+  //   console.log("Keypress " + e.key + " trigger");
+  //   Code.device.emitEvent(e.key.charCodeAt(0), 255);
+  // }
 };
 
 // Load the Code demo's language strings.
