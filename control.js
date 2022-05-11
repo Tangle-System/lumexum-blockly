@@ -270,6 +270,51 @@ window.onload = function () {
     
   }
 
+
+  const sliders = [
+    "speed",
+    "delta",
+    "trans",
+    "pos_1",
+    "pos_2",
+    "pos_3",
+    "dyn_p",
+    "dyn_d",
+    "sta_p",
+    "sta_d"
+  ];
+  
+  for (let i = 0; i < sliders.length; i++) {
+    const slider = document.querySelector(`#slider_${sliders[i]}`);
+    slider.oninput = (e) => {
+      const value = e.target.value;
+      console.log(value);
+      Code.device.emitTimestampEvent(sliders[i], value);
+    };
+  }
+  
+  Code.device.on("event", event => {
+    for (let i = 0; i < sliders.length; i++) {
+      if (event.label == sliders[i]) {
+        const feedback = document.querySelector(`#feedback_${sliders[i]}`);
+        feedback.innerHTML = event.value;
+        const slider = document.querySelector(`#slider_${sliders[i]}`);
+        slider.value = event.value;
+      }
+    }
+  });
+
+  const apply_button = document.querySelector(`#apply_button`);
+
+  apply_button.onclick = e => {
+    for (let i = 0; i < sliders.length; i++) {
+      const slider = document.querySelector(`#slider_${sliders[i]}`);
+      Code.device.emitTimestampEvent(sliders[i], slider.value);
+    }
+
+    Code.device.emitEvent("apply");
+  };
+
   let microphoneRunning = false;
 
   function handleControlSound() {
@@ -651,3 +696,4 @@ document.querySelector("#filename").ondrop = handleFileDrop;
 document.querySelector("#loadFile").ondrop = handleFileDrop;
 document.querySelector("#saveFile").ondrop = handleFileDrop;
 //document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
+

@@ -52,7 +52,7 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default", 0);
 
-Code.device.setDebugLevel(4);
+Code.device.setDebugLevel(5);
 
 const devices_textarea = document.querySelector("#devices_textarea");
 
