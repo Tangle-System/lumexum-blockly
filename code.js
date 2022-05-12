@@ -52,7 +52,7 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default", 0);
 
-Code.device.setDebugLevel(5);
+Code.device.setDebugLevel(3);
 
 const devices_textarea = document.querySelector("#devices_textarea");
 
@@ -303,7 +303,7 @@ Code.control.setVisible = function (enable) {
 // Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
 // Code.metronome = new Audio();
 
-Code.device.timeline = new TimeTrack();
+// Code.device.timeline = new TimeTrack();
 
 // Code.bank = 0;
 

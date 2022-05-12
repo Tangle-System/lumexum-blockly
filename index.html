@@ -103,10 +103,10 @@
       </td>
 
       <div class="" style="position: absolute;right: 10px;display: flex; margin-top: 10px;">
-        <input type="text" id="filename" value="blocks">
-        <button id="saveFile">Save File</button>
+        <input type="text" id="filename" value="New Project">
+        <button id="saveFile">Save Project</button>
         <br>
-        <button id="loadFile">Load File</button>
+        <button id="loadFile">Load Project</button>
       </div>
 
 
@@ -232,7 +232,7 @@
             </td>
             <td>
               <textarea id="devices_textarea"
-                style="width: 175px; resize: vertical; height: 75px;">Connected devices</textarea>
+                style="width: 180px; resize: vertical; height: 80px;">Connected devices</textarea>
             </td>
           </tr>
         </table>
@@ -331,19 +331,20 @@
         </span>
 
         <div>
-          &nbsp;
+          <br>
         </div>
 
         <div>
           <div>
-            <b>soubor FW (.enc)</b>
-            <input type="file" id="otaFirmware">
-            <b>nebo</b>
+            <b>FW UPDATE [</b>
             <select id="fw_version_list">
               <option disabled selected value> -- Vyberte verzi -- </option>
             </select>
-            <!-- <br>
-            <br> -->
+            <b>] nebo [</b>
+            <input type="file" id="otaFirmware">
+            <b>]</b>
+            <br>
+            <!-- <br> -->
             <!-- <div style="width: 253px;display: inline-block;"></div> -->
             <button id="otaUpdateDeviceFirmware">
               OTA update device
@@ -431,21 +432,21 @@
       <br>
 
       <div>
-        <div> SPEED <input style="width: 80%;" type="range" id="slider_speed" min="-1000" max="1000" value="0" step="1"> <span id="feedback_speed">0</span></div>
-        <div> DELTA <input style="width: 80%;" type="range" id="slider_delta" min="-1000" max="1000" value="0" step="1"> <span id="feedback_delta">0</span></div>
-        <div> TRANS <input style="width: 80%;" type="range" id="slider_trans" min="0" max="10000" value="50" step="1"> <span id="feedback_trans">50</span></div>
-        <div> POS_1 <input style="width: 80%;" type="range" id="slider_pos_1" min="0" max="1000" value="500" step="1"> <span id="feedback_pos_1">500</span></div>
-        <div> POS_2 <input style="width: 80%;" type="range" id="slider_pos_2" min="0" max="1000" value="500" step="1"> <span id="feedback_pos_2">500</span></div>
-        <div> POS_3 <input style="width: 80%;" type="range" id="slider_pos_3" min="0" max="1000" value="500" step="1"> <span id="feedback_pos_3">500</span></div>
-        <div> DYN_P <input style="width: 80%;" type="range" id="slider_dyn_p" min="0" max="2000" value="100" step="1"> <span id="feedback_dyn_p">100</span></div>
-        <div> DYN_D <input style="width: 80%;" type="range" id="slider_dyn_d" min="0" max="2000" value="100" step="1"> <span id="feedback_dyn_d">100</span></div>
-        <div> STA_P <input style="width: 80%;" type="range" id="slider_sta_p" min="0" max="2000" value="100" step="1"> <span id="feedback_sta_p">100</span></div>
-        <div> STA_D <input style="width: 80%;" type="range" id="slider_sta_d" min="0" max="2000" value="100" step="1"> <span id="feedback_sta_d">100</span></div>
+        <div> $sli_0 <input style="width: 80%;" type="range" id="slider_sli_0" min="0" max="100" value="0" step="1"> <span id="feedback_sli_0">0</span></div>
+        <div> $sli_1 <input style="width: 80%;" type="range" id="slider_sli_1" min="0" max="100" value="0" step="1"> <span id="feedback_sli_1">0</span></div>
+        <div> $sli_2 <input style="width: 80%;" type="range" id="slider_sli_2" min="0" max="100" value="0" step="1"> <span id="feedback_sli_2">0</span></div>
+        <div> $sli_3 <input style="width: 80%;" type="range" id="slider_sli_3" min="0" max="100" value="0" step="1"> <span id="feedback_sli_3">0</span></div>
+        <div> $sli_4 <input style="width: 80%;" type="range" id="slider_sli_4" min="0" max="100" value="0" step="1"> <span id="feedback_sli_4">0</span></div>
+        <div> $sli_5 <input style="width: 80%;" type="range" id="slider_sli_5" min="-100" max="100" value="0" step="1"> <span id="feedback_sli_5">0</span></div>
+        <div> $sli_6 <input style="width: 80%;" type="range" id="slider_sli_6" min="-100" max="100" value="0" step="1"> <span id="feedback_sli_6">0</span></div>
+        <div> $sli_7 <input style="width: 80%;" type="range" id="slider_sli_7" min="-100" max="100" value="0" step="1"> <span id="feedback_sli_7">0</span></div>
+        <div> $sli_8 <input style="width: 80%;" type="range" id="slider_sli_8" min="-100" max="100" value="0" step="1"> <span id="feedback_sli_8">0</span></div>
+        <div> $sli_9 <input style="width: 80%;" type="range" id="slider_sli_9" min="-100" max="100" value="0" step="1"> <span id="feedback_sli_9">0</span></div>
       </div>
 
       <br>
         
-      <button id="apply_button" style="width: 100%;">Apply slider values</button>
+      <button id="apply_button" style="width: 100%;">Resend slider values</button>
   
       <br>
 

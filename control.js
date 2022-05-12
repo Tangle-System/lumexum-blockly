@@ -56,29 +56,29 @@ window.onload = function () {
     Code.device.assignConnector(control_connector_select.value);
   };
 
-  Code.device.on("event", event => {
-    control_label.value = event.label;
-    control_destination.value = event.id;
+  // Code.device.on("event", event => {
+  //   control_label.value = event.label;
+  //   control_destination.value = event.id;
 
-    if (event.value === null) {
-      return;
-    }
+  //   if (event.value === null) {
+  //     return;
+  //   }
 
-    if (event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
-      control_color_value.value = event.value;
-      control_color_picker.value = event.value;
-    } else {
-      if (event.value >= -100.0 && event.value <= 100.0) {
-        control_percentage_value.value = event.value;
-        control_percentage_range.value = event.value;
-        control_timestamp_value.value = event.value;
-      }
+  //   if (event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
+  //     control_color_value.value = event.value;
+  //     control_color_picker.value = event.value;
+  //   } else {
+  //     if (event.value >= -100.0 && event.value <= 100.0) {
+  //       control_percentage_value.value = event.value;
+  //       control_percentage_range.value = event.value;
+  //       control_timestamp_value.value = event.value;
+  //     }
 
-      if (event.value >= -2147483648 && event.value <= 2147483647) {
-        control_timestamp_value.value = event.value;
-      }
-    }
-  });
+  //     if (event.value >= -2147483648 && event.value <= 2147483647) {
+  //       control_timestamp_value.value = event.value;
+  //     }
+  //   }
+  // });
 
   // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
@@ -97,20 +97,20 @@ window.onload = function () {
     container: "#waveform",
     height: 60,
     plugins: [
-      WaveSurfer.regions.create({
-        // regions: [
-        //   {
-        //     start: 0,
-        //     end: 5,
-        //     color: 'hsla(400, 100%, 30%, 0.1)'
-        //   },
-        //   {
-        //     start: 10,
-        //     end: 20,
-        //     color: 'hsla(200, 50%, 70%, 0.1)'
-        //   }
-        // ]
-      }),
+      // WaveSurfer.regions.create({
+      //   // regions: [
+      //   //   {
+      //   //     start: 0,
+      //   //     end: 5,
+      //   //     color: 'hsla(400, 100%, 30%, 0.1)'
+      //   //   },
+      //   //   {
+      //   //     start: 10,
+      //   //     end: 20,
+      //   //     color: 'hsla(200, 50%, 70%, 0.1)'
+      //   //   }
+      //   // ]
+      // }),
       WaveSurfer.timeline.create({
         container: "#timeline",
       }),
@@ -166,6 +166,8 @@ window.onload = function () {
   });
   // wavesurfer.load('./elevator.mp3');
 
+  wavesurfer.load('./timeline.mp3');
+
   document.addEventListener("keypress", function onPress(event) {
     if (event.key === " ") {
       wavesurfer.playPause();
@@ -177,6 +179,7 @@ window.onload = function () {
   });
 
   let count = 100;
+  let debounce = true;
 
   function handleAltZoom(e) {
     if (!e.altKey) {
@@ -256,44 +259,43 @@ window.onload = function () {
       log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
       Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, [control_destination.value], true, false);
-    }
-
-    const logmessageDOM = document.createElement("li");
-    // TODO edit this message accordingly to each control type
-    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${[control_destination.value]}`;
-    event_logs.appendChild(logmessageDOM);
-    event_logs.scrollTop = -999999999;
-
-    if(event_logs.childElementCount > 100){
-      event_logs.removeChild(event_logs.firstChild)
-    }
-    
+    }    
   }
 
 
   const sliders = [
-    "speed",
-    "delta",
-    "trans",
-    "pos_1",
-    "pos_2",
-    "pos_3",
-    "dyn_p",
-    "dyn_d",
-    "sta_p",
-    "sta_d"
+    "sli_0",
+    "sli_1",
+    "sli_2",
+    "sli_3",
+    "sli_4",
+    "sli_5",
+    "sli_6",
+    "sli_7",
+    "sli_8",
+    "sli_9"
   ];
   
   for (let i = 0; i < sliders.length; i++) {
     const slider = document.querySelector(`#slider_${sliders[i]}`);
     slider.oninput = (e) => {
       const value = e.target.value;
-      console.log(value);
-      Code.device.emitTimestampEvent(sliders[i], value);
+      Code.device.emitPercentageEvent(sliders[i], value);
     };
   }
   
   Code.device.on("event", event => {
+
+    const logmessageDOM = document.createElement("li");
+    // TODO edit this message accordingly to each control type
+    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} : $${event.label} = ${event.value} [${event.type}] -> ${event.id}`;
+    event_logs.appendChild(logmessageDOM);
+    event_logs.scrollTop = -999999999;
+
+    if(event_logs.childElementCount > 100){
+      event_logs.removeChild(event_logs.firstChild)
+    }
+
     for (let i = 0; i < sliders.length; i++) {
       if (event.label == sliders[i]) {
         const feedback = document.querySelector(`#feedback_${sliders[i]}`);
@@ -309,7 +311,7 @@ window.onload = function () {
   apply_button.onclick = e => {
     for (let i = 0; i < sliders.length; i++) {
       const slider = document.querySelector(`#slider_${sliders[i]}`);
-      Code.device.emitTimestampEvent(sliders[i], slider.value);
+      Code.device.emitPercentageEvent(sliders[i], slider.value);
     }
 
     Code.device.emitEvent("apply");
