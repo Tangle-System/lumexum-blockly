@@ -259,7 +259,7 @@ window.onload = function () {
       log_value = control_timestamp_value.value + " ms";
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
       Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, [control_destination.value], true, false);
-    }    
+    }
   }
 
 
@@ -275,7 +275,7 @@ window.onload = function () {
     "sli_8",
     "sli_9"
   ];
-  
+
   for (let i = 0; i < sliders.length; i++) {
     const slider = document.querySelector(`#slider_${sliders[i]}`);
     slider.oninput = (e) => {
@@ -283,7 +283,7 @@ window.onload = function () {
       Code.device.emitPercentageEvent(sliders[i], value);
     };
   }
-  
+
   Code.device.on("event", event => {
 
     const logmessageDOM = document.createElement("li");
@@ -292,7 +292,7 @@ window.onload = function () {
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
 
-    if(event_logs.childElementCount > 100){
+    if (event_logs.childElementCount > 100) {
       event_logs.removeChild(event_logs.firstChild)
     }
 
@@ -317,20 +317,25 @@ window.onload = function () {
     Code.device.emitEvent("apply");
   };
 
+  const apply_events = document.querySelector(`#apply_events`);
+  apply_events.onclick = e => {
+    Code.device.resendAll()
+  }
+
   let microphoneRunning = false;
 
   function handleControlSound() {
-    if(microphoneRunning){
+    if (microphoneRunning) {
       microphoneRunning = false;
-      control_sound.textContent ="Sound OFF";
-    } else{
+      control_sound.textContent = "Sound OFF";
+    } else {
       microphoneRunning = true;
       control_sound.textContent = "Sound ON";
 
     }
 
     var webaudio_tooling_obj = function () {
-    
+
       // Uává velikost bloků ze kterých bude vypočítávána průměrná hlasitos.
       // Maximální velikost je 2048 vzorků.
       // Hodnota musí být vždy násobkem dvou.
@@ -342,40 +347,40 @@ window.onload = function () {
       console.log("audio is starting up ...");
 
       var microphone_stream = null,
-          gain_node = null,
-          script_processor_get_audio_samples = null;
+        gain_node = null,
+        script_processor_get_audio_samples = null;
 
 
       // Dotaz na povolení přístupu k mikrofonu
       if (!navigator.getUserMedia)
-              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-                            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-      if (navigator.getUserMedia){
+      if (navigator.getUserMedia) {
 
-          navigator.getUserMedia({audio:true}, 
-            function(stream) {
-                start_microphone(stream);
-            },
-            function(e) {
-              alert('Error capturing audio.');
-            }
-          );
+        navigator.getUserMedia({ audio: true },
+          function (stream) {
+            start_microphone(stream);
+          },
+          function (e) {
+            alert('Error capturing audio.');
+          }
+        );
 
       } else { alert('getUserMedia not supported in this browser.'); }
 
 
       // Funkce pro zahajující naslouchání mikrofonu
-      function start_microphone(stream){
-      
+      function start_microphone(stream) {
+
         gain_node = audioContext.createGain();
-        gain_node.connect( audioContext.destination );
+        gain_node.connect(audioContext.destination);
 
         microphone_stream = audioContext.createMediaStreamSource(stream);
 
         script_processor_get_audio_samples = audioContext.createScriptProcessor(BUFF_SIZE, 1, 1);
         script_processor_get_audio_samples.connect(gain_node);
-        
+
         console.log("Sample rate of soundcard: " + audioContext.sampleRate);
         var fft = new FFT(BUFF_SIZE, audioContext.sampleRate);
 
@@ -386,13 +391,13 @@ window.onload = function () {
 
         // Tato funkce se provede pokaždé když dojde k naplnění bufferu o velikosti 2048 vzorků.
         // Při vzorkovacím kmitočku 48 kHz se tedy zavolá jednou za cca 42 ms.
-        script_processor_get_audio_samples.onaudioprocess = function(e) {
-          
+        script_processor_get_audio_samples.onaudioprocess = function (e) {
+
           var samples = e.inputBuffer.getChannelData(0);
           var rms_loudness_spectrum = 0;
           fft.forward(samples); //Vyypočtení fft ze vzorků.
           var spectrum = fft.spectrum; // Získání spektra o délce bufeer/2 v našem případě 1024 harmonických.
-          
+
           //--- Výpočet frekvence ---//
           //
           //    ((BufferSize/2)* Fvz)/BufferSize = Fmax
@@ -401,8 +406,8 @@ window.onload = function () {
           //------------------------//
 
           // Zde se postupně sečte druhá mocnina všech 1024 vzorků.
-          spectrum.forEach(element =>{
-            rms_loudness_spectrum += Math.pow(element,2);
+          spectrum.forEach(element => {
+            rms_loudness_spectrum += Math.pow(element, 2);
           });
 
           // for (let i = 30; i < 50; i++) {
@@ -414,13 +419,13 @@ window.onload = function () {
 
           // Mapování efektivní hodnoty signálu na rozmezí 0-255 pro vhodný přenos dat.
           // Zde je zejmána nutné dobře nastavit mapovací prahy. Spodní pro odstranění šumu okolí a horní nám udává výslednou dynamiku.
-          var out =  mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
-                  
+          var out = mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
+
           // console.log("spectrum avarge loudnes: "+ out);
           handleControlSend(out);
-          if(!microphoneRunning){
+          if (!microphoneRunning) {
             microphone_stream.disconnect();
-            gain_node.disconnect(); 
+            gain_node.disconnect();
           }
 
           // if (bufferCount >= 5){
@@ -440,31 +445,31 @@ window.onload = function () {
         if (in_max == in_min) {
           return out_min / 2 + out_max / 2;
         }
-    
+
         let minimum = Math.min(in_min, in_max);
         let maximum = Math.max(in_min, in_max);
-    
+
         if (x < minimum) {
           x = minimum;
         } else if (x > maximum) {
           x = maximum;
         }
-    
+
         let result = ((x - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
-    
+
         minimum = Math.min(out_min, out_max);
         maximum = Math.max(out_min, out_max);
-    
+
         if (result < minimum) {
           result = minimum;
         } else if (result > maximum) {
           result = maximum;
         }
-    
+
         return result;
       }
 
-  }();
+    }();
   }
 
   control_percentage_range.oninput = handlePercentageValueChange;
@@ -553,7 +558,7 @@ function setupOwnership() {
       if (e != null) {
         owner_identifier.value = "";
       }
-    } catch {}
+    } catch { }
 
     owner_signature.value = Code.device.getOwnerSignature();
 
@@ -563,7 +568,7 @@ function setupOwnership() {
   owner_key.onchange = e => {
     try {
       Code.device.setOwnerKey(owner_key.value);
-    } catch {}
+    } catch { }
 
     owner_key.value = Code.device.getOwnerKey();
 
