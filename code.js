@@ -21,9 +21,9 @@ if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-if (!navigator.bluetooth) {
-  alert("Oops, bluetooth doesn't work here.");
-}
+// if (!navigator.bluetooth) {
+//   alert("Oops, bluetooth doesn't work here.");
+// }
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   // butConnect.addEventListener("click", clickConnect);
@@ -52,7 +52,7 @@ Code.hideConsole = function () {
 
 Code.device = new TangleDevice("default", 0);
 
-Code.device.setDebugLevel(3);
+Code.device.setDebugLevel(4);
 
 const devices_textarea = document.querySelector("#devices_textarea");
 
