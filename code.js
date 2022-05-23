@@ -231,11 +231,11 @@ Code.debug.setVisible = function (enable) {
   }
 };
 
-Code.device.on("receive", (message)=>{
+Code.device.on("receive", (message) => {
   Code.debug.textarea.textContent += message.payload;
 })
 
-Code.device.on("event", (event)=>{
+Code.device.on("event", (event) => {
   console.log("Catched event:", event);
 })
 
@@ -758,6 +758,8 @@ Code.init = function () {
         window.alert(e, "Failed to remove owner from the device.");
       });
   };
+
+
 
   Code.fwVersion = function () {
     Code.device
@@ -1282,7 +1284,7 @@ function attachSinkId(element, sinkId) {
 // };
 
 function fetchStableFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1291,7 +1293,7 @@ function fetchStableFWVersions() {
 }
 
 function fetchDailyFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/daily/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/daily/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1331,9 +1333,9 @@ function downloadSelectedFW() {
   let url;
 
   if (groupLabel.includes("Daily")) {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/daily/";
   } else {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/";
   }
 
   return fetch(url + version).then(res => res.arrayBuffer());
@@ -1354,7 +1356,7 @@ Code.readDsparxBattery = function () {
 
 Code.testFlutterPing = async function () {
   var promise = null;
-  
+
   if (!("tangleConnect" in window)) {
     // @ts-ignore
     window.tangleConnect = {};
