@@ -806,7 +806,7 @@ Code.init = function () {
       });
   };
 
-  
+
 
   Code.fwVersion = function () {
     Code.device
@@ -1292,7 +1292,7 @@ function attachSinkId(element, sinkId) {
 // };
 
 function fetchStableFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1301,7 +1301,7 @@ function fetchStableFWVersions() {
 }
 
 function fetchDailyFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/daily/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/daily/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1341,9 +1341,9 @@ function downloadSelectedFW() {
   let url;
 
   if (groupLabel.includes("Daily")) {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/daily/";
   } else {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/";
   }
 
   return fetch(url + version).then(res => res.arrayBuffer());
