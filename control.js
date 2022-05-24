@@ -8,18 +8,39 @@ window.onload = function () {
   window.confirm = TangleMsgBox.confirm;
   window.prompt = TangleMsgBox.prompt;
 
-  const tangleSound = new TangleSound();
-  tangleSound.connect();
-  tangleSound.on('loudness', handleControlSend)
+  const tangleSoundMic = new TangleSound();
+  tangleSoundMic.connect();
+  tangleSoundMic.on('loudness', handleControlSend)
 
-  // tangleSound.start_microphone()
+  const tangleSoundMusic = new TangleSound();
+  tangleSoundMusic.on('loudness', handleControlSend)
 
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");
   const control_send = document.querySelector("#control_send");
   const control_sound = document.querySelector("#control_sound");
-  control_sound.onclick = e => { if (!tangleSound.running) { tangleSound.start_microphone(); e.target.textContent = "Sound ON" } else { tangleSound.stop(); e.target.textContent = "Sound OFF" } }
+  const control_sound_music = document.querySelector("#control_sound_music");
+
+  control_sound.onclick = e => {
+    if (!tangleSoundMic.running) {
+      tangleSoundMic.start();
+      e.target.textContent = "Mic ON"
+    } else {
+      tangleSoundMic.stop();
+      e.target.textContent = "Mic OFF"
+    }
+  }
+  control_sound_music.onclick = async e => {
+    if (!tangleSoundMusic.running) {
+      tangleSoundMusic.connect(window.myAudioElement.captureStream())
+      tangleSoundMusic.start()
+      e.target.textContent = "Music ON"
+    } else {
+      tangleSoundMusic.stop();
+      e.target.textContent = "Music OFF"
+    }
+  }
 
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
@@ -105,6 +126,7 @@ window.onload = function () {
   window.wavesurfer = WaveSurfer.create({
     container: "#waveform",
     height: 60,
+    backend: 'MediaElementWebAudio',
     plugins: [
       // WaveSurfer.regions.create({
       //   // regions: [
