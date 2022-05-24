@@ -325,10 +325,10 @@ window.onload = function () {
     Code.device.emitEvent("apply");
   };
 
-  const apply_events = document.querySelector(`#apply_events`);
-  apply_events.onclick = e => {
-    Code.device.resendAll()
-  }
+  // const apply_events = document.querySelector(`#apply_events`);
+  // apply_events.onclick = e => {
+  //   Code.device.resendAll()
+  // }
 
 
 
