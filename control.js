@@ -10,6 +10,7 @@ window.onload = function () {
 
   const tangleSound = new TangleSound();
   tangleSound.connect();
+  tangleSound.on('loudness',handleControlSend)
   // tangleSound.start_microphone()
 
   const content_control = document.querySelector("#content_control");
