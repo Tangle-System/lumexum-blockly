@@ -10,6 +10,8 @@ window.onload = function () {
 
   const tangleSound = new TangleSound();
   tangleSound.connect();
+  tangleSound.on('loudness', handleControlSend)
+
   // tangleSound.start_microphone()
 
   const content_control = document.querySelector("#content_control");
@@ -18,7 +20,6 @@ window.onload = function () {
   const control_send = document.querySelector("#control_send");
   const control_sound = document.querySelector("#control_sound");
   control_sound.onclick = e => { if (!tangleSound.running) { tangleSound.start_microphone(); e.target.textContent = "Sound ON" } else { tangleSound.stop(); e.target.textContent = "Sound OFF" } }
-
 
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
