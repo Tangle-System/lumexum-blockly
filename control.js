@@ -20,9 +20,9 @@ window.onload = function () {
   const control_sound = document.querySelector("#control_sound");
   const control_sound_music = document.querySelector("#control_sound_music");
 
-  control_sound.onclick = async e => {
+  control_sound.onclick = e => {
     if (!spectodaSoundMic.running) {
-      await spectodaSoundMic.connect();
+      spectodaSoundMic.connect("microphone");
       spectodaSoundMic.start();
       e.target.textContent = "Mic ON"
     } else {
@@ -32,7 +32,7 @@ window.onload = function () {
   }
   control_sound_music.onclick = async e => {
     if (!spectodaSoundMusic.running) {
-      await spectodaSoundMusic.connect(window.myAudioElement.captureStream())
+      spectodaSoundMusic.connect(window.myAudioElement.captureStream())
       spectodaSoundMusic.start()
       e.target.textContent = "Music ON"
     } else {
@@ -347,10 +347,10 @@ window.onload = function () {
     Code.device.emitEvent("apply");
   };
 
-  // const apply_events = document.querySelector(`#apply_events`);
-  // apply_events.onclick = e => {
-  //   Code.device.resendAll()
-  // }
+  const apply_events = document.querySelector(`#apply_events`);
+  apply_events.onclick = e => {
+    Code.device.resendAll()
+  }
 
 
 
