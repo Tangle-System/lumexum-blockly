@@ -1,6 +1,5 @@
 import TangleMsgBox from "./lib/webcomponents/dialog-component.js";
-import { TangleSound } from "./lib/tangle-js/TangleSound.js";
-window.tangleSound = new TangleSound();
+import { SpectodaSound } from "./lib/tangle-js/SpectodaSound.js";
 
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
@@ -8,18 +7,39 @@ window.onload = function () {
   window.confirm = TangleMsgBox.confirm;
   window.prompt = TangleMsgBox.prompt;
 
-  const tangleSound = new TangleSound();
-  tangleSound.connect();
-  tangleSound.on('loudness', handleControlSend)
+  const spectodaSoundMic = new SpectodaSound();
+  spectodaSoundMic.connect();
+  spectodaSoundMic.on('loudness', handleControlSend)
 
-  // tangleSound.start_microphone()
+  const spectodaSoundMusic = new SpectodaSound();
+  spectodaSoundMusic.on('loudness', handleControlSend)
 
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");
   const control_send = document.querySelector("#control_send");
   const control_sound = document.querySelector("#control_sound");
-  control_sound.onclick = e => { if (!tangleSound.running) { tangleSound.start_microphone(); e.target.textContent = "Sound ON" } else { tangleSound.stop(); e.target.textContent = "Sound OFF" } }
+  const control_sound_music = document.querySelector("#control_sound_music");
+
+  control_sound.onclick = e => {
+    if (!spectodaSoundMic.running) {
+      spectodaSoundMic.start();
+      e.target.textContent = "Mic ON"
+    } else {
+      spectodaSoundMic.stop();
+      e.target.textContent = "Mic OFF"
+    }
+  }
+  control_sound_music.onclick = async e => {
+    if (!spectodaSoundMusic.running) {
+      spectodaSoundMusic.connect(window.myAudioElement.captureStream())
+      spectodaSoundMusic.start()
+      e.target.textContent = "Music ON"
+    } else {
+      spectodaSoundMusic.stop();
+      e.target.textContent = "Music OFF"
+    }
+  }
 
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
@@ -105,6 +125,7 @@ window.onload = function () {
   window.wavesurfer = WaveSurfer.create({
     container: "#waveform",
     height: 60,
+    backend: 'MediaElementWebAudio',
     plugins: [
       // WaveSurfer.regions.create({
       //   // regions: [
