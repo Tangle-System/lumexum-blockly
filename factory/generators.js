@@ -759,3 +759,12 @@ Blockly.JavaScript["generator_smoothout"] = function (block) {
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['generator_lag'] = function(block) {
+  var text_duration = block.getFieldValue('DURATION');
+  var value_lagged_value = Blockly.JavaScript.valueToCode(block, 'LAGGED_VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
