@@ -325,8 +325,12 @@
           <button onclick="javascript:Code.testDummyPing()">Test Dummy Ping</button>
           <button onclick="javascript:Code.device.deviceSleep()">Device sleep</button>
           <button onclick="javascript:Code.device.networkSleep()">Network sleep</button>
+          <button onclick="javascript:Code.device.saveState()">Save state</button>
 
-
+          <button onclick="javascript:Code.sendLeft()">Left</button>
+          <button onclick="javascript:Code.sendMiddle()">Middle</button>
+          <button onclick="javascript:Code.sendRight()">Right</button>
+          <button onclick="javascript:Code.device.emitEvent('flash', 255);">FLASH</button>
 
 
         </span>
@@ -469,8 +473,8 @@
 
       <button id="apply_button" style="width: 100%;">Resend slider values</button>
 
-      <br>
-      <button id="apply_events" style="width: 100%;">Resend slider values</button>
+      <!-- <br>
+      <button id="apply_events" style="width: 100%;">Resend slider values</button> -->
 
 
       <br>
@@ -538,16 +542,16 @@
             <field name="COMMENT">1) Přetáhni bloky do pracovního prostoru</field>
             <next>
               <block type="commentary_line" disabled="true">
-                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [ ⬆ ]</field>
+                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [  ⬆  ]</field>
                 <next>
                   <block type="commentary_line" disabled="true">
-                    <field name="COMMENT">3) Tlačítkem PLAY [ ▷ ] se animace spustí</field>
+                    <field name="COMMENT">3) Tlačítkem PLAY [   ▷  ] se animace spustí</field>
                     <next>
                       <block type="commentary_line" disabled="true">
-                        <field name="COMMENT">4) Tlačítkem PAUZA [ || ] se animace pozastaví</field>
+                        <field name="COMMENT">4) Tlačítkem PAUZA [   ||   ] se animace pozastaví</field>
                         <next>
                           <block type="commentary_line" disabled="true">
-                            <field name="COMMENT">5) Tlačítkem STOP [ ■ ] se animace zruší</field>
+                            <field name="COMMENT">5) Tlačítkem STOP [   ■   ] se animace zruší</field>
                           </block>
                         </next>
                       </block>
@@ -925,7 +929,7 @@
           <shadow type="drawing_dummy"></shadow>
         </statement>
       </block>
-      <!-- <block type="window_2">
+      <block type="window_2">
         <field name="FROM">0s</field>
         <field name="TO">5s</field>
         <field name="DRAW_MODE">ADD</field>
@@ -935,7 +939,7 @@
         <statement name="BODY">
           <shadow type="drawing_dummy"></shadow>
         </statement>
-      </block> -->
+      </block>
       <block type="modifier_brightness">
         <field name="VARIABLE_LABEL">$var1</field>
         <value name="MODIFIER">
@@ -948,7 +952,7 @@
           <shadow type="modifier_dummy_add"></shadow>
         </value>
       </block>
-      <block type="modifier_fade" disabled="false">
+      <block type="modifier_fade" disabled="true">
         <field name="FADE_TYPE">FADE_IN</field>
         <field name="DURATION">0s</field>
         <value name="MODIFIER">
@@ -976,12 +980,6 @@
       <block type="modifier_timechange">
         <field name="FROM_TIME_UNIT">1s</field>
         <field name="TO_TIME_UNIT">1</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_settime">
-        <field name="TIMESTAMP">5s</field>
         <value name="MODIFIER">
           <shadow type="modifier_dummy_add"></shadow>
         </value>
@@ -1066,12 +1064,6 @@
           <shadow type="value_dummy"></shadow>
         </value>
       </block>
-      <!-- <block type="variable_modify">
-        <field name="LABEL">$var1</field>
-        <value name="SOURCE">
-          <shadow type="value_dummy"></shadow>
-        </value>
-      </block> -->
       <block type="value_read_variable">
         <field name="VARIABLE_LABEL">$var1</field>
       </block>
@@ -1089,9 +1081,6 @@
       </block>
       <block type="value_constant">
         <field name="VALUE">$var1</field>
-      </block>
-      <block type="value_constant" disabled="true">
-        <field name="VALUE">[0xff,0xff,0xff,0xff]</field>
       </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Math</field>
@@ -1131,10 +1120,13 @@
           <shadow type="value_dummy"></shadow>
         </value>
       </block>
+      <block type="generator_lag">
+        <field name="DURATION">5s</field>
+      </block>
       <block type="generator_last_event_parameter">
         <field name="EVENT_LABEL">$evt1</field>
       </block>
-      <block type="generator_sin" disabled="true">
+      <block type="generator_sin">
         <field name="PERIOD">1s</field>
       </block>
       <block type="generator_saw" disabled="true">
@@ -1340,9 +1332,9 @@
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Inline vložení TNGL kodu</field>
       </block>
-      <block type="code_inline"></block>
     </category>
   </xml>
+
   <script src="./vanillaInit.js" type="module"></script>
 
 </body>

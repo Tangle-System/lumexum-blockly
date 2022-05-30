@@ -584,3 +584,7 @@ Blockly.Blocks["generator_square"].setValidators = function () {
 Blockly.Blocks["generator_smoothout"].setValidators = function () {
   this.getField("DURATION").setValidator(validator_TLE);
 };
+
+Blockly.Blocks["generator_lag"].setValidators = function () {
+  this.getField("DURATION").setValidator(validator_TLE);
+};

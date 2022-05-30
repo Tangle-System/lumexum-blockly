@@ -1492,3 +1492,36 @@ Code.testDummyPing = async function () {
 
   window.alert("Average turnaroud time: " + average + " ms");
 };
+
+
+Code.sendLeft = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+  for (let i = 0; i < 8; i++) {
+    Code.device.emitTimestampEvent("lag", 50 * i, i + 1);
+  }
+};
+
+Code.sendMiddle = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+    Code.device.emitTimestampEvent("lag", 0, 4);
+    Code.device.emitTimestampEvent("lag", 0, 5);
+
+    Code.device.emitTimestampEvent("lag", 50, 3);
+    Code.device.emitTimestampEvent("lag", 50, 6);
+
+    Code.device.emitTimestampEvent("lag", 100, 2);
+    Code.device.emitTimestampEvent("lag", 100, 7);
+
+    Code.device.emitTimestampEvent("lag", 150, 1);
+    Code.device.emitTimestampEvent("lag", 150, 8); 
+};
+
+Code.sendRight = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+  for (let i = 0; i < 8; i++) {
+    Code.device.emitTimestampEvent("lag", 50 * (7 - i), i + 1);
+  }
+};
