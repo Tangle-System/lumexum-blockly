@@ -1,6 +1,5 @@
 import TangleMsgBox from "./lib/webcomponents/dialog-component.js";
-import { TangleSound } from "./lib/tangle-js/TangleSound.js";
-window.tangleSound = new TangleSound();
+import { SpectodaSound } from "./lib/tangle-js/SpectodaSound.js";
 
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
@@ -8,12 +7,12 @@ window.onload = function () {
   window.confirm = TangleMsgBox.confirm;
   window.prompt = TangleMsgBox.prompt;
 
-  const tangleSoundMic = new TangleSound();
-  tangleSoundMic.connect();
-  tangleSoundMic.on('loudness', handleControlSend)
+  const spectodaSoundMic = new SpectodaSound();
+  spectodaSoundMic.connect();
+  spectodaSoundMic.on('loudness', handleControlSend)
 
-  const tangleSoundMusic = new TangleSound();
-  tangleSoundMusic.on('loudness', handleControlSend)
+  const spectodaSoundMusic = new SpectodaSound();
+  spectodaSoundMusic.on('loudness', handleControlSend)
 
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
@@ -23,21 +22,21 @@ window.onload = function () {
   const control_sound_music = document.querySelector("#control_sound_music");
 
   control_sound.onclick = e => {
-    if (!tangleSoundMic.running) {
-      tangleSoundMic.start();
+    if (!spectodaSoundMic.running) {
+      spectodaSoundMic.start();
       e.target.textContent = "Mic ON"
     } else {
-      tangleSoundMic.stop();
+      spectodaSoundMic.stop();
       e.target.textContent = "Mic OFF"
     }
   }
   control_sound_music.onclick = async e => {
-    if (!tangleSoundMusic.running) {
-      tangleSoundMusic.connect(window.myAudioElement.captureStream())
-      tangleSoundMusic.start()
+    if (!spectodaSoundMusic.running) {
+      spectodaSoundMusic.connect(window.myAudioElement.captureStream())
+      spectodaSoundMusic.start()
       e.target.textContent = "Music ON"
     } else {
-      tangleSoundMusic.stop();
+      spectodaSoundMusic.stop();
       e.target.textContent = "Music OFF"
     }
   }
