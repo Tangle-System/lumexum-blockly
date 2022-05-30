@@ -20,9 +20,9 @@ window.onload = function () {
   const control_sound = document.querySelector("#control_sound");
   const control_sound_music = document.querySelector("#control_sound_music");
 
-  control_sound.onclick = e => {
+  control_sound.onclick = async e => {
     if (!spectodaSoundMic.running) {
-      spectodaSoundMic.connect("microphone");
+      await spectodaSoundMic.connect("microphone");
       spectodaSoundMic.start();
       e.target.textContent = "Mic ON"
     } else {
@@ -32,7 +32,7 @@ window.onload = function () {
   }
   control_sound_music.onclick = async e => {
     if (!spectodaSoundMusic.running) {
-      spectodaSoundMusic.connect(window.myAudioElement.captureStream())
+      await spectodaSoundMusic.connect(window.myAudioElement.captureStream())
       spectodaSoundMusic.start()
       e.target.textContent = "Music ON"
     } else {
