@@ -51,8 +51,8 @@
     })();
   </script>
 
-  <script src="lib/other/dsp.js"></script>
-  <script src="lib/webcomponents/dialog-component.js"></script>
+  <!-- <script src="lib/other/dsp.js"></script> -->
+  <!-- <script src="lib/webcomponents/dialog-component.js"></script> -->
   <script src="lib/other/jszip.min.js" defer></script>
   <script src="lib/other/wavesurfer/wavesurfer.js"></script>
   <script src="lib/other/wavesurfer/plugins/wavesurfer.cursor.js"></script>
@@ -63,6 +63,14 @@
   <script src="lib/other/wavesurfer/plugins/wavesurfer.regions.js"></script>
 
   <link rel="shortcut icon" href="#">
+
+  <style>
+    /* svg {
+      shape-rendering: optimizeSpeed;
+      text-rendering: optimizeSpeed;
+    } */
+  </style>
+
 </head>
 
 <body>
@@ -95,10 +103,10 @@
       </td>
 
       <div class="" style="position: absolute;right: 10px;display: flex; margin-top: 10px;">
-        <input type="text" id="filename" value="blocks">
-        <button id="saveFile">Save File</button>
+        <input type="text" id="filename" value="New Project">
+        <button id="saveFile">Save</button>
         <br>
-        <button id="loadFile">Load File</button>
+        <button id="loadFile">Load</button>
       </div>
 
 
@@ -224,7 +232,7 @@
             </td>
             <td>
               <textarea id="devices_textarea"
-                style="width: 175px; resize: vertical; height: 75px;">Connected devices</textarea>
+                style="width: 180px; resize: vertical; height: 80px;">Connected devices</textarea>
             </td>
           </tr>
         </table>
@@ -239,7 +247,8 @@
         <select name="connectors" id="control_connector_select">
           <option value="default">Default</option>
           <option value="webbluetooth">Web Bluetooth</option>
-          <option value="tangleconnect">Tangle Connect</option>
+          <option value="tangleconnect">Java</option>
+          <option value="flutter">Flutter</option>
           <option value="webserial">Web Serial</option>
           <option value="dummy">Dummy</option>
           <option value="edummy">Dummy With Errors</option>
@@ -314,24 +323,33 @@
           <button onclick="javascript:Code.testJavaPing()">Test Java Ping</button>
           <button onclick="javascript:Code.testReactNativePing()">Test ReactNative Ping</button>
           <button onclick="javascript:Code.testDummyPing()">Test Dummy Ping</button>
+          <button onclick="javascript:Code.device.deviceSleep()">Device sleep</button>
+          <button onclick="javascript:Code.device.networkSleep()">Network sleep</button>
+          <button onclick="javascript:Code.device.saveState()">Save state</button>
+
+          <button onclick="javascript:Code.sendLeft()">Left</button>
+          <button onclick="javascript:Code.sendMiddle()">Middle</button>
+          <button onclick="javascript:Code.sendRight()">Right</button>
+          <button onclick="javascript:Code.device.emitEvent('flash', 255);">FLASH</button>
 
 
         </span>
 
         <div>
-          &nbsp;
+          <br>
         </div>
 
         <div>
           <div>
-            <b>soubor FW (.enc)</b>
-            <input type="file" id="otaFirmware">
-            <b>nebo</b>
+            <b>FW UPDATE [</b>
             <select id="fw_version_list">
               <option disabled selected value> -- Vyberte verzi -- </option>
             </select>
-            <!-- <br>
-            <br> -->
+            <b>] nebo [</b>
+            <input type="file" id="otaFirmware">
+            <b>]</b>
+            <br>
+            <!-- <br> -->
             <!-- <div style="width: 253px;display: inline-block;"></div> -->
             <button id="otaUpdateDeviceFirmware">
               OTA update device
@@ -414,7 +432,52 @@
       <br>
 
       <button id="control_send">Send</button>
-      <button id="control_sound">Sound</button>
+      <button id="control_sound">Sound OFF</button>
+      <button id="control_sound_music">Music OFF</button>
+      <br>
+
+      <div>
+        <div> $sli_0 <input style="width: 80%;" type="range" id="slider_sli_0" min="0" max="100" value="0" step="1">
+          <span id="feedback_sli_0">0</span>
+        </div>
+        <div> $sli_1 <input style="width: 80%;" type="range" id="slider_sli_1" min="0" max="100" value="0" step="1">
+          <span id="feedback_sli_1">0</span>
+        </div>
+        <div> $sli_2 <input style="width: 80%;" type="range" id="slider_sli_2" min="0" max="100" value="0" step="1">
+          <span id="feedback_sli_2">0</span>
+        </div>
+        <div> $sli_3 <input style="width: 80%;" type="range" id="slider_sli_3" min="0" max="100" value="0" step="1">
+          <span id="feedback_sli_3">0</span>
+        </div>
+        <div> $sli_4 <input style="width: 80%;" type="range" id="slider_sli_4" min="0" max="100" value="0" step="1">
+          <span id="feedback_sli_4">0</span>
+        </div>
+        <div> $sli_5 <input style="width: 80%;" type="range" id="slider_sli_5" min="-100" max="100" value="0" step="1">
+          <span id="feedback_sli_5">0</span>
+        </div>
+        <div> $sli_6 <input style="width: 80%;" type="range" id="slider_sli_6" min="-100" max="100" value="0" step="1">
+          <span id="feedback_sli_6">0</span>
+        </div>
+        <div> $sli_7 <input style="width: 80%;" type="range" id="slider_sli_7" min="-100" max="100" value="0" step="1">
+          <span id="feedback_sli_7">0</span>
+        </div>
+        <div> $sli_8 <input style="width: 80%;" type="range" id="slider_sli_8" min="-100" max="100" value="0" step="1">
+          <span id="feedback_sli_8">0</span>
+        </div>
+        <div> $sli_9 <input style="width: 80%;" type="range" id="slider_sli_9" min="-100" max="100" value="0" step="1">
+          <span id="feedback_sli_9">0</span>
+        </div>
+      </div>
+
+      <br>
+
+      <button id="apply_button" style="width: 100%;">Resend slider values</button>
+
+      <br>
+      <button id="apply_events" style="width: 100%;">Resend all used events</button>
+
+
+      <br>
 
     </div>
 
@@ -423,14 +486,15 @@
       id="event_logs">
     </ul>
 
-    <iframe height="500" style="width: 100%;" scrolling="no" title="Night Train #codevember CSS drawing + animation"
+
+    <!-- <iframe height="500" style="width: 100%;" scrolling="no" title="Night Train #codevember CSS drawing + animation"
       src="https://codepen.io/thelittleblacksmith/embed/jVLdEz?default-tab=html%2Cresult" frameborder="no"
       loading="lazy" allowtransparency="true" allowfullscreen="true">
       See the Pen <a href="https://codepen.io/thelittleblacksmith/pen/jVLdEz">
         Night Train #codevember CSS drawing + animation</a> by Eina O (<a
         href="https://codepen.io/thelittleblacksmith">@thelittleblacksmith</a>)
       on <a href="https://codepen.io">CodePen</a>.
-    </iframe>
+    </iframe> -->
 
   </div>
 
@@ -865,7 +929,7 @@
           <shadow type="drawing_dummy"></shadow>
         </statement>
       </block>
-      <!-- <block type="window_2">
+      <block type="window_2">
         <field name="FROM">0s</field>
         <field name="TO">5s</field>
         <field name="DRAW_MODE">ADD</field>
@@ -875,7 +939,7 @@
         <statement name="BODY">
           <shadow type="drawing_dummy"></shadow>
         </statement>
-      </block> -->
+      </block>
       <block type="modifier_brightness">
         <field name="VARIABLE_LABEL">$var1</field>
         <value name="MODIFIER">
@@ -888,7 +952,7 @@
           <shadow type="modifier_dummy_add"></shadow>
         </value>
       </block>
-      <block type="modifier_fade" disabled="false">
+      <block type="modifier_fade" disabled="true">
         <field name="FADE_TYPE">FADE_IN</field>
         <field name="DURATION">0s</field>
         <value name="MODIFIER">
@@ -916,12 +980,6 @@
       <block type="modifier_timechange">
         <field name="FROM_TIME_UNIT">1s</field>
         <field name="TO_TIME_UNIT">1</field>
-        <value name="MODIFIER">
-          <shadow type="modifier_dummy_add"></shadow>
-        </value>
-      </block>
-      <block type="modifier_settime">
-        <field name="TIMESTAMP">5s</field>
         <value name="MODIFIER">
           <shadow type="modifier_dummy_add"></shadow>
         </value>
@@ -1006,12 +1064,6 @@
           <shadow type="value_dummy"></shadow>
         </value>
       </block>
-      <!-- <block type="variable_modify">
-        <field name="LABEL">$var1</field>
-        <value name="SOURCE">
-          <shadow type="value_dummy"></shadow>
-        </value>
-      </block> -->
       <block type="value_read_variable">
         <field name="VARIABLE_LABEL">$var1</field>
       </block>
@@ -1029,9 +1081,6 @@
       </block>
       <block type="value_constant">
         <field name="VALUE">$var1</field>
-      </block>
-      <block type="value_constant" disabled="true">
-        <field name="VALUE">[0xff,0xff,0xff,0xff]</field>
       </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Math</field>
@@ -1071,10 +1120,13 @@
           <shadow type="value_dummy"></shadow>
         </value>
       </block>
+      <block type="generator_lag">
+        <field name="DURATION">5s</field>
+      </block>
       <block type="generator_last_event_parameter">
         <field name="EVENT_LABEL">$evt1</field>
       </block>
-      <block type="generator_sin" disabled="true">
+      <block type="generator_sin">
         <field name="PERIOD">1s</field>
       </block>
       <block type="generator_saw" disabled="true">
@@ -1280,9 +1332,9 @@
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Inline vložení TNGL kodu</field>
       </block>
-      <block type="code_inline"></block>
     </category>
   </xml>
+
   <script src="./vanillaInit.js" type="module"></script>
 
 </body>

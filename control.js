@@ -1,4 +1,5 @@
 import TangleMsgBox from "./lib/webcomponents/dialog-component.js";
+import { SpectodaSound } from "./lib/tangle-js/SpectodaSound.js";
 
 // Just to make blockly interactive first and let libraries load in the background
 window.onload = function () {
@@ -6,11 +7,39 @@ window.onload = function () {
   window.confirm = TangleMsgBox.confirm;
   window.prompt = TangleMsgBox.prompt;
 
+  const spectodaSoundMic = new SpectodaSound();
+  spectodaSoundMic.on('loudness', handleControlSend)
+
+  const spectodaSoundMusic = new SpectodaSound();
+  spectodaSoundMusic.on('loudness', handleControlSend)
+
   const content_control = document.querySelector("#content_control");
   const control_percentage_range = document.querySelector("#control_percentage_range");
   const control_destination = document.querySelector("#control_destination");
   const control_send = document.querySelector("#control_send");
   const control_sound = document.querySelector("#control_sound");
+  const control_sound_music = document.querySelector("#control_sound_music");
+
+  control_sound.onclick = async e => {
+    if (!spectodaSoundMic.running) {
+      await spectodaSoundMic.connect("microphone");
+      spectodaSoundMic.start();
+      e.target.textContent = "Mic ON"
+    } else {
+      spectodaSoundMic.stop();
+      e.target.textContent = "Mic OFF"
+    }
+  }
+  control_sound_music.onclick = async e => {
+    if (!spectodaSoundMusic.running) {
+      await spectodaSoundMusic.connect(window.myAudioElement.captureStream())
+      spectodaSoundMusic.start()
+      e.target.textContent = "Music ON"
+    } else {
+      spectodaSoundMusic.stop();
+      e.target.textContent = "Music OFF"
+    }
+  }
 
   const event_logs = document.querySelector("#event_logs");
   const control_label = document.querySelector("#control_label");
@@ -56,29 +85,29 @@ window.onload = function () {
     Code.device.assignConnector(control_connector_select.value);
   };
 
-  Code.device.on("event", event => {
-    control_label.value = event.label;
-    control_destination.value = event.id;
+  // Code.device.on("event", event => {
+  //   control_label.value = event.label;
+  //   control_destination.value = event.id;
 
-    if (event.value === null) {
-      return;
-    }
+  //   if (event.value === null) {
+  //     return;
+  //   }
 
-    if (event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
-      control_color_value.value = event.value;
-      control_color_picker.value = event.value;
-    } else {
-      if (event.value >= -100.0 && event.value <= 100.0) {
-        control_percentage_value.value = event.value;
-        control_percentage_range.value = event.value;
-        control_timestamp_value.value = event.value;
-      }
+  //   if (event.value.toString().match(/#[\dabcdefABCDEF]{6}/g)) {
+  //     control_color_value.value = event.value;
+  //     control_color_picker.value = event.value;
+  //   } else {
+  //     if (event.value >= -100.0 && event.value <= 100.0) {
+  //       control_percentage_value.value = event.value;
+  //       control_percentage_range.value = event.value;
+  //       control_timestamp_value.value = event.value;
+  //     }
 
-      if (event.value >= -2147483648 && event.value <= 2147483647) {
-        control_timestamp_value.value = event.value;
-      }
-    }
-  });
+  //     if (event.value >= -2147483648 && event.value <= 2147483647) {
+  //       control_timestamp_value.value = event.value;
+  //     }
+  //   }
+  // });
 
   // const timeline_toggle = document.querySelector("#timeline_toggle");
   const timeline_container = document.querySelector("#timeline_container");
@@ -96,21 +125,22 @@ window.onload = function () {
   window.wavesurfer = WaveSurfer.create({
     container: "#waveform",
     height: 60,
+    backend: 'MediaElementWebAudio',
     plugins: [
-      WaveSurfer.regions.create({
-        // regions: [
-        //   {
-        //     start: 0,
-        //     end: 5,
-        //     color: 'hsla(400, 100%, 30%, 0.1)'
-        //   },
-        //   {
-        //     start: 10,
-        //     end: 20,
-        //     color: 'hsla(200, 50%, 70%, 0.1)'
-        //   }
-        // ]
-      }),
+      // WaveSurfer.regions.create({
+      //   // regions: [
+      //   //   {
+      //   //     start: 0,
+      //   //     end: 5,
+      //   //     color: 'hsla(400, 100%, 30%, 0.1)'
+      //   //   },
+      //   //   {
+      //   //     start: 10,
+      //   //     end: 20,
+      //   //     color: 'hsla(200, 50%, 70%, 0.1)'
+      //   //   }
+      //   // ]
+      // }),
       WaveSurfer.timeline.create({
         container: "#timeline",
       }),
@@ -166,6 +196,8 @@ window.onload = function () {
   });
   // wavesurfer.load('./elevator.mp3');
 
+  wavesurfer.load('./timeline.mp3');
+
   document.addEventListener("keypress", function onPress(event) {
     if (event.key === " ") {
       wavesurfer.playPause();
@@ -177,6 +209,7 @@ window.onload = function () {
   });
 
   let count = 100;
+  let debounce = true;
 
   function handleAltZoom(e) {
     if (!e.altKey) {
@@ -257,174 +290,75 @@ window.onload = function () {
       // TODO parse timeparams (x seconds, x minutes, x hours, x days), like in block
       Code.device.emitTimestampEvent(control_label.value, control_timestamp_value.value, [control_destination.value], true, false);
     }
+  }
+
+
+  const sliders = [
+    "sli_0",
+    "sli_1",
+    "sli_2",
+    "sli_3",
+    "sli_4",
+    "sli_5",
+    "sli_6",
+    "sli_7",
+    "sli_8",
+    "sli_9"
+  ];
+
+  for (let i = 0; i < sliders.length; i++) {
+    const slider = document.querySelector(`#slider_${sliders[i]}`);
+    slider.oninput = (e) => {
+      const value = e.target.value;
+      Code.device.emitPercentageEvent(sliders[i], value);
+    };
+  }
+
+  Code.device.on("event", event => {
 
     const logmessageDOM = document.createElement("li");
     // TODO edit this message accordingly to each control type
-    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} ${currentControlType}: $${control_label.value}, ${log_value} -> ${[control_destination.value]}`;
+    logmessageDOM.innerHTML = `${new Date().toString().slice(15, 24)} : $${event.label} = ${event.value} [${event.type}] -> ${event.id}`;
     event_logs.appendChild(logmessageDOM);
     event_logs.scrollTop = -999999999;
 
-    if(event_logs.childElementCount > 100){
+    if (event_logs.childElementCount > 100) {
       event_logs.removeChild(event_logs.firstChild)
     }
-    
-  }
 
-  let microphoneRunning = false;
+    for (let i = 0; i < sliders.length; i++) {
+      if (event.label == sliders[i]) {
+        const feedback = document.querySelector(`#feedback_${sliders[i]}`);
+        feedback.innerHTML = event.value;
+        const slider = document.querySelector(`#slider_${sliders[i]}`);
+        slider.value = event.value;
+      }
+    }
+  });
 
-  function handleControlSound() {
-    if(microphoneRunning){
-      microphoneRunning = false;
-      control_sound.textContent ="Sound OFF";
-    } else{
-      microphoneRunning = true;
-      control_sound.textContent = "Sound ON";
+  const apply_button = document.querySelector(`#apply_button`);
 
+  apply_button.onclick = e => {
+    for (let i = 0; i < sliders.length; i++) {
+      const slider = document.querySelector(`#slider_${sliders[i]}`);
+      Code.device.emitPercentageEvent(sliders[i], slider.value);
     }
 
-    var webaudio_tooling_obj = function () {
-    
-      // Uává velikost bloků ze kterých bude vypočítávána průměrná hlasitos.
-      // Maximální velikost je 2048 vzorků.
-      // Hodnota musí být vždy násobkem dvou.
-      // Pokud bude buffer menší bude se také rychleji posílat výpočet efektivní hodnoty. 
-      var BUFF_SIZE = 2048;
+    Code.device.emitEvent("apply");
+  };
 
-      var audioContext = new AudioContext();
-
-      console.log("audio is starting up ...");
-
-      var microphone_stream = null,
-          gain_node = null,
-          script_processor_get_audio_samples = null;
-
-
-      // Dotaz na povolení přístupu k mikrofonu
-      if (!navigator.getUserMedia)
-              navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-                            navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-      if (navigator.getUserMedia){
-
-          navigator.getUserMedia({audio:true}, 
-            function(stream) {
-                start_microphone(stream);
-            },
-            function(e) {
-              alert('Error capturing audio.');
-            }
-          );
-
-      } else { alert('getUserMedia not supported in this browser.'); }
-
-
-      // Funkce pro zahajující naslouchání mikrofonu
-      function start_microphone(stream){
-      
-        gain_node = audioContext.createGain();
-        gain_node.connect( audioContext.destination );
-
-        microphone_stream = audioContext.createMediaStreamSource(stream);
-
-        script_processor_get_audio_samples = audioContext.createScriptProcessor(BUFF_SIZE, 1, 1);
-        script_processor_get_audio_samples.connect(gain_node);
-        
-        console.log("Sample rate of soundcard: " + audioContext.sampleRate);
-        var fft = new FFT(BUFF_SIZE, audioContext.sampleRate);
-
-        microphone_stream.connect(script_processor_get_audio_samples);
-
-        // var bufferCount = 0;
-
-
-        // Tato funkce se provede pokaždé když dojde k naplnění bufferu o velikosti 2048 vzorků.
-        // Při vzorkovacím kmitočku 48 kHz se tedy zavolá jednou za cca 42 ms.
-        script_processor_get_audio_samples.onaudioprocess = function(e) {
-          
-          var samples = e.inputBuffer.getChannelData(0);
-          var rms_loudness_spectrum = 0;
-          fft.forward(samples); //Vyypočtení fft ze vzorků.
-          var spectrum = fft.spectrum; // Získání spektra o délce bufeer/2 v našem případě 1024 harmonických.
-          
-          //--- Výpočet frekvence ---//
-          //
-          //    ((BufferSize/2)* Fvz)/BufferSize = Fmax
-          //    Fmax / (BufferSize/2) = Frekvence jednoho vzorku
-          // 
-          //------------------------//
-
-          // Zde se postupně sečte druhá mocnina všech 1024 vzorků.
-          spectrum.forEach(element =>{
-            rms_loudness_spectrum += Math.pow(element,2);
-          });
-
-          // for (let i = 30; i < 50; i++) {
-          //   rms_loudness_spectrum += Math.pow(spectrum[i],2);
-          // }
-
-          // Odmocnina součtu druhých mocnin nám dá efektivní hodnotu signálu "RMS"
-          rms_loudness_spectrum = Math.sqrt(rms_loudness_spectrum);
-
-          // Mapování efektivní hodnoty signálu na rozmezí 0-255 pro vhodný přenos dat.
-          // Zde je zejmána nutné dobře nastavit mapovací prahy. Spodní pro odstranění šumu okolí a horní nám udává výslednou dynamiku.
-          var out =  mapValue(rms_loudness_spectrum, 0.00001, 0.9, 0, 255)
-                  
-          // console.log("spectrum avarge loudnes: "+ out);
-          handleControlSend(out);
-          if(!microphoneRunning){
-            microphone_stream.disconnect();
-            gain_node.disconnect(); 
-          }
-
-          // if (bufferCount >= 5){
-          //     bufferCount = 0;
-          //     avarage_loudness = avarage_loudness/(BUFF_SIZE*6);
-          //     avarge_loudness_spectrum = avarge_loudness_spectrum/(BUFF_SIZE*3);
-
-          //     console.log("sample avarge loudnes: "+ mapValue(avarage_loudness,0.0005,0.05,0,255)); // This values set tresholds for noise and dynamics of signal.
-          //     console.log("spectrum avarge loudnes: "+ mapValue(avarge_loudness_spectrum, 0.00001, 0.0001, 0, 255));
-          //   } else {
-          //     bufferCount++;
-          // }
-        };
-      }
-
-      function mapValue(x, in_min, in_max, out_min, out_max) {
-        if (in_max == in_min) {
-          return out_min / 2 + out_max / 2;
-        }
-    
-        let minimum = Math.min(in_min, in_max);
-        let maximum = Math.max(in_min, in_max);
-    
-        if (x < minimum) {
-          x = minimum;
-        } else if (x > maximum) {
-          x = maximum;
-        }
-    
-        let result = ((x - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
-    
-        minimum = Math.min(out_min, out_max);
-        maximum = Math.max(out_min, out_max);
-    
-        if (result < minimum) {
-          result = minimum;
-        } else if (result > maximum) {
-          result = maximum;
-        }
-    
-        return result;
-      }
-
-  }();
+  const apply_events = document.querySelector(`#apply_events`);
+  apply_events.onclick = e => {
+    Code.device.resendAll()
   }
+
+
+
 
   control_percentage_range.oninput = handlePercentageValueChange;
   control_color_picker.onchange = handleColorValueChange;
 
   control_send.onclick = e => handleControlSend();
-  control_sound.onclick = e => handleControlSound();
 
   const saveFile = document.querySelector("#saveFile");
   const loadFile = document.querySelector("#loadFile");
@@ -506,7 +440,7 @@ function setupOwnership() {
       if (e != null) {
         owner_identifier.value = "";
       }
-    } catch {}
+    } catch { }
 
     owner_signature.value = Code.device.getOwnerSignature();
 
@@ -516,7 +450,7 @@ function setupOwnership() {
   owner_key.onchange = e => {
     try {
       Code.device.setOwnerKey(owner_key.value);
-    } catch {}
+    } catch { }
 
     owner_key.value = Code.device.getOwnerKey();
 
@@ -651,3 +585,4 @@ document.querySelector("#filename").ondrop = handleFileDrop;
 document.querySelector("#loadFile").ondrop = handleFileDrop;
 document.querySelector("#saveFile").ondrop = handleFileDrop;
 //document.querySelector(".blocklySvg").ondrop = handleFileDrop; // This doesn't work
+

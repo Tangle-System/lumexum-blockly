@@ -21,9 +21,9 @@ if (!("TextDecoder" in window)) {
   alert("Sorry, this browser does not support this app. TextDecoder isn't available.");
 }
 
-if (!navigator.bluetooth) {
-  alert("Oops, bluetooth doesn't work here.");
-}
+// if (!navigator.bluetooth) {
+//   alert("Oops, bluetooth doesn't work here.");
+// }
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   // butConnect.addEventListener("click", clickConnect);
@@ -50,7 +50,7 @@ Code.hideConsole = function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Code.device = new TangleDevice("default");
+Code.device = new TangleDevice("default", 0);
 
 Code.device.setDebugLevel(4);
 
@@ -303,7 +303,7 @@ Code.control.setVisible = function (enable) {
 // Code.music = /** @type {HTMLAudioElement} */ (document.getElementById("timeline-old"));
 // Code.metronome = new Audio();
 
-Code.device.timeline = new TimeTrack();
+// Code.device.timeline = new TimeTrack();
 
 // Code.bank = 0;
 
@@ -806,7 +806,7 @@ Code.init = function () {
       });
   };
 
-  
+
 
   Code.fwVersion = function () {
     Code.device
@@ -1292,7 +1292,7 @@ function attachSinkId(element, sinkId) {
 // };
 
 function fetchStableFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1301,7 +1301,7 @@ function fetchStableFWVersions() {
 }
 
 function fetchDailyFWVersions() {
-  return fetch("https://updates.tangle.cz/subdom/updates/firmware/daily/list.php")
+  return fetch("https://updates.spectoda.com/subdom/updates/firmware/daily/list.php")
     .then(v => v.json())
     .then(v => v.files)
     .catch(() => {
@@ -1341,9 +1341,9 @@ function downloadSelectedFW() {
   let url;
 
   if (groupLabel.includes("Daily")) {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/daily/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/daily/";
   } else {
-    url = "https://updates.tangle.cz/subdom/updates/firmware/";
+    url = "https://updates.spectoda.com/subdom/updates/firmware/";
   }
 
   return fetch(url + version).then(res => res.arrayBuffer());
@@ -1491,4 +1491,37 @@ Code.testDummyPing = async function () {
   const average = (stop - start) / 1000;
 
   window.alert("Average turnaroud time: " + average + " ms");
+};
+
+
+Code.sendLeft = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+  for (let i = 0; i < 8; i++) {
+    Code.device.emitTimestampEvent("lag", 50 * i, i + 1);
+  }
+};
+
+Code.sendMiddle = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+    Code.device.emitTimestampEvent("lag", 0, 4);
+    Code.device.emitTimestampEvent("lag", 0, 5);
+
+    Code.device.emitTimestampEvent("lag", 50, 3);
+    Code.device.emitTimestampEvent("lag", 50, 6);
+
+    Code.device.emitTimestampEvent("lag", 100, 2);
+    Code.device.emitTimestampEvent("lag", 100, 7);
+
+    Code.device.emitTimestampEvent("lag", 150, 1);
+    Code.device.emitTimestampEvent("lag", 150, 8); 
+};
+
+Code.sendRight = function () {
+  Code.device.emitTimestampEvent("lag", 0, 255);
+
+  for (let i = 0; i < 8; i++) {
+    Code.device.emitTimestampEvent("lag", 50 * (7 - i), i + 1);
+  }
 };

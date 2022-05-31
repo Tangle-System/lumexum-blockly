@@ -1206,3 +1206,13 @@ Blockly.Blocks["generator_smoothout"] = {
     this.setHelpUrl("");
   },
 };
+
+Blockly.Blocks["generator_lag"] = {
+  init: function () {
+    this.appendValueInput("LAGGED_VALUE").setCheck("value").appendField("🢀  LAG ").appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+    this.setOutput(true, "value");
+    this.setColour(255);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+};

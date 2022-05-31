@@ -1325,3 +1325,10 @@ Blockly.Tngl["generator_smoothout"] = function (block) {
   var code = "genSmoothOut(" + value_smoothed_value + ", " + text_duration + ")";
   return [code, Blockly.Tngl.ORDER_NONE];
 };
+
+Blockly.Tngl['generator_lag'] = function(block) {
+  var text_duration = block.getFieldValue('DURATION');
+  var value_lagged_value = Blockly.Tngl.valueToCode(block, 'LAGGED_VALUE', Blockly.Tngl.ORDER_NONE);
+  var code = "genLagValue(" + value_lagged_value + ", " + text_duration + ")";
+  return [code, Blockly.Tngl.ORDER_NONE];
+};
