@@ -59,17 +59,23 @@ const devices_textarea = document.querySelector("#devices_textarea");
 Code.device.on("peer_connected", peer => {
   console.log("Peer connected", peer);
 
-  var re = new RegExp(peer + "✅\\n", "gi");
-  devices_textarea.value = devices_textarea.value.replace(re, "");
-
-  devices_textarea.value += peer + "✅\n";
+  var re = new RegExp(peer + "[✅❌]\\n", "gi");
+  if (devices_textarea.value.match(re)) {
+    devices_textarea.value = devices_textarea.value.replace(re, peer + "✅\n");
+  } else {
+    devices_textarea.value += peer + "✅\n";
+  }
 });
 
 Code.device.on("peer_disconnected", peer => {
   console.log("Peer disconnected", peer);
 
-  var re = new RegExp(peer + "✅\\n", "gi");
-  devices_textarea.value = devices_textarea.value.replace(re, "");
+  var re = new RegExp(peer + "[✅❌]\\n", "gi");
+  if (devices_textarea.value.match(re)) {
+    devices_textarea.value = devices_textarea.value.replace(re, peer + "❌\n");
+  } else {
+    devices_textarea.value += peer + "❌\n";
+  }
 });
 
 Code.device.addEventListener("connected", event => {
@@ -91,6 +97,9 @@ Code.device.addEventListener("connected", event => {
 
 Code.device.addEventListener("disconnected", event => {
   console.log("Tangle Device disconnected");
+
+  devices_textarea.value = "Devices disconnected";
+
   const button = /** @type {HTMLButtonElement} */ (document.getElementById("connectBluetoothButton"));
   const icon = /** @type {Element} */ (button.childNodes[1]);
   icon.classList.remove("disconnect");
