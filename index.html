@@ -543,16 +543,16 @@
             <field name="COMMENT">1) Přetáhni bloky do pracovního prostoru</field>
             <next>
               <block type="commentary_line" disabled="true">
-                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [ ⬆ ]</field>
+                <field name="COMMENT">2) Klikni na tlačítko NAHRÁT [  ⬆  ]</field>
                 <next>
                   <block type="commentary_line" disabled="true">
-                    <field name="COMMENT">3) Tlačítkem PLAY [ ▷ ] se animace spustí</field>
+                    <field name="COMMENT">3) Tlačítkem PLAY [   ▷  ] se animace spustí</field>
                     <next>
                       <block type="commentary_line" disabled="true">
-                        <field name="COMMENT">4) Tlačítkem PAUZA [ || ] se animace pozastaví</field>
+                        <field name="COMMENT">4) Tlačítkem PAUZA [   ||   ] se animace pozastaví</field>
                         <next>
                           <block type="commentary_line" disabled="true">
-                            <field name="COMMENT">5) Tlačítkem STOP [ ■ ] se animace zruší</field>
+                            <field name="COMMENT">5) Tlačítkem STOP [   ■   ] se animace zruší</field>
                           </block>
                         </next>
                       </block>
@@ -821,7 +821,7 @@
       </block>
       <block type="drawing">
         <field name="START">0s</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">Infinity</field>
         <field name="DRAW_MODE">ADD</field>
         <value name="ANIMATION">
           <shadow type="animation_dummy_add"></shadow>
@@ -832,7 +832,7 @@
       </block>
       <block type="animation_fill">
         <field name="COLOR">#ffffff</field>
-        <field name="DURATION">5s</field>
+        <field name="DURATION">Infinity</field>
         <value name="NEXT">
           <shadow type="animation_dummy_next"></shadow>
         </value>
@@ -845,8 +845,8 @@
         </value>
       </block>
       <block type="animation_fade">
-        <field name="COLOR1">#ffffff</field>
-        <field name="COLOR2">#000000</field>
+        <field name="COLOR1">#000000</field>
+        <field name="COLOR2">#ffffff</field>
         <field name="DURATION">5s</field>
         <value name="NEXT">
           <shadow type="animation_dummy_next"></shadow>
@@ -877,6 +877,19 @@
       <block type="animation_color_roll">
         <field name="COLOR1">#ffffff</field>
         <field name="COLOR2">#000000</field>
+        <field name="DURATION">5s</field>
+        <value name="NEXT">
+          <shadow type="animation_dummy_next"></shadow>
+        </value>
+      </block>
+      <block type="animation_color_gradient">
+        <field name="COLOR1">#000000</field>
+        <field name="COLOR2">#000000</field>
+        <field name="COLOR3">#000000</field>
+        <field name="COLOR4">#000000</field>
+        <field name="COLOR5">#000000</field>
+        <field name="SMOOTHING">100%</field>
+        <field name="SCALE">100%</field>
         <field name="DURATION">5s</field>
         <value name="NEXT">
           <shadow type="animation_dummy_next"></shadow>
