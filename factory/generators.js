@@ -768,3 +768,18 @@ Blockly.JavaScript['generator_lag'] = function(block) {
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['animation_color_gradient'] = function(block) {
+  var colour_color1 = block.getFieldValue('COLOR1');
+  var colour_color2 = block.getFieldValue('COLOR2');
+  var colour_color3 = block.getFieldValue('COLOR3');
+  var colour_color4 = block.getFieldValue('COLOR4');
+  var colour_color5 = block.getFieldValue('COLOR5');
+  var text_scale = block.getFieldValue('SCALE');
+  var text_duration = block.getFieldValue('DURATION');
+  var value_next = Blockly.JavaScript.valueToCode(block, 'NEXT', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};

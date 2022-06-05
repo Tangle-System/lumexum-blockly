@@ -38,7 +38,7 @@ Blockly.Blocks["drawing"] = {
           ["⌛", "DURATION"],
           ["➡️", "FROM_TO"],
         ]),
-        "TIME_DEFINITION"
+        "TIME_DEFINITION",
       )
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
       .appendField(
@@ -49,7 +49,7 @@ Blockly.Blocks["drawing"] = {
           ["ŠKÁLUJ", "SCALE"],
           ["VYFILTRUJ", "FIL"],
         ]),
-        "DRAW_MODE"
+        "DRAW_MODE",
       );
     this.setInputsInline(false);
     this.setPreviousStatement(true, "construct");
@@ -246,6 +246,33 @@ Blockly.Blocks["animation_palette_roll"] = {
   },
 };
 
+Blockly.Blocks["animation_color_gradient"] = {
+  init: function () {
+    this.appendValueInput("NEXT")
+      .setCheck("animation")
+      .appendField("GRADIENT ")
+      .appendField(new Blockly.FieldColour("#000000"), "COLOR1")
+      .appendField(new Blockly.FieldColour("#000000"), "COLOR2")
+      .appendField(new Blockly.FieldColour("#000000"), "COLOR3")
+      .appendField(new Blockly.FieldColour("#000000"), "COLOR4")
+      .appendField(new Blockly.FieldColour("#000000"), "COLOR5")
+      .appendField(" ")
+      .appendField(new Blockly.FieldTextInput("100%"), "SMOOTHING")
+      .appendField("smoothing  ")
+      .appendField(new Blockly.FieldTextInput("100%"), "SCALE")
+      .appendField("of spectrum")
+      .appendField("⌛")
+      .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
+    this.setInputsInline(false);
+    this.setOutput(true, "animation");
+    this.setColour(240);
+    this.setTooltip("");
+    this.setHelpUrl("");
+    this.setMutators();
+    this.setValidators();
+  },
+};
+
 Blockly.Blocks["window"] = {
   init: function () {
     this.appendValueInput("MODIFIER")
@@ -257,7 +284,7 @@ Blockly.Blocks["window"] = {
           ["⌛", "DURATION"],
           ["➡️", "FROM_TO"],
         ]),
-        "TIME_DEFINITION"
+        "TIME_DEFINITION",
       )
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION")
       .appendField(
@@ -268,7 +295,7 @@ Blockly.Blocks["window"] = {
           ["ŠKÁLUJ", "SCALE"],
           ["VYFILTRUJ", "FIL"],
         ]),
-        "DRAW_MODE"
+        "DRAW_MODE",
       );
     this.appendStatementInput("BODY").setCheck("construct");
     this.setInputsInline(false);
@@ -297,7 +324,7 @@ Blockly.Blocks["window_2"] = {
           ["ŠKÁLUJ", "SCALE"],
           ["VYFILTRUJ", "FIL"],
         ]),
-        "DRAW_MODE"
+        "DRAW_MODE",
       );
     this.appendStatementInput("BODY").setCheck("construct");
     this.setInputsInline(false);
@@ -337,7 +364,7 @@ Blockly.Blocks["modifier_timeline"] = {
           ["Timeline 7", "0x07"],
           [" Timeline 8", "0x08"],
         ]),
-        "TIME_SOURCE"
+        "TIME_SOURCE",
       );
     this.setOutput(true, "modifier");
     this.setColour(180);
@@ -359,7 +386,7 @@ Blockly.Blocks["modifier_color_switch"] = {
           ["B & R", "MODIFIER_SWITCH_BR"],
           ["NONE", "MODIFIER_SWITCH_NONE"],
         ]),
-        "OPTION"
+        "OPTION",
       );
     this.setOutput(true, "modifier");
     this.setColour(180);
@@ -411,7 +438,7 @@ Blockly.Blocks["modifier_fade"] = {
           ["FADE IN", "FADE_IN"],
           [" FADE OUT", "FADE_OUT"],
         ]),
-        "FADE_TYPE"
+        "FADE_TYPE",
       )
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
     this.setOutput(true, "modifier");
@@ -650,7 +677,7 @@ Blockly.Blocks["tangle_port"] = {
           ["Port G", "'G'"],
           [" Port H", "'H'"],
         ]),
-        "PORT"
+        "PORT",
       )
       .appendField(" zařízení")
       .appendField(new Blockly.FieldTextInput("$dev1"), "DEVICE_LABEL")
@@ -711,7 +738,7 @@ Blockly.Blocks["group_port"] = {
           ["Port G", "$PORTG"],
           [" Port H", "$PORTH"],
         ]),
-        "PORT"
+        "PORT",
       )
       .appendField("  |   posun")
       .appendField(new Blockly.FieldTextInput("0s"), "SHIFT");
@@ -879,7 +906,7 @@ Blockly.Blocks["siftcanvas_port"] = {
           ["Port G", "$PORTG"],
           [" Port H", "$PORTH"],
         ]),
-        "PORT"
+        "PORT",
       );
     this.setOutput(true, "port");
     this.setColour(60);
@@ -1057,7 +1084,7 @@ Blockly.Blocks["value_math"] = {
           ["*", "MUL"],
           ["/", "DIV"],
         ]),
-        "OPTION"
+        "OPTION",
       );
     this.appendValueInput("PARAMETER_B").setCheck("value");
     this.setOutput(true, "value");
@@ -1136,7 +1163,7 @@ Blockly.Blocks["sensor_touch"] = {
           ["on PUSHED", "ON_PUSHED"],
           ["on HOLDED", "ON_HOLDED"],
         ]),
-        "ACTION"
+        "ACTION",
       )
       .appendField("EMIT 🕹️")
       .appendField(new Blockly.FieldTextInput("$tou1"), "EVENT_LABEL");
@@ -1161,7 +1188,7 @@ Blockly.Blocks["sensor_gyro"] = {
           ["Z as SCALE", "OPTIONNAME"],
           ["IMPACT as SCALE", "IMPACT"],
         ]),
-        "ACTION"
+        "ACTION",
       )
       .appendField("EMIT 🕹️")
       .appendField(new Blockly.FieldTextInput("gyr1"), "EVENT_LABEL");
@@ -1185,7 +1212,7 @@ Blockly.Blocks["sensor_acc"] = {
           ["Y as SCALE", "Y"],
           ["Z as SCALE", "Z"],
         ]),
-        "ACTION"
+        "ACTION",
       )
       .appendField("EMIT 🕹️")
       .appendField(new Blockly.FieldTextInput("$acc1"), "EVENT_LABEL");
@@ -1210,7 +1237,7 @@ Blockly.Blocks["sensor_gesture"] = {
           ["FRONT to BACK", "GESTURE_FRONT_BACK"],
           ["BACK to FRONT", "GESTURE_BACK_FRONT"],
         ]),
-        "ACTION"
+        "ACTION",
       )
       .appendField("EMIT 🕹️")
       .appendField(new Blockly.FieldTextInput("$ges1"), "EVENT_LABEL");
@@ -1235,7 +1262,7 @@ Blockly.Blocks["sensor_button"] = {
           ["on PUSHED", "ON_PUSHED"],
           ["on HOLDED", "ON_HOLDED"],
         ]),
-        "ACTION"
+        "ACTION",
       )
       .appendField("EMIT 🕹️")
       .appendField(new Blockly.FieldTextInput("$btn1"), "EVENT_LABEL");
