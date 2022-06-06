@@ -785,7 +785,7 @@ Code.init = function () {
     
     <xml xmlns="https://developers.google.com/blockly/xml">
 <block type="commentary_block" id="u8+l}ndTQk/vw:.yMdbm" x="1053" y="-143">
-<field name="COMMENT">9127 batu</field>
+<field name="COMMENT">9118 batu</field>
 <statement name="CANVAS_COMMANDS">
 <block type="window" id="#s~jXdX?W!ldr=ZJ[_$3" collapsed="true">
 <field name="START">0s</field>
@@ -8420,7 +8420,7 @@ Code.init = function () {
 </statement>
 <next>
 <block type="commentary_block" id="9)H_[^~JhY*4qu_jO8FY">
-<field name="COMMENT">S timto je to 10139 batu</field>
+<field name="COMMENT">S timto je to 10130 batu</field>
 <statement name="CANVAS_COMMANDS">
 <block type="window" id="atE7un61gQp_alj{uea{" collapsed="true">
 <field name="START">0s</field>
@@ -9271,7 +9271,7 @@ Code.init = function () {
 </statement>
 <next>
 <block type="commentary_block" id="0lkt75DB,=GuyGWmrhH:" disabled="true">
-<field name="COMMENT">S timto je to 11151 batu</field>
+<field name="COMMENT">S timto je to 11142 batu</field>
 <statement name="CANVAS_COMMANDS">
 <block type="window" id="w-SySWFv?_o}YXdln}8c" collapsed="true">
 <field name="START">0s</field>
@@ -10122,7 +10122,7 @@ Code.init = function () {
 </statement>
 <next>
 <block type="commentary_block" id="^Y_mh/T|nBdQ14^/y}vM" disabled="true">
-<field name="COMMENT">S timto je to 12163 batu</field>
+<field name="COMMENT">S timto je to 12154 batu</field>
 <statement name="CANVAS_COMMANDS">
 <block type="window" id="JE}G[m*qZsE8H}.0,DcB" collapsed="true">
 <field name="START">0s</field>
@@ -10971,38 +10971,30 @@ Code.init = function () {
 </statement>
 </block>
 </statement>
-</block>
-</next>
-</block>
-</next>
-</block>
-</next>
-</block>
-<block type="drawing" id="6Iwfe?_(6C/}Si}*GAKr" x="1220" y="1405">
+<next>
+<block type="drawing" id="!D'h[hr?3YR36sN(wJ?g">
 <field name="START">0s</field>
 <field name="TIME_DEFINITION">DURATION</field>
 <field name="DURATION">Infinity</field>
 <field name="DRAW_MODE">SET</field>
 <value name="ANIMATION">
-<block type="animation_plasma_shot" id="oUNTniaR+_$HLKkB:xoO">
+<shadow type="animation_dummy_add" id=":qc5|k_yT9tE=ZSYDG_D"></shadow>
+<block type="animation_fill" id="zYyUO^JesZc)ye!rI0to">
 <field name="COLOR">#ff0000</field>
-<field name="PERCENTAGE">25%</field>
-<field name="DURATION">5s</field>
-</block>
-</value>
-</block>
-<block type="drawing" id="6Iwfe?_(6C/}Si}*GAKr" x="1220" y="1405">
-<field name="START">0s</field>
-<field name="TIME_DEFINITION">DURATION</field>
 <field name="DURATION">Infinity</field>
-<field name="DRAW_MODE">SET</field>
-<value name="ANIMATION">
-<block type="animation_plasma_shot" id="oUNTniaR+_$HLKkB:xoO">
-<field name="COLOR">#ff0000</field>
-<field name="PERCENTAGE">25%</field>
-<field name="DURATION">5s</field>
+<value name="NEXT">
+<shadow type="animation_dummy_next" id="zQV#!s9e|vxVnp][sxNt"></shadow>
+</value>
 </block>
 </value>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
 </block>
 </xml>
     `;
@@ -11270,13 +11262,13 @@ Code.init = function () {
 
   Code.workspace.addChangeListener(Code.onEvent);
 
-  try {
-    let blocks = window.localStorage.getItem("blocks");
-    Code.loadBlocks(blocks);
-  } catch {
-    window.localStorage.clear();
-    Code.loadBlocks("");
-  }
+  // try {
+  //   let blocks = window.localStorage.getItem("blocks");
+  //   Code.loadBlocks(blocks);
+  // } catch {
+  //   window.localStorage.clear();
+  //   Code.loadBlocks("");
+  // }
 
   window.addEventListener("keypress", Code.onKeyPress);
 };
