@@ -6318,9 +6318,113 @@
         <field name="HUE">255</field>
       </block>
     </value>
-  </block><block type="factory_base" id="Hub3Kss?JkD*Bi751++u" deletable="false" movable="false" x="10" y="10">
+  </block>
+
+    <block type="factory_base" id="Hub3Kss?JkD*Bi751++j" deletable="false" movable="false" x="10" y="10">
     <mutation connections="LEFT"></mutation>
-    <field name="NAME">animation_color_gradient</field>
+    <field name="NAME">animation_color_gradient3</field>
+    <field name="INLINE">EXT</field>
+    <field name="CONNECTIONS">LEFT</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="4cxf)Jzh_p5-G6aVmq[D">
+        <field name="INPUTNAME">NEXT</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="[/HN=BH0_Qr*jJvksBXY">
+            <field name="TEXT">GRADIENT </field>
+            <next>
+              <block type="field_colour" id=")/AdAqO6wJ:vZFs3hLTa">
+                <field name="COLOUR">#000000</field>
+                <field name="FIELDNAME">COLOR1</field>
+                <next>
+                  <block type="field_colour" id="kz/b@HMc-t~4N}L:93Q3">
+                    <field name="COLOUR">#000000</field>
+                    <field name="FIELDNAME">COLOR2</field>
+                    <next>
+                      <block type="field_colour" id="Ao)I_APCA=rNt;-6P]}A">
+                        <field name="COLOUR">#000000</field>
+                        <field name="FIELDNAME">COLOR3</field>
+                        <next>
+                          <block type="field_static" id="|[m:k`70ffQ`V[:,?{wG">
+                            <field name="TEXT"> </field>
+                            <next>
+                              <block type="field_input" id=".j-nGQS3v[7-7P2Od;Oi">
+                                <field name="TEXT">100%</field>
+                                <field name="FIELDNAME">SMOOTHING</field>
+                                <next>
+                                  <block type="field_static" id=":[^fyhMtJ)q}+-2}u1Sg">
+                                    <field name="TEXT">smoothing  </field>
+                                    <next>
+                                      <block type="field_input" id="I1=bqtQy?IA8Ls(X#m@z">
+                                        <field name="TEXT">100%</field>
+                                        <field name="FIELDNAME">SCALE</field>
+                                        <next>
+                                          <block type="field_static" id="#2Jybl(gd-2;[+8/{)cJ">
+                                            <field name="TEXT">of spectrum</field>
+                                            <next>
+                                              <block type="field_static" id="0cLDG~7lV1IB7Y0+g#%=">
+                                                <field name="TEXT">⌛</field>
+                                                <next>
+                                                  <block type="field_input" id="R%i@csj;7AHuFzP+xws6">
+                                                    <field name="TEXT">5s</field>
+                                                    <field name="FIELDNAME">DURATION</field>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="eE{U|(]$!MPzqZo2in7="></shadow>
+          <block type="type_other" id="|j|7,w_sMQnnZ)5J8X0Z">
+            <field name="TYPE">animation</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="zZE)MS9oTY8,({^!8Ixh" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="WK!{S]r/qrxjGj:G7[`u" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="OUTPUTTYPE">
+      <shadow type="type_null" id="=Vf1mkAP9?KE.Pc]~%ls"></shadow>
+      <block type="type_other" id="@9L}-GctU]9[*zf*5=#-">
+        <field name="TYPE">animation</field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="^vK~:=.-TXSwNM+,Z?oD">
+        <mutation colour="#5b5ba5"></mutation>
+        <field name="HUE">240</field>
+      </block>
+    </value>
+  </block>
+  
+  <block type="factory_base" id="Hub3Kss?JkD*Bi751++u" deletable="false" movable="false" x="10" y="10">
+    <mutation connections="LEFT"></mutation>
+    <field name="NAME">animation_color_gradient5</field>
     <field name="INLINE">EXT</field>
     <field name="CONNECTIONS">LEFT</field>
     <statement name="INPUTS">
@@ -6430,4 +6534,6 @@
         <field name="HUE">240</field>
       </block>
     </value>
-  </block></xml>
+  </block>
+  
+  </xml>

@@ -369,7 +369,37 @@ Blockly.Tngl["animation_palette_roll"] = function (block) {
   return [code, Blockly.Tngl.ORDER_NONE];
 };
 
-Blockly.Tngl['animation_color_gradient'] = function(block) {
+Blockly.Tngl['animation_color_gradient3'] = function(block) {
+  var colour_color1 = block.getFieldValue('COLOR1');
+  var colour_color2 = block.getFieldValue('COLOR2');
+  var colour_color3 = block.getFieldValue('COLOR3');
+  var text_smoothing = block.getFieldValue('SMOOTHING');
+  var text_scale = block.getFieldValue('SCALE');
+  var text_duration = block.getFieldValue('DURATION');
+  var value_next = Blockly.Tngl.valueToCode(block, 'NEXT', Blockly.Tngl.ORDER_NONE);
+
+  value_next = formatNextAnimationValue(value_next);
+
+  var code =
+    "animColorGradient3(" +
+    formatTimestamp(text_duration) +
+    ", " +
+    colour_color1 +
+    ", " +
+    colour_color2 +
+    ", " +
+    colour_color3 +
+    ", " +
+    formatPercentage(text_smoothing) +
+    ", " +
+    formatPercentage(text_scale) +
+    ")" +
+    value_next;
+  return [code, Blockly.Tngl.ORDER_NONE];
+};
+
+
+Blockly.Tngl['animation_color_gradient5'] = function(block) {
   var colour_color1 = block.getFieldValue('COLOR1');
   var colour_color2 = block.getFieldValue('COLOR2');
   var colour_color3 = block.getFieldValue('COLOR3');
@@ -383,7 +413,7 @@ Blockly.Tngl['animation_color_gradient'] = function(block) {
   value_next = formatNextAnimationValue(value_next);
 
   var code =
-    "animColorGradient(" +
+    "animColorGradient5(" +
     formatTimestamp(text_duration) +
     ", " +
     colour_color1 +

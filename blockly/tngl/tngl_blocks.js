@@ -219,22 +219,18 @@ Blockly.Blocks["animation_color_roll"] = {
   },
 };
 
-Blockly.Blocks["animation_palette_roll"] = {
+Blockly.Blocks["animation_color_gradient3"] = {
   init: function () {
     this.appendValueInput("NEXT")
       .setCheck("animation")
-      .appendField("CYKLUS PALETY  ")
+      .appendField("GRADIENT ")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR1")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR2")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR3")
-      .appendField(new Blockly.FieldColour("#000000"), "COLOR4")
-      .appendField(new Blockly.FieldColour("#000000"), "COLOR5")
-      .appendField(new Blockly.FieldColour("#000000"), "COLOR6")
-      .appendField(new Blockly.FieldColour("#000000"), "COLOR7")
-      .appendField(new Blockly.FieldColour("#000000"), "COLOR8")
-      .appendField(" ")
-      .appendField(new Blockly.FieldTextInput("100%"), "ZOOM")
-      .appendField("spektra")
+      .appendField("  smoothing")
+      .appendField(new Blockly.FieldTextInput("100%"), "SMOOTHING")
+      .appendField(" scale")
+      .appendField(new Blockly.FieldTextInput("100%"), "SCALE")
       .appendField("⌛")
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
     this.setInputsInline(false);
@@ -242,11 +238,13 @@ Blockly.Blocks["animation_palette_roll"] = {
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
+    this.setMutators();
     this.setValidators();
   },
 };
 
-Blockly.Blocks["animation_color_gradient"] = {
+
+Blockly.Blocks["animation_color_gradient5"] = {
   init: function () {
     this.appendValueInput("NEXT")
       .setCheck("animation")
@@ -256,11 +254,10 @@ Blockly.Blocks["animation_color_gradient"] = {
       .appendField(new Blockly.FieldColour("#000000"), "COLOR3")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR4")
       .appendField(new Blockly.FieldColour("#000000"), "COLOR5")
-      .appendField(" ")
+      .appendField("  smoothing")
       .appendField(new Blockly.FieldTextInput("100%"), "SMOOTHING")
-      .appendField("smoothing  ")
+      .appendField(" scale")
       .appendField(new Blockly.FieldTextInput("100%"), "SCALE")
-      .appendField("of spectrum")
       .appendField("⌛")
       .appendField(new Blockly.FieldTextInput("5s"), "DURATION");
     this.setInputsInline(false);

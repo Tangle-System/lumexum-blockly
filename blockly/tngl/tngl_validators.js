@@ -304,11 +304,16 @@ Blockly.Blocks["animation_color_roll"].setValidators = function () {
   this.getField("COLOR2").setValidator(validator_LCE);
 };
 
-Blockly.Blocks["animation_palette_roll"].setValidators = function () {
+Blockly.Blocks["animation_color_gradient3"].setValidators = function () {
   this.getField("DURATION").setValidator(validator_TLE);
+  this.getField("COLOR1").setValidator(validator_LCE);
+  this.getField("COLOR2").setValidator(validator_LCE);
+  this.getField("COLOR3").setValidator(validator_LCE);
+  this.getField("SMOOTHING").setValidator(validator_SLE);
+  this.getField("SCALE").setValidator(validator_SLE);
 };
 
-Blockly.Blocks["animation_color_gradient"].setValidators = function () {
+Blockly.Blocks["animation_color_gradient5"].setValidators = function () {
   this.getField("DURATION").setValidator(validator_TLE);
   this.getField("COLOR1").setValidator(validator_LCE);
   this.getField("COLOR2").setValidator(validator_LCE);

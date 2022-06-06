@@ -380,12 +380,10 @@
         <shadow type="animation_dummy_next"></shadow>
       </value>
     </block>
-    <block type="animation_color_gradient">
+        <block type="animation_color_gradient3">
       <field name="COLOR1">#000000</field>
       <field name="COLOR2">#000000</field>
       <field name="COLOR3">#000000</field>
-      <field name="COLOR4">#000000</field>
-      <field name="COLOR5">#000000</field>
       <field name="SMOOTHING">100%</field>
       <field name="SCALE">100%</field>
       <field name="DURATION">5s</field>
@@ -393,16 +391,14 @@
         <shadow type="animation_dummy_next"></shadow>
       </value>
     </block>
-    <block type="animation_palette_roll" disabled="true">
+    <block type="animation_color_gradient5">
       <field name="COLOR1">#000000</field>
       <field name="COLOR2">#000000</field>
       <field name="COLOR3">#000000</field>
       <field name="COLOR4">#000000</field>
       <field name="COLOR5">#000000</field>
-      <field name="COLOR6">#000000</field>
-      <field name="COLOR7">#000000</field>
-      <field name="COLOR8">#000000</field>
-      <field name="ZOOM">100%</field>
+      <field name="SMOOTHING">100%</field>
+      <field name="SCALE">100%</field>
       <field name="DURATION">5s</field>
       <value name="NEXT">
         <shadow type="animation_dummy_next"></shadow>
