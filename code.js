@@ -10991,6 +10991,19 @@ Code.init = function () {
 </block>
 </value>
 </block>
+<block type="drawing" id="6Iwfe?_(6C/}Si}*GAKr" x="1220" y="1405">
+<field name="START">0s</field>
+<field name="TIME_DEFINITION">DURATION</field>
+<field name="DURATION">Infinity</field>
+<field name="DRAW_MODE">SET</field>
+<value name="ANIMATION">
+<block type="animation_plasma_shot" id="oUNTniaR+_$HLKkB:xoO">
+<field name="COLOR">#ff0000</field>
+<field name="PERCENTAGE">25%</field>
+<field name="DURATION">5s</field>
+</block>
+</value>
+</block>
 </xml>
     `;
 
