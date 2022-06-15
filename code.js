@@ -1154,14 +1154,22 @@ Code.connectBluetooth = function () {
       console.log("Connecting device...");
       return Code.device
         .connect(/* [{name: "Manka"}] */ null, false, null, null, true)
+        .then(() => {
+          console.log("Device connected!");
+        })
         .catch(e => {
           console.error(e);
         });
     } else {
       console.log("Disconnecting device...");
-      return Code.device.disconnect().catch(e => {
-        console.error(e);
-      });
+      return Code.device
+        .disconnect()
+        .then(() => {
+          console.log("Device disconnected!");
+        })
+        .catch(e => {
+          console.error(e);
+        });
     }
   });
 };
