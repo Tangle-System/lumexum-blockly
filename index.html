@@ -7,7 +7,7 @@
   <meta name="google" value="notranslate">
   <title>Tangle Terminal</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://test-lukas.loutaci.cz/target.js"></script>
+  <!-- <script src="https://test-lukas.loutaci.cz/target.js"></script> -->
 
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
 
@@ -1008,6 +1008,12 @@
           <shadow type="modifier_dummy_add"></shadow>
         </value>
       </block>
+      <block type="modifier_settime">
+        <field name="TIMESTAMP">5s</field>
+        <value name="MODIFIER">
+          <shadow type="modifier_dummy_add"></shadow>
+        </value>
+      </block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Posun času</field>
       </block>
@@ -1355,6 +1361,8 @@
       <block type="commentary_spacer"></block>
       <block type="commentary_line" disabled="true">
         <field name="COMMENT">Inline vložení TNGL kodu</field>
+      </block>
+      <block type="code_inline">
       </block>
     </category>
   </xml>
