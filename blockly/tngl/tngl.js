@@ -319,25 +319,25 @@ Blockly.Tngl.init = function (workspace) {
   // to actual function names (to avoid collisions with user functions).
   Blockly.Tngl.functionNames_ = Object.create(null);
 
-  if (!Blockly.Tngl.variableDB_) {
-    Blockly.Tngl.variableDB_ = new Blockly.Names(Blockly.Tngl.RESERVED_WORDS_);
+  if (!Blockly.Tngl.nameDB_) {
+    Blockly.Tngl.nameDB_ = new Blockly.Names(Blockly.Tngl.RESERVED_WORDS_);
   } else {
-    Blockly.Tngl.variableDB_.reset();
+    Blockly.Tngl.nameDB_.reset();
   }
 
-  Blockly.Tngl.variableDB_.setVariableMap(workspace.getVariableMap());
+  Blockly.Tngl.nameDB_.setVariableMap(workspace.getVariableMap());
 
   var defvars = [];
   // Add developer variables (not created or named by the user).
   var devVarList = Blockly.Variables.allDeveloperVariables(workspace);
   for (var i = 0; i < devVarList.length; i++) {
-    defvars.push(Blockly.Tngl.variableDB_.getName(devVarList[i], Blockly.Names.DEVELOPER_VARIABLE_TYPE));
+    defvars.push(Blockly.Tngl.nameDB_.getName(devVarList[i], Blockly.Names.DEVELOPER_VARIABLE_TYPE));
   }
 
   // Add user variables, but only ones that are being used.
   var variables = Blockly.Variables.allUsedVarModels(workspace);
   for (var i = 0; i < variables.length; i++) {
-    defvars.push(Blockly.Tngl.variableDB_.getName(variables[i].getId(), Blockly.VARIABLE_CATEGORY_NAME));
+    defvars.push(Blockly.Tngl.nameDB_.getName(variables[i].getId(), Blockly.VARIABLE_CATEGORY_NAME));
   }
 
   // Declare all of the variables.
@@ -360,7 +360,7 @@ Blockly.Tngl.finish = function (code) {
   // Clean up temporary data.
   delete Blockly.Tngl.definitions_;
   delete Blockly.Tngl.functionNames_;
-  Blockly.Tngl.variableDB_.reset();
+  Blockly.Tngl.nameDB_.reset();
   return definitions.join("\n\n") + "\n\n\n" + code;
 };
 
