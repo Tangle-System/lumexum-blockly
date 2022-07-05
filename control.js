@@ -376,7 +376,7 @@ window.onload = function () {
     //   zip.file("metronome.mp3", window.blockly_metronome);
     // }
 
-    zip.generateAsync({ type: "blob", compression: "DEFLATE" }).then(function (content) {
+    zip.generateAsync({ type: "blob", compression: "STORE" }).then(function (content) {
       saveAs(content, document.querySelector("#filename").value.replace(/\.tgbl$/, "") + ".tgbl");
     });
   };
@@ -396,7 +396,7 @@ window.onload = function () {
 
       document.body.appendChild(selectFileWrapperDom);
       selectFile = document.getElementById("select_file");
-      selectFile.addEventListener("change", e => parseInputXMLfile(e.target.files[0]), false);
+      selectFile.addEventListener("change", e => { parseInputXMLfile(e.target.files[0]); e.target.value = "" }, false);
     }
     selectFile.click();
   };
