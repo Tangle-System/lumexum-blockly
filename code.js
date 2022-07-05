@@ -1120,10 +1120,9 @@ Code.initLanguage = function () {
   document.getElementById("pauseButton").title = "Pozastavit animaci";
   document.getElementById("stopButton").title = "Resetovat animaci";
 };
-document.querySelector("#saveButton").onclick = _ => {
-  let xml_code = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace));
-  localStorage.setItem("blocks", xml_code);
-};
+
+
+
 
 /**
  * Discard all blocks from the workspace.
@@ -1545,3 +1544,10 @@ Code.sendRight = function () {
     Code.device.emitTimestampEvent("lag", 50 * (7 - i), i + 1);
   }
 };
+
+window.addEventListener("beforeunload", () => {
+  localStorage.setItem(
+    "blocks",
+    Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Code.workspace))
+  );
+});
